@@ -3,6 +3,7 @@
 
   <storage type="swift" />
 
+  <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://217.228.142.154:8080/auth/v1.0" />
   <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://185.238.143.148:8080/auth/v1.0" />
 
   <workflow>

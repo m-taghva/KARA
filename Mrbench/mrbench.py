@@ -28,7 +28,7 @@ def load_config(config_file):
            sys.exit(1)
     return data_loaded
 
-def copy_swift_conf(ring_dir, conf_dir, ring_file, conf_file):
+def copy_swift_conf(file_dict):
     data_loaded = load_config(config_file)
     for key,value in data_loaded['swift'].items():
         container_name = key
@@ -47,19 +47,19 @@ def copy_swift_conf(ring_dir, conf_dir, ring_file, conf_file):
         if key_to_extract in container_info[0]['Config']['Labels']:
            inspect_value = container_info[0]['Config']['Labels'][key_to_extract]
 
-        if ring_dir:
-           for ring_files in os.listdir(ring_dir):
-               diff_ring_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/rings/{ring_files}' | diff - {ring_dir}/{ring_files}"
+        for filename, filepath in file_dict.items():  
+            if filename.endswith(".gz"):
+               diff_ring_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/rings/{filename}' | diff - {filepath}"
                diff_ring_result = subprocess.run(diff_ring_command, shell=True, capture_output=True, text=True)
                print("")
-               print(f"please wait for checking ring file [ {ring_files} ] inside {container_name}")
+               print(f"please wait for checking ring file [ {filename} ] inside {container_name}")
                if diff_ring_result.stderr == "":
                   if diff_ring_result.stdout != "":
-                     copy_ring_command = f"scp -r -P {port} {ring_dir}/{ring_files} {user}@{ip}:{inspect_value}/rings > /dev/null 2>&1"
+                     copy_ring_command = f"scp -r -P {port} {filepath} {user}@{ip}:{inspect_value}/rings > /dev/null 2>&1"
                      copy_ring_process = subprocess.run(copy_ring_command, shell=True)
                      if copy_ring_process.returncode == 0:
                         print("")
-                        print(f"\033[92mcopy ring file [ {ring_files} ] to {container_name} successful\033[0m")
+                        print(f"\033[92mcopy ring file [ {filename} ] to {container_name} successful\033[0m")
                         restart_cont_ring = f"ssh -p {port} {user}@{ip} docker restart {container_name} > /dev/null 2>&1"
                         restart_cont_ring_process = subprocess.run(restart_cont_ring, shell=True)
                         if restart_cont_ring_process.returncode == 0:
@@ -70,47 +70,21 @@ def copy_swift_conf(ring_dir, conf_dir, ring_file, conf_file):
                      else: 
                          print(f"\033[91mrings in {container_name} failed to sync\033[0m")
                if diff_ring_result.stderr != "":
-                  print("")
-                  print(f"\033[91mWARNING: your ring file naming is wrong [ {ring_files} ] or not exist inside {container_name}\033[0m")
-        elif ring_file:
-             ring_filename = os.path.basename(conf_file)
-             diff_ring_file_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/rings/{ring_filename}' | diff - {ring_file}"
-             diff_ring_file_result = subprocess.run(diff_ring_file_command, shell=True, capture_output=True, text=True)
-             print("")
-             print(f"please wait for checking ring file [ {ring_file} ] inside {container_name}")
-             if diff_ring_file_result.stderr == "":
-                if diff_ring_file_result.stdout != "":
-                   copy_ring_file_command = f"scp -r -P {port} {ring_file} {user}@{ip}:{inspect_value}/rings > /dev/null 2>&1"
-                   copy_ring__file_process = subprocess.run(copy_ring_file_command, shell=True)
-                   if copy_ring__file_process.returncode == 0:
-                      print("")
-                      print(f"\033[92mcopy ring file [ {ring_file} ] to {container_name} successful\033[0m")
-                      restart_cont_ring_file = f"ssh -p {port} {user}@{ip} docker restart {container_name} > /dev/null 2>&1"
-                      restart_cont_ring_file_process = subprocess.run(restart_cont_ring_file, shell=True)
-                      if restart_cont_ring_file_process.returncode == 0:
-                         print("")
-                         print(f"\033[92mcontainer {container_name} successfully restart\033[0m")
-                      else:
-                          print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m")
-                   else: 
-                       print(f"\033[91mrings in {container_name} failed to sync\033[0m")
-             if diff_ring_file_result.stderr != "":
-                print("")
-                print(f"\033[91mWARNING: your ring file naming is wrong [ {ring_file} ] or not exist inside {container_name}\033[0m")
-        
-        if conf_dir:
-           for conf_files in os.listdir(conf_dir):
-               diff_conf_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/{conf_files}' | diff - {conf_dir}/{conf_files}"
+                     print("")
+                     print(f"\033[91mWARNING: your ring file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
+
+            if filename.endswith(".conf"):
+               diff_conf_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/{filename}' | diff - {filepath}"
                diff_conf_result = subprocess.run(diff_conf_command, shell=True, capture_output=True, text=True)
                print("")
-               print(f"please wait for checking config file [ {conf_files} ] inside {container_name}")
+               print(f"please wait for checking config file [ {filename} ] inside {container_name}")
                if diff_conf_result.stderr == "":
                   if diff_conf_result.stdout != "":
-                     copy_conf_command = f"scp -r -P {port} {conf_dir}/{conf_files} {user}@{ip}:{inspect_value}/ > /dev/null 2>&1"
+                     copy_conf_command = f"scp -r -P {port} {filepath} {user}@{ip}:{inspect_value}/ > /dev/null 2>&1"
                      copy_conf_process = subprocess.run(copy_conf_command, shell=True)
                      if copy_conf_process.returncode == 0:
                         print("")
-                        print(f"\033[92mcopy config file [ {conf_files} ] to {container_name} successful\033[0m")
+                        print(f"\033[92mcopy config file [ {filename} ] to {container_name} successful\033[0m")
                         restart_cont_conf = f"ssh -p {port} {user}@{ip} docker restart {container_name} > /dev/null 2>&1"
                         restart_cont_conf_process = subprocess.run(restart_cont_conf, shell=True)
                         if restart_cont_conf_process.returncode == 0:
@@ -122,32 +96,7 @@ def copy_swift_conf(ring_dir, conf_dir, ring_file, conf_file):
                          print(f"\033[91mconfigs in {container_name} failed to sync\033[0m")
                if diff_conf_result.stderr != "":
                   print("")
-                  print(f"\033[91mWARNING: your config file naming is wrong [ {conf_files} ] or not exist inside {container_name}\033[0m")
-        elif conf_file: 
-             conf_filename = os.path.basename(conf_file)
-             diff_conf_file_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/{conf_filename}' | diff - {conf_file}"
-             diff_conf_file_result = subprocess.run(diff_conf_file_command, shell=True, capture_output=True, text=True)
-             print("")
-             print(f"please wait for checking config file [ {conf_file} ] inside {container_name}")
-             if diff_conf_file_result.stderr == "":
-                if diff_conf_file_result.stdout != "":
-                   copy_conf_file_command = f"scp -r -P {port} {conf_file} {user}@{ip}:{inspect_value}/ > /dev/null 2>&1"
-                   copy_conf_file_process = subprocess.run(copy_conf_file_command, shell=True)
-                   if copy_conf_file_process.returncode == 0:
-                      print("")
-                      print(f"\033[92mcopy config file [ {conf_file} ] to {container_name} successful\033[0m")
-                      restart_cont_conf_file = f"ssh -p {port} {user}@{ip} docker restart {container_name} > /dev/null 2>&1"
-                      restart_cont_conf_file_process = subprocess.run(restart_cont_conf_file, shell=True)
-                      if restart_cont_conf_file_process.returncode == 0:
-                         print("")
-                         print(f"\033[92mcontainer {container_name} successfully restart\033[0m")
-                      else:
-                         print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m")
-                   else:
-                       print(f"\033[91mconfigs in {container_name} failed to sync\033[0m")
-             if diff_conf_file_result.stderr != "":
-                print("")
-                print(f"\033[91mWARNING: your config file naming is wrong [ {conf_file} ] or not exist inside {container_name}\033[0m")
+                  print(f"\033[91mWARNING: your config file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
             
 def submit(workload_file_path, output_path):
     if not os.path.exists(output_path):
@@ -184,6 +133,8 @@ def submit(workload_file_path, output_path):
     result_path = create_test_dir(output_path, workload_name)
     archive_workload_dir_name = f"{workload_id}-swift-sample"
     print(f"Result Path: {result_path}")
+    cosbench_info = f"cosbench info > {result_path}/cosbench.info"
+    cosbench_info_result = subprocess.run(cosbench_info, shell=True, capture_output=True, text=True)
     # run other functions 
     start_time, end_time = save_time(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv", result_path)
     copy_bench_files(archive_path, archive_workload_dir_name, result_path)
@@ -249,21 +200,25 @@ def copy_bench_files(archive_path, archive_workload_dir_name, result_path):
         if retry == 0 :
             print(f"\033[91mMaximum retries reached ({retry}). File {archive_file_path} copy failed.\033[0m")
   
-def main(workload_config_path, output_path, swift_run, ring_dir, conf_dir, ring_file, conf_file):
-    if swift_run:
-        copy_swift_conf(ring_dir, conf_dir, ring_file, conf_file)
-    else:
-        start_time, end_time, result_file_path = submit(workload_config_path, output_path)
-        return start_time, end_time, result_file_path
+def main(workload_config_path, output_path, file_dict):
+    
+    if file_dict is not None:
+       copy_swift_conf(file_dict)
+
+    if workload_config_path is not None:
+       start_time, end_time, result_file_path = submit(workload_config_path, output_path)
+       return start_time, end_time, result_file_path
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Monster Benchmark')
     parser.add_argument('-i', '--input', help='Input file path')
     parser.add_argument('-o', '--output', help='Output directory')
-    parser.add_argument('-s', '--swift_run', action='store_true', help='run copy swift function')
-    parser.add_argument('-rd', '--ring_dir', help='ring directory')
-    parser.add_argument('-cd', '--conf_swift_dir', help='swift config directory')
-    parser.add_argument('-rf', '--ring_file', help='ring file')
-    parser.add_argument('-cf', '--conf_swift_file', help='swift config file')
+    parser.add_argument('-cr', '--conf_and_ring', help='ring directory')
     args = parser.parse_args()
-    main(workload_config_path=args.input, output_path=args.output, swift_run=args.swift_run, ring_dir=args.ring_dir, conf_dir=args.conf_swift_dir, ring_file=args.ring_file, conf_file=args.conf_swift_file)
+
+    file_dict = {}
+    if args.conf_and_ring:
+        for filename in os.listdir(args.conf_and_ring):
+            file_dict[filename] = os.path.join(args.conf_and_ring, filename)
+
+    main(workload_config_path=args.input, output_path=args.output, file_dict=file_dict)
