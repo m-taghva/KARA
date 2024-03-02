@@ -378,45 +378,55 @@ def backup(time_range=None, inputs=None, delete=None):
 
          #### Execute commands to gather hardware information ####
          lshw_command = f"ssh -p {port} {user}@{ip} sudo lshw > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lshw-host.txt"
-         lshw_process = subprocess.run(lshw_command, shell=True)
+         lshw_process = subprocess.run(lshw_command, shell=True, capture_output=True, text=True)
          if lshw_process.returncode == 0:
              bar()
+         elif "command not found" in lshw_process.stderr:
+              print("\033[91mlshw is not installed. Please install it.\033[0m")
          else:
              print("\033[91m lshw failed.\033[0m")
-             sys.exit(1)
+             sys.exit(0)
 
          lscpu_command = f"ssh -p {port} {user}@{ip} sudo lscpu > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lscpu-host.txt"
          lscpu_process = subprocess.run(lscpu_command, shell=True)
          if lscpu_process.returncode == 0:
              bar()
+         elif "command not found" in lscpu_process.stderr:
+              print("\033[91mlscpu is not installed. Please install it.\033[0m")
          else:
              print("\033[91m lscpu failed.\033[0m")
-             sys.exit(1)
+             sys.exit(0)
 
          lsmem_command = f"ssh -p {port} {user}@{ip} sudo lsmem > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lsmem-host.txt"
          lsmem_process = subprocess.run(lsmem_command, shell=True)
          if lsmem_process.returncode == 0:
              bar()
+         elif "command not found" in lsmem_process.stderr:
+              print("\033[91mlsmem is not installed. Please install it.\033[0m")
          else:
              print("\033[91m lamem failed.\033[0m")
-             sys.exit(1)
+             sys.exit(0)
 
          lspci_command = f"ssh -p {port} {user}@{ip} sudo lspci > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lspci-host.txt"
          lspci_process = subprocess.run(lspci_command, shell=True)
          if lspci_process.returncode == 0:
              bar()
+         elif "command not found" in lspci_process.stderr:
+              print("\033[91mlspci is not installed. Please install it.\033[0m")
          else:
              print("\033[91m lspci failed.\033[0m")
-             sys.exit(1)
+             sys.exit(0)
          
          #### Execute commands to gather OS information ####
          sysctl_command = f"ssh -p {port} {user}@{ip} sudo sysctl -a > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-sysctl-host.txt"
          sysctl_process = subprocess.run(sysctl_command, shell=True)
          if sysctl_process.returncode == 0:
              bar()
+         elif "command not found" in sysctl_process.stderr:
+              print("\033[91msysctl is not installed. Please install it.\033[0m")
          else:
              print("\033[91m sysctl failed.\033[0m")
-             sys.exit(1)
+             sys.exit(0)
 
          ps_aux_command = f"ssh -p {port} {user}@{ip} sudo ps -aux > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-ps-aux-host.txt"
          ps_aux_process = subprocess.run(ps_aux_command, shell=True)
@@ -424,7 +434,7 @@ def backup(time_range=None, inputs=None, delete=None):
              bar()
          else:
              print("\033[91m ps_aux failed.\033[0m")
-             sys.exit(1)
+             sys.exit(0)
 
          list_unit_command = f"ssh -p {port} {user}@{ip} sudo systemctl list-units > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-list-units-host.txt"
          list_unit_process = subprocess.run(list_unit_command, shell=True)
@@ -432,23 +442,27 @@ def backup(time_range=None, inputs=None, delete=None):
              bar()
          else:
              print("\033[91m list_unit failed.\033[0m")
-             sys.exit(1)
+             sys.exit(0)
 
          lsmod_command = f"ssh -p {port} {user}@{ip} sudo lsmod > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-lsmod-host.txt"
          lsmod_process = subprocess.run(lsmod_command, shell=True)
          if lsmod_process.returncode == 0:
              bar()
+         elif "command not found" in lsmod_process.stderr:
+              print("\033[91mlsmod is not installed. Please install it.\033[0m")
          else:
              print("\033[91m lsmod failed.\033[0m")
-             sys.exit(1)
+             sys.exit(0)
          
          lsof_command = f"ssh -p {port} {user}@{ip} sudo lsof > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-lsof-host.txt 2>&1"
          lsof_process = subprocess.run(lsof_command, shell=True)
          if lsof_process.returncode == 0:
              bar()
+         elif "command not found" in lsof_process.stderr:
+              print("\033[91mlsof is not installed. Please install it.\033[0m")
          else:
              print("\033[91m lsof failed.\033[0m")
-             sys.exit(1)
+             sys.exit(0)
 
          # remove /influxdb-backup/time_dir from container and host
          rm_cont_host_dir_command =  f"ssh -p {port} {user}@{ip} sudo rm -rf {backup_dir}/* ; ssh -p {port} {user}@{ip} sudo docker exec {container_name} rm -rf {backup_dir}/* "
@@ -487,8 +501,11 @@ if __name__ == "__main__":
     argParser.add_argument("-r", "--restore", action="store_true", help="run restore function")
     args = argParser.parse_args()
     data_loaded = load_config(config_file)
+    time_range = args.time_range if args.time_range else data_loaded['default'].get('time')
+    inputs = args.inputs.split(',') if args.inputs else data_loaded['default'].get('input_paths') if data_loaded['default'].get('input_paths') else []
+    delete = args.delete
     
     if args.restore:
        restore()
     else:
-       backup(time_range=args.time_range if args.time_range else data_loaded['default'].get('time'), inputs=args.inputs.split(',') if args.inputs else data_loaded['default'].get('input_paths') if data_loaded['default'].get('input_paths') else [], delete=args.delete)
+       backup(time_range, inputs, delete)
