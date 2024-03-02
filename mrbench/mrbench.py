@@ -104,7 +104,8 @@ def copy_swift_conf(swift_configs):
 def submit(workload_file_path, output_path):
     if not os.path.exists(output_path):
        os.makedirs(output_path)
-    subprocess.call(pre_test_script, shell=True)
+    run_pre_test = f"chmod +x {pre_test_script} ; bash {pre_test_script}"
+    run_pre_test_process = subprocess.run(run_pre_test, shell=True)
     cosbenchBin = shutil.which("cosbench")
     if not(cosbenchBin):
         print("Command 'cosbench' not found, but can be add with:\n\n\t ln -s {cosbench-dir}/cli.sh /usr/bin/cosbench\n")
