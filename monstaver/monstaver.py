@@ -8,7 +8,7 @@ import pytz
 import yaml
 from alive_progress import alive_bar
 
-config_file = "./../Monstaver/conf/monstaver.conf"
+config_file = "/etc/KARA/monstaver.conf"
 
 def load_config(config_file):
     with open(config_file, "r") as stream:
@@ -235,8 +235,8 @@ def backup(time_range=None, inputs=None, delete=None):
      subprocess.run(f"sudo chmod -R 777 {backup_dir}", shell=True)
      bar()
 
-     database_names = [db_name for config in data_loaded.get('influxdbs_backup', {}).values() if isinstance(config, dict) and 'databases' in config for db_name in config['databases']]
-     for mc_server, config in data_loaded.get('influxdbs_backup', {}).items(): 
+     database_names = [db_name for config in data_loaded.get('db_sources', {}).values() if isinstance(config, dict) and 'databases' in config for db_name in config['databases']]
+     for mc_server, config in data_loaded.get('db_sources', {}).items(): 
          ip_influxdb = config.get('ip')
          ssh_port = config.get('ssh_port')
          ssh_user = config.get('ssh_user')

@@ -15,7 +15,7 @@ YELLOW = "\033[1;33m"
 START_TIME_SUM = 10  # increase your report start time
 END_TIME_SUBTRACT = 10  # decrease your report end time
 TIME_GROUP = 10  # time group for query 2
-CONFIG_FILE = "./../Status_reporter/conf/status.conf"
+CONFIG_FILE = "/etc/KARA/status.conf"
 
 def load_config(CONFIG_FILE):
     with open(CONFIG_FILE, "r") as stream:

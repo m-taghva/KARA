@@ -9,7 +9,7 @@ import sys
 import yaml
 import json
 
-config_file = "./../Mrbench/conf/mrbench.conf"
+config_file = "/etc/KARA/mrbench.conf"
 pre_test_script = "./pre_test_script.sh"
 
 # For font style
@@ -28,7 +28,7 @@ def load_config(config_file):
            sys.exit(1)
     return data_loaded
 
-def copy_swift_conf(file_dict):
+def copy_swift_conf(swift_configs):
     data_loaded = load_config(config_file)
     for key,value in data_loaded['swift'].items():
         container_name = key
@@ -46,7 +46,7 @@ def copy_swift_conf(file_dict):
            # Check if the key exists in the JSON structure
            if key_to_extract in container_info[0]['Config']['Labels']:
               inspect_value = container_info[0]['Config']['Labels'][key_to_extract]
-              for filename, filepath in file_dict.items():  
+              for filename, filepath in swift_configs.items():  
                   if filename.endswith(".gz"):
                      diff_ring_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/rings/{filename}' | diff - {filepath}"
                      diff_ring_result = subprocess.run(diff_ring_command, shell=True, capture_output=True, text=True)
@@ -203,10 +203,10 @@ def copy_bench_files(archive_path, archive_workload_dir_name, result_path):
         if retry == 0 :
             print(f"\033[91mMaximum retries reached ({retry}). File {archive_file_path} copy failed.\033[0m")
   
-def main(workload_config_path, output_path, file_dict):
+def main(workload_config_path, output_path, swift_configs):
     
-    if file_dict:
-       copy_swift_conf(file_dict)
+    if swift_configs:
+       copy_swift_conf(swift_configs)
 
     if workload_config_path is not None:
        start_time, end_time, result_file_path = submit(workload_config_path, output_path)
@@ -219,9 +219,9 @@ if __name__ == "__main__":
     parser.add_argument('-cr', '--conf_and_ring', help='ring directory')
     args = parser.parse_args()
 
-    file_dict = {}
+    swift_configs = {}
     if args.conf_and_ring:
         for filename in os.listdir(args.conf_and_ring):
-            file_dict[filename] = os.path.join(args.conf_and_ring, filename)
+            swift_configs[filename] = os.path.join(args.conf_and_ring, filename)
 
-    main(workload_config_path=args.input, output_path=args.output, file_dict=file_dict)
+    main(workload_config_path=args.input, output_path=args.output, swift_configs=swift_configs)
