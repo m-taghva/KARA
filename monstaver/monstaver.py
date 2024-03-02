@@ -223,7 +223,7 @@ def backup(time_range=None, inputs=None, delete=None):
     start_time_str, end_time_str = time_range.split(',')
     margin_start, margin_end = map(int, data_loaded['default'].get('time_margin').split(',')) 
     start_time_backup, end_time_backup, time_dir_name = convert_time(start_time_str, end_time_str, margin_start, margin_end)
-    total_steps = 2 + (len(data_loaded['influxdbs_backup']) * 6 + sum([len(data_loaded["influxdbs_backup"][x]["databases"]) for x in data_loaded["influxdbs_backup"]]) + len(data_loaded['swift']) * 15)
+    total_steps = 2 + (len(data_loaded['db_sources']) * 6 + sum([len(data_loaded["db_sources"][x]["databases"]) for x in data_loaded["db_sources"]]) + len(data_loaded['swift']) * 15)
     with alive_bar(total_steps, title=f'\033[1mProcessing Backup\033[0m:\033[92m {start_time_str} - {end_time_str}\033[0m') as bar:
 
      subprocess.run(f"sudo mkdir -p {backup_dir}", shell=True)

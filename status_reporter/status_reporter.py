@@ -110,7 +110,7 @@ def main(metric_file=None, path_dir=".", time_range=None, img=False):
                             if img:
                                 query2_curl_command = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "db={db_name}" --data-urlencode "q=SELECT {metric_operation}(\\"value\\") FROM /{metric_name}/ WHERE (\\"host\\" =~ /^{host_name}$/) AND time >= \'{start_time_utc}\' AND time <= \'{end_time_utc}\' GROUP BY time({TIME_GROUP}s) fill(none)"'
                                 query2_output = subprocess.getoutput(query2_curl_command)
-                                os.system(f"python3 ./../Status_reporter/image_renderer.py '{query2_output}' '{host_name}' '{path_dir}'")
+                                os.system(f"python3 ./../status_reporter/image_renderer.py '{query2_output}' '{host_name}' '{path_dir}'")
     # Write the CSV file for each time range
     with open(output_csv, 'a') as csv_file:
         for line in output_csv_str:
