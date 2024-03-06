@@ -10,7 +10,7 @@ import yaml
 import json
 
 config_file = "/etc/KARA/mrbench.conf"
-pre_test_script = "./pre_test_script.sh"
+pre_test_script = "./../mrbench/pre_test_script.sh"
 
 # For font style
 BOLD = "\033[1m"
@@ -72,7 +72,7 @@ def copy_swift_conf(swift_configs):
                         print("")
                         print(f"\033[91mWARNING: your ring file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
 
-                  if filename.endswith(".conf"):
+                  elif filename.endswith(".conf"):
                      diff_conf_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/{filename}' | diff - {filepath}"
                      diff_conf_result = subprocess.run(diff_conf_command, shell=True, capture_output=True, text=True)
                      print("")
@@ -84,6 +84,9 @@ def copy_swift_conf(swift_configs):
                            if copy_conf_process.returncode == 0:
                               print("")
                               print(f"\033[92mcopy config file [ {filename} ] to {container_name} successful\033[0m")
+                              base_name_changer = os.path.basename(filepath)
+                              name_changer = f"ssh -p {port} {user}@{ip} mv {inspect_value}/{base_name_changer} {inspect_value}/{filename}" 
+                              name_changer_process = subprocess.run(name_changer, shell=True)
                               restart_cont_conf = f"ssh -p {port} {user}@{ip} docker restart {container_name} > /dev/null 2>&1"
                               restart_cont_conf_process = subprocess.run(restart_cont_conf, shell=True)
                               if restart_cont_conf_process.returncode == 0:
