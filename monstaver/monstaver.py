@@ -54,8 +54,7 @@ def convert_time(start_time_str, end_time_str, margin_start, margin_end):
       return start_time_backup,end_time_backup,time_dir_name
 
 ##### RESTORE PARTS #####
-def restore():
-  data_loaded = load_config(config_file)
+def restore(data_loaded):
   for mc_server, config in data_loaded.get('influxdbs_restore', {}).items(): 
    ip_influxdb = config.get('ip')
    ssh_port = config.get('ssh_port')
@@ -217,8 +216,7 @@ def restore():
              print("error") 
 
 ##### BACKUP PARTS #####
-def backup(time_range=None, inputs=None, delete=None): 
-    data_loaded = load_config(config_file)
+def backup(time_range, inputs, delete, data_loaded): 
     backup_dir = data_loaded['default'].get('backup_output')
     start_time_str, end_time_str = time_range.split(',')
     margin_start, margin_end = map(int, data_loaded['default'].get('time_margin').split(',')) 
@@ -491,7 +489,13 @@ def backup(time_range=None, inputs=None, delete=None):
         else:
              print("\033[91mRemove time dir inside output dir failed.\033[0m")
              sys.exit(1)
-     
+def main(time_range, inputs, delete, backup_restore):
+    data_loaded = load_config(config_file)
+    if backup_restore:
+       restore(data_loaded)
+    else:
+       backup(time_range, inputs, delete, data_loaded)
+
 if __name__ == "__main__":
     # Command-line argument parsing
     argParser = argparse.ArgumentParser()
@@ -504,8 +508,5 @@ if __name__ == "__main__":
     time_range = args.time_range if args.time_range else data_loaded['default'].get('time')
     inputs = args.inputs.split(',') if args.inputs else data_loaded['default'].get('input_paths') if data_loaded['default'].get('input_paths') else []
     delete = args.delete
-    
-    if args.restore:
-       restore()
-    else:
-       backup(time_range, inputs, delete)
+    backup_restore = args.restore
+    main(time_range, inputs, delete, backup_restore)
