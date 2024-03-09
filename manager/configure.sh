@@ -53,7 +53,7 @@ source_dir="./sample_configs"
 # Destination directory where you want to move the files
 destination_dir="/etc/KARA"
 mkdir -p "$destination_dir"
-mv "$source_dir"/* "$destination_dir"/
+cp "$source_dir"/* "$destination_dir"/
 # Check if files are successfully moved
 if [ $? -eq 0 ]; then
     echo -e "${YELLOW}Config files moved successfully to $destination_dir${RESET}"
