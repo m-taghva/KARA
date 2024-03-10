@@ -32,72 +32,84 @@ def config_gen_agent(config_params):
 
 def mrbench_agent(config_params, output_subdirs):
     all_start_times = [] ; all_end_times = []
-    input_configs = config_params.get('input_configs')
     result_dir = config_params.get('output_path')
     run_status_reporter = config_params.get('Status_Reporter', False)
     run_monstaver = config_params.get('monstaver', False)
-    conf_dir = config_params.get('conf_dir')
-    ring_dir = config_params.get('ring_dir', [])
-    if output_subdirs == None:
-        swift_configs = {}
-        for dir_name in os.listdir(conf_dir):
-            dir_path = os.path.join(conf_dir, dir_name)
-            if os.path.isdir(dir_path) and dir_name != "workloads.xml":
-                for filename in os.listdir(dir_path):
-                  file_path = os.path.join(dir_path, filename)
-                  swift_configs[dir_name] = file_path
-        for dir_path in ring_dir:
-            if os.path.isdir(dir_path):
-                for filename in os.listdir(dir_path):
-                    file_path = os.path.join(dir_path, filename)
-                    swift_configs[filename] = file_path
-        for workload_file in os.listdir(input_configs):
-            mrbench.copy_swift_conf(swift_configs)
-            start_time, end_time, result_file_path = mrbench.submit(os.path.join(input_configs, workload_file), result_dir)
-            all_start_times.append(start_time) ; all_end_times.append(end_time)
-            if run_status_reporter:
-               status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)
-            if run_monstaver:
-               monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path], delete=True, backup_restore=None)        
-    else: 
+    conf_dirs = config_params.get('conf_dirs')
+    ring_dirs = config_params.get('ring_dirs', [])
+    if output_subdirs is None:
+        output_subdirs = {}     
+        for dir_name in os.listdir(conf_dirs):
+            dir_path = os.path.join(conf_dirs, dir_name)
+            output_subdirs[dir_name] = dir_path
+
+    if output_subdirs is not None: 
         Total_index = 1
         conf_exist = 0
         swift_rings = {}
         swift_configs = {}
-        if output_subdirs["workloads.xml"]==None:
+        if output_subdirs["workloads.xml"] is None:
             print("There isn't any workload!!!")
             exit()
         if len(output_subdirs)>1:
             conf_exist = 1
         conf_dir = output_subdirs["workloads.xml"].split("workloads")[0]
-        for dir_path in ring_dir:
-            if os.path.isdir(dir_path):
-                for filename in os.listdir(dir_path):
-                    file_path = os.path.join(dir_path, filename)
-                    swift_rings[filename] = file_path
-                for key in output_subdirs:
-                     if key != "workloads.xml" and key is not None:
-                        Total_index *=len(os.listdir(output_subdirs[key]))
-                        swift_configs[key]=""
-                for i in range(Total_index):
-                    if conf_exist:
-                        m=1
-                        for key in swift_configs:
-                            list_dir = os.listdir(output_subdirs[key])
-                            swift_configs[key] = os.path.join(conf_dir,key,list_dir[(i//m)%len(list_dir)])
-                            m *= len(list_dir)
-                        merged_conf_ring = {**swift_rings, **swift_configs}
-                        print(merged_conf_ring)
-                        mrbench.copy_swift_conf(merged_conf_ring)
-                        time.sleep(40)
-                        for test_config in os.listdir(output_subdirs["workloads.xml"]):
-                            test_config_path = os.path.join(output_subdirs["workloads.xml"], test_config)
-                            start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
-                            all_start_times.append(start_time) ; all_end_times.append(end_time)
-                            if run_status_reporter:
-                                status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
-                            if run_monstaver:
-                                monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path], delete=True, backup_restore=None)                     
+
+        ring_dirs_processed = False
+        if ring_dirs:
+            for dir_path in ring_dirs:
+                if os.path.isdir(dir_path):
+                    for filename in os.listdir(dir_path):
+                        file_path = os.path.join(dir_path, filename)
+                        swift_rings[filename] = file_path
+                    for key in output_subdirs:
+                        if key != "workloads.xml" and key is not None:
+                            Total_index *=len(os.listdir(output_subdirs[key]))
+                            swift_configs[key]=""
+                    for i in range(Total_index):
+                        if conf_exist:
+                            m=1
+                            for key in swift_configs:
+                                list_dir = os.listdir(output_subdirs[key])
+                                swift_configs[key] = os.path.join(conf_dir,key,list_dir[(i//m)%len(list_dir)])
+                                m *= len(list_dir)
+                            merged_conf_ring = {**swift_rings, **swift_configs}
+                            mrbench.copy_swift_conf(merged_conf_ring)
+                            time.sleep(40)
+                            for test_config in os.listdir(output_subdirs["workloads.xml"]):
+                                test_config_path = os.path.join(output_subdirs["workloads.xml"], test_config)
+                                start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
+                                all_start_times.append(start_time) ; all_end_times.append(end_time)
+                                if run_status_reporter:
+                                    status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
+                                if run_monstaver:
+                                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path], delete=True, backup_restore=None) 
+
+                    ring_dirs_processed = True
+        if not ring_dirs_processed:
+            for key in output_subdirs:
+                if key != "workloads.xml" and key is not None:
+                    Total_index *=len(os.listdir(output_subdirs[key]))
+                    swift_configs[key]=""
+            for i in range(Total_index):
+                if conf_exist:
+                    m=1
+                    for key in swift_configs:
+                        list_dir = os.listdir(output_subdirs[key])
+                        swift_configs[key] = os.path.join(conf_dir,key,list_dir[(i//m)%len(list_dir)])
+                        m *= len(list_dir)
+                    merged_conf_ring = {**swift_rings, **swift_configs}
+                    mrbench.copy_swift_conf(merged_conf_ring)
+                    time.sleep(40)
+                    for test_config in os.listdir(output_subdirs["workloads.xml"]):
+                        test_config_path = os.path.join(output_subdirs["workloads.xml"], test_config)
+                        start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
+                        all_start_times.append(start_time) ; all_end_times.append(end_time)
+                        if run_status_reporter:
+                            status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
+                        if run_monstaver:
+                            monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path], delete=True, backup_restore=None)  
+            pass
     # Extract first start time and last end time
     first_start_time = all_start_times[0] ; last_end_time = all_end_times[-1] 
     return first_start_time, last_end_time

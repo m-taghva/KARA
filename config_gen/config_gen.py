@@ -41,6 +41,8 @@ def replace_vars(input_text, conf_name, output_directory):
             outfile.write(input_text)
                     
 def main(input_file_path, output_directory):
+    global conf_number
+    conf_number = 0
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
     cleanup_output_config_gen(output_directory)
