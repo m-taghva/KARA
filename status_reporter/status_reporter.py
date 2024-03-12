@@ -12,8 +12,8 @@ RESET = "\033[0m"
 YELLOW = "\033[1;33m"
 
 # Constants
-START_TIME_SUM = 10  # increase your report start time
-END_TIME_SUBTRACT = 10  # decrease your report end time
+START_TIME_SUM = 1  # increase your report start time
+END_TIME_SUBTRACT = 1  # decrease your report end time
 TIME_GROUP = 10  # time group for query 2
 CONFIG_FILE = "/etc/KARA/status.conf"
 

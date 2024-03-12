@@ -20,96 +20,72 @@ def load_config(config_file):
     return data_loaded
 
 def config_gen_agent(config_params):
-    output_subdirs = {}
     input_files = config_params.get('conf_templates', [])
     output_path = config_params.get('output_path')
     for input_file in input_files:
         # Create output directory for each input file
-        output_subdir = os.path.join(output_path, os.path.basename(input_file))
-        config_gen.main(input_file, output_subdir)
-        output_subdirs[os.path.basename(input_file)] = output_subdir
-    return output_subdirs
+        conf_dir = os.path.join(output_path, os.path.basename(input_file))
+        config_gen.main(input_file, conf_dir)
+    return conf_dir
 
-def mrbench_agent(config_params, output_subdirs):
+def mrbench_agent(config_params, conf_dir):
     all_start_times = [] ; all_end_times = []
     result_dir = config_params.get('output_path')
     run_status_reporter = config_params.get('Status_Reporter', False)
     run_monstaver = config_params.get('monstaver', False)
-    conf_dirs = config_params.get('conf_dirs')
     ring_dirs = config_params.get('ring_dirs', [])
-    if output_subdirs is None:
-        output_subdirs = {}     
-        for dir_name in os.listdir(conf_dirs):
-            dir_path = os.path.join(conf_dirs, dir_name)
-            output_subdirs[dir_name] = dir_path
-
-    if output_subdirs is not None: 
-        Total_index = 1
-        conf_exist = 0
-        swift_rings = {}
-        swift_configs = {}
-        if output_subdirs["workloads.xml"] is None:
-            print("There isn't any workload!!!")
+    if conf_dir is None:
+        if(config_params.get('conf_dir')):
+            conf_dir = config_params.get('conf_dir')
+        else:
+            print(f"\033[91mThere isn't any conf_dir in scenario file !\033[0m")
             exit()
-        if len(output_subdirs)>1:
-            conf_exist = 1
-        conf_dir = output_subdirs["workloads.xml"].split("workloads")[0]
-
-        ring_dirs_processed = False
-        if ring_dirs:
-            for dir_path in ring_dirs:
-                if os.path.isdir(dir_path):
-                    for filename in os.listdir(dir_path):
-                        file_path = os.path.join(dir_path, filename)
-                        swift_rings[filename] = file_path
-                    for key in output_subdirs:
-                        if key != "workloads.xml" and key is not None:
-                            Total_index *=len(os.listdir(output_subdirs[key]))
-                            swift_configs[key]=""
-                    for i in range(Total_index):
-                        if conf_exist:
-                            m=1
-                            for key in swift_configs:
-                                list_dir = os.listdir(output_subdirs[key])
-                                swift_configs[key] = os.path.join(conf_dir,key,list_dir[(i//m)%len(list_dir)])
-                                m *= len(list_dir)
-                            merged_conf_ring = {**swift_rings, **swift_configs}
-                            mrbench.copy_swift_conf(merged_conf_ring)
-                            time.sleep(40)
-                            for test_config in os.listdir(output_subdirs["workloads.xml"]):
-                                test_config_path = os.path.join(output_subdirs["workloads.xml"], test_config)
-                                start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
-                                all_start_times.append(start_time) ; all_end_times.append(end_time)
-                                if run_status_reporter:
-                                    status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
-                                if run_monstaver:
-                                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path], delete=True, backup_restore=None) 
-
-                    ring_dirs_processed = True
-        if not ring_dirs_processed:
-            for key in output_subdirs:
-                if key != "workloads.xml" and key is not None:
-                    Total_index *=len(os.listdir(output_subdirs[key]))
-                    swift_configs[key]=""
-            for i in range(Total_index):
-                if conf_exist:
-                    m=1
-                    for key in swift_configs:
-                        list_dir = os.listdir(output_subdirs[key])
-                        swift_configs[key] = os.path.join(conf_dir,key,list_dir[(i//m)%len(list_dir)])
-                        m *= len(list_dir)
-                    merged_conf_ring = {**swift_rings, **swift_configs}
-                    mrbench.copy_swift_conf(merged_conf_ring)
-                    time.sleep(40)
-                    for test_config in os.listdir(output_subdirs["workloads.xml"]):
-                        test_config_path = os.path.join(output_subdirs["workloads.xml"], test_config)
-                        start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
-                        all_start_times.append(start_time) ; all_end_times.append(end_time)
-                        if run_status_reporter:
-                            status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
-                        if run_monstaver:
-                            monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path], delete=True, backup_restore=None)  
-            pass
+    conf_dict = {}  
+    for dir_name in os.listdir(conf_dir):
+        dir_path = os.path.join(conf_dir, dir_name)
+        conf_dict[dir_name] = dir_path
+    Total_index = 1
+    conf_exist = 0
+    swift_rings = {}
+    swift_configs = {}
+    if conf_dict["workloads.xml"] is None:
+        print(f"\033[91mThere isn't any workload !\033[0m")
+        exit()
+    if len(conf_dict)>1:
+        conf_exist = 1
+    ring_exist = 0
+    total_ring_index = 1
+    if len(ring_dirs):
+        total_ring_index = len(ring_dirs)
+        ring_exist = 1
+    for ri in range(total_ring_index):
+        if ring_exist:
+            for filename in os.listdir(ring_dirs[ri]):
+                file_path = os.path.join(ring_dirs[ri], filename)
+                swift_rings[filename] = file_path
+        for key in conf_dict:
+            if key != "workloads.xml" and key is not None:
+                Total_index *=len(os.listdir(conf_dict[key]))
+                swift_configs[key]=""
+        for i in range(Total_index):
+            if conf_exist:
+                m=1
+                for key in swift_configs:
+                    list_dir = os.listdir(conf_dict[key])
+                    swift_configs[key] = os.path.join(conf_dir,key,list_dir[(i//m)%len(list_dir)])
+                    m *= len(list_dir)
+                merged_conf_ring = {**swift_rings, **swift_configs}
+                mrbench.copy_swift_conf(merged_conf_ring)
+                time.sleep(40)
+            for test_config in os.listdir(conf_dict["workloads.xml"]):
+                test_config_path = os.path.join(conf_dict["workloads.xml"], test_config)
+                start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
+                all_start_times.append(start_time) ; all_end_times.append(end_time)
+                if run_status_reporter:
+                    status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
+                if run_monstaver:
+                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path], delete=True, backup_restore=None) 
+    
     # Extract first start time and last end time
     first_start_time = all_start_times[0] ; last_end_time = all_end_times[-1] 
     return first_start_time, last_end_time
@@ -167,17 +143,17 @@ def report_recorder_agent(config_params):
 def main():
     data_loaded = load_config(config_file)
     if 'scenario' in data_loaded:
-        output_subdirs = None
+        conf_dir = None
         first_start_time = None
         last_end_time = None
         for task in data_loaded['scenario']:            
             try:
                 if 'Config_gen' in task:
                     config_params = task['Config_gen']
-                    output_subdirs = config_gen_agent(config_params)
+                    conf_dir = config_gen_agent(config_params)
                 elif 'Mrbench' in task:
                     config_params = task['Mrbench']
-                    first_start_time, last_end_time = mrbench_agent(config_params, output_subdirs)
+                    first_start_time, last_end_time = mrbench_agent(config_params, conf_dir)
                 elif 'Status-Reporter' in task:
                     config_params = task['Status-Reporter']
                     status_reporter_agent(config_params)

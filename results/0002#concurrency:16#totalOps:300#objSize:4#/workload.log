@@ -1,0 +1,910 @@
+================================================== stage: s1-init ==================================================
+---------------------------------- mission: MC236956DD1, driver: driver1 ----------------------------------
+2024-03-09 17:01:30,005 [INFO] [Log4jLogManager] - will append log to file /root/0.4.2.c4/log/mission/MC236956DD1.log
+2024-03-09 17:01:30,217 [INFO] [NoneStorage] - performing PUT at /GNL134
+2024-03-09 17:01:30,219 [INFO] [NoneStorage] - performing PUT at /GNL1313
+2024-03-09 17:01:30,219 [INFO] [NoneStorage] - performing PUT at /GNL1312
+2024-03-09 17:01:30,219 [INFO] [NoneStorage] - performing PUT at /GNL1311
+2024-03-09 17:01:30,219 [INFO] [NoneStorage] - performing PUT at /GNL1310
+2024-03-09 17:01:30,218 [INFO] [NoneStorage] - performing PUT at /GNL138
+2024-03-09 17:01:30,218 [INFO] [NoneStorage] - performing PUT at /GNL139
+2024-03-09 17:01:30,218 [INFO] [NoneStorage] - performing PUT at /GNL137
+2024-03-09 17:01:30,217 [INFO] [NoneStorage] - performing PUT at /GNL132
+2024-03-09 17:01:30,217 [INFO] [NoneStorage] - performing PUT at /GNL133
+2024-03-09 17:01:30,218 [INFO] [NoneStorage] - performing PUT at /GNL136
+2024-03-09 17:01:30,217 [INFO] [NoneStorage] - performing PUT at /GNL131
+2024-03-09 17:01:30,217 [INFO] [NoneStorage] - performing PUT at /GNL135
+================================================== stage: s2-main ==================================================
+---------------------------------- mission: M423696F4CD, driver: driver1 ----------------------------------
+2024-03-09 17:01:36,004 [INFO] [Log4jLogManager] - will append log to file /root/0.4.2.c4/log/mission/M423696F4CD.log
+2024-03-09 17:01:36,221 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects2
+2024-03-09 17:01:36,224 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects8
+2024-03-09 17:01:36,224 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects7
+2024-03-09 17:01:36,227 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects16
+2024-03-09 17:01:36,224 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects6
+2024-03-09 17:01:36,223 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects5
+2024-03-09 17:01:36,221 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects1
+2024-03-09 17:01:36,222 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects4
+2024-03-09 17:01:36,222 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects3
+2024-03-09 17:01:36,227 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects15
+2024-03-09 17:01:36,227 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects14
+2024-03-09 17:01:36,227 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects13
+2024-03-09 17:01:36,226 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects11
+2024-03-09 17:01:36,226 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects12
+2024-03-09 17:01:36,226 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects10
+2024-03-09 17:01:36,226 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects9
+2024-03-09 17:01:36,541 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects17
+2024-03-09 17:01:36,588 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects18
+2024-03-09 17:01:36,632 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects19
+2024-03-09 17:01:36,634 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects20
+2024-03-09 17:01:36,636 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects21
+2024-03-09 17:01:36,637 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects22
+2024-03-09 17:01:36,637 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects23
+2024-03-09 17:01:36,638 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects24
+2024-03-09 17:01:36,640 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects25
+2024-03-09 17:01:36,656 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects26
+2024-03-09 17:01:36,656 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects27
+2024-03-09 17:01:36,660 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects28
+2024-03-09 17:01:36,660 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects29
+2024-03-09 17:01:36,664 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects30
+2024-03-09 17:01:36,666 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects31
+2024-03-09 17:01:36,701 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects32
+2024-03-09 17:01:36,909 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects33
+2024-03-09 17:01:36,912 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects34
+2024-03-09 17:01:36,959 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects35
+2024-03-09 17:01:36,988 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects36
+2024-03-09 17:01:37,052 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects37
+2024-03-09 17:01:37,082 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects38
+2024-03-09 17:01:37,083 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects39
+2024-03-09 17:01:37,101 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects40
+2024-03-09 17:01:37,103 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects41
+2024-03-09 17:01:37,103 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects42
+2024-03-09 17:01:37,105 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects43
+2024-03-09 17:01:37,108 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects44
+2024-03-09 17:01:37,108 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects45
+2024-03-09 17:01:37,109 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects46
+2024-03-09 17:01:37,199 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects47
+2024-03-09 17:01:37,202 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects48
+2024-03-09 17:01:37,398 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects49
+2024-03-09 17:01:37,402 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects50
+2024-03-09 17:01:37,437 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects51
+2024-03-09 17:01:37,455 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects52
+2024-03-09 17:01:37,479 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects53
+2024-03-09 17:01:37,480 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects54
+2024-03-09 17:01:37,480 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects55
+2024-03-09 17:01:37,499 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects56
+2024-03-09 17:01:37,499 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects57
+2024-03-09 17:01:37,500 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects58
+2024-03-09 17:01:37,570 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects59
+2024-03-09 17:01:37,602 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects60
+2024-03-09 17:01:37,602 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects61
+2024-03-09 17:01:37,603 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects62
+2024-03-09 17:01:37,662 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects63
+2024-03-09 17:01:37,691 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects64
+2024-03-09 17:01:37,877 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects65
+2024-03-09 17:01:37,879 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects66
+2024-03-09 17:01:37,888 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects67
+2024-03-09 17:01:37,937 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects68
+2024-03-09 17:01:37,939 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects69
+2024-03-09 17:01:37,945 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects70
+2024-03-09 17:01:37,945 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects71
+2024-03-09 17:01:37,946 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects72
+2024-03-09 17:01:37,949 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects73
+2024-03-09 17:01:37,950 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects74
+2024-03-09 17:01:37,955 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects75
+2024-03-09 17:01:38,053 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects76
+2024-03-09 17:01:38,067 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects77
+2024-03-09 17:01:38,100 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects78
+2024-03-09 17:01:38,190 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects79
+2024-03-09 17:01:38,273 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects80
+2024-03-09 17:01:38,275 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects81
+2024-03-09 17:01:38,275 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects82
+2024-03-09 17:01:38,324 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects83
+2024-03-09 17:01:38,325 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects84
+2024-03-09 17:01:38,384 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects85
+2024-03-09 17:01:38,384 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects86
+2024-03-09 17:01:38,414 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects87
+2024-03-09 17:01:38,419 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects88
+2024-03-09 17:01:38,467 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects89
+2024-03-09 17:01:38,494 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects90
+2024-03-09 17:01:38,563 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects91
+2024-03-09 17:01:38,591 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects92
+2024-03-09 17:01:38,663 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects93
+2024-03-09 17:01:38,666 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects94
+2024-03-09 17:01:38,752 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects95
+2024-03-09 17:01:38,753 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects96
+2024-03-09 17:01:38,754 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects97
+2024-03-09 17:01:38,821 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects98
+2024-03-09 17:01:38,822 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects100
+2024-03-09 17:01:38,822 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects99
+2024-03-09 17:01:38,827 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects101
+2024-03-09 17:01:38,872 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects103
+2024-03-09 17:01:38,872 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects102
+2024-03-09 17:01:38,948 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects104
+2024-03-09 17:01:38,992 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects105
+2024-03-09 17:01:39,063 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects106
+2024-03-09 17:01:39,088 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects107
+2024-03-09 17:01:39,092 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects108
+2024-03-09 17:01:39,095 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects109
+2024-03-09 17:01:39,111 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects110
+2024-03-09 17:01:39,113 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects111
+2024-03-09 17:01:39,116 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects112
+2024-03-09 17:01:39,206 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects113
+2024-03-09 17:01:39,210 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects114
+2024-03-09 17:01:39,256 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects115
+2024-03-09 17:01:39,260 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects116
+2024-03-09 17:01:39,395 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects117
+2024-03-09 17:01:39,400 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects118
+2024-03-09 17:01:39,475 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects119
+2024-03-09 17:01:39,495 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects120
+2024-03-09 17:01:39,495 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects121
+2024-03-09 17:01:39,651 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects122
+2024-03-09 17:01:39,674 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects123
+2024-03-09 17:01:39,717 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects124
+2024-03-09 17:01:39,718 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects125
+2024-03-09 17:01:39,720 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects126
+2024-03-09 17:01:39,778 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects127
+2024-03-09 17:01:39,821 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects128
+2024-03-09 17:01:39,865 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects129
+2024-03-09 17:01:39,865 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects130
+2024-03-09 17:01:39,865 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects131
+2024-03-09 17:01:39,869 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects132
+2024-03-09 17:01:39,907 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects133
+2024-03-09 17:01:39,907 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects134
+2024-03-09 17:01:39,945 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects135
+2024-03-09 17:01:39,946 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects136
+2024-03-09 17:01:40,017 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects137
+2024-03-09 17:01:40,110 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects138
+2024-03-09 17:01:40,115 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects139
+2024-03-09 17:01:40,156 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects140
+2024-03-09 17:01:40,267 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects141
+2024-03-09 17:01:40,279 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects142
+2024-03-09 17:01:40,306 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects143
+2024-03-09 17:01:40,308 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects144
+2024-03-09 17:01:40,322 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects145
+2024-03-09 17:01:40,322 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects146
+2024-03-09 17:01:40,323 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects147
+2024-03-09 17:01:40,328 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects148
+2024-03-09 17:01:40,397 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects149
+2024-03-09 17:01:40,553 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects150
+2024-03-09 17:01:40,557 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects151
+2024-03-09 17:01:40,577 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects152
+2024-03-09 17:01:40,598 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects153
+2024-03-09 17:01:40,598 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects154
+2024-03-09 17:01:40,599 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects155
+2024-03-09 17:01:40,616 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects156
+2024-03-09 17:01:40,635 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects157
+2024-03-09 17:01:40,675 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects158
+2024-03-09 17:01:40,849 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects159
+2024-03-09 17:01:40,859 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects160
+2024-03-09 17:01:40,954 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects161
+2024-03-09 17:01:41,058 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects162
+2024-03-09 17:01:41,098 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects163
+2024-03-09 17:01:41,142 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects164
+2024-03-09 17:01:41,364 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects165
+2024-03-09 17:01:41,364 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects166
+2024-03-09 17:01:41,365 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects167
+2024-03-09 17:01:41,470 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects168
+2024-03-09 17:01:41,470 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects169
+2024-03-09 17:01:41,470 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects170
+2024-03-09 17:01:41,475 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects171
+2024-03-09 17:01:41,475 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects172
+2024-03-09 17:01:41,520 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects173
+2024-03-09 17:01:41,575 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects174
+2024-03-09 17:01:41,684 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects175
+2024-03-09 17:01:41,702 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects176
+2024-03-09 17:01:41,891 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects177
+2024-03-09 17:01:41,919 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects178
+2024-03-09 17:01:41,944 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects179
+2024-03-09 17:01:41,974 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects180
+2024-03-09 17:01:41,979 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects181
+2024-03-09 17:01:42,153 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects182
+2024-03-09 17:01:42,261 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects183
+2024-03-09 17:01:42,261 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects184
+2024-03-09 17:01:42,262 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects185
+2024-03-09 17:01:42,266 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects186
+2024-03-09 17:01:42,267 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects187
+2024-03-09 17:01:42,271 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects188
+2024-03-09 17:01:42,309 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects189
+2024-03-09 17:01:42,310 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects190
+2024-03-09 17:01:42,390 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects191
+2024-03-09 17:01:42,432 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects192
+2024-03-09 17:01:42,466 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects193
+2024-03-09 17:01:42,619 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects194
+2024-03-09 17:01:42,718 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects195
+2024-03-09 17:01:42,786 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects196
+2024-03-09 17:01:42,831 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects197
+2024-03-09 17:01:42,904 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects198
+2024-03-09 17:01:42,970 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects200
+2024-03-09 17:01:42,970 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects199
+2024-03-09 17:01:42,979 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects201
+2024-03-09 17:01:43,067 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects202
+2024-03-09 17:01:43,070 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects203
+2024-03-09 17:01:43,183 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects204
+2024-03-09 17:01:43,184 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects205
+2024-03-09 17:01:43,380 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects206
+2024-03-09 17:01:43,400 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects207
+2024-03-09 17:01:43,426 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects208
+2024-03-09 17:01:43,426 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects209
+2024-03-09 17:01:43,450 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects210
+2024-03-09 17:01:43,478 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects211
+2024-03-09 17:01:43,545 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects212
+2024-03-09 17:01:43,588 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects213
+2024-03-09 17:01:43,791 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects214
+2024-03-09 17:01:43,877 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects215
+2024-03-09 17:01:43,880 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects216
+2024-03-09 17:01:43,886 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects217
+2024-03-09 17:01:43,913 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects218
+2024-03-09 17:01:43,926 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects219
+2024-03-09 17:01:43,992 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects220
+2024-03-09 17:01:44,020 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects221
+2024-03-09 17:01:44,099 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects222
+2024-03-09 17:01:44,115 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects223
+2024-03-09 17:01:44,181 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects224
+2024-03-09 17:01:44,199 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects225
+2024-03-09 17:01:44,337 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects226
+2024-03-09 17:01:44,358 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects227
+2024-03-09 17:01:44,376 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects228
+2024-03-09 17:01:44,378 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects229
+2024-03-09 17:01:44,379 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects230
+2024-03-09 17:01:44,379 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects231
+2024-03-09 17:01:44,383 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects232
+2024-03-09 17:01:44,406 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects233
+2024-03-09 17:01:44,411 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects234
+2024-03-09 17:01:44,489 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects235
+2024-03-09 17:01:44,542 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects236
+2024-03-09 17:01:44,546 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects237
+2024-03-09 17:01:44,729 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects238
+2024-03-09 17:01:44,748 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects239
+2024-03-09 17:01:44,792 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects240
+2024-03-09 17:01:44,875 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects241
+2024-03-09 17:01:45,045 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects242
+2024-03-09 17:01:45,046 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects243
+2024-03-09 17:01:45,056 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects244
+2024-03-09 17:01:45,106 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects245
+2024-03-09 17:01:45,109 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects246
+2024-03-09 17:01:45,110 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects247
+2024-03-09 17:01:45,113 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects248
+2024-03-09 17:01:45,161 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects249
+2024-03-09 17:01:45,184 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects250
+2024-03-09 17:01:45,204 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects251
+2024-03-09 17:01:45,247 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects252
+2024-03-09 17:01:45,258 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects253
+2024-03-09 17:01:45,313 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects254
+2024-03-09 17:01:45,374 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects255
+2024-03-09 17:01:45,375 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects256
+2024-03-09 17:01:45,420 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects257
+2024-03-09 17:01:45,420 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects258
+2024-03-09 17:01:45,430 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects259
+2024-03-09 17:01:45,437 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects260
+2024-03-09 17:01:45,611 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects261
+2024-03-09 17:01:45,615 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects262
+2024-03-09 17:01:45,618 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects263
+2024-03-09 17:01:45,619 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects264
+2024-03-09 17:01:45,745 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects265
+2024-03-09 17:01:45,795 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects266
+2024-03-09 17:01:45,798 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects267
+2024-03-09 17:01:45,922 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects268
+2024-03-09 17:01:45,924 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects269
+2024-03-09 17:01:45,990 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects270
+2024-03-09 17:01:46,086 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects271
+2024-03-09 17:01:46,090 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects272
+2024-03-09 17:01:46,141 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects273
+2024-03-09 17:01:46,198 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects274
+2024-03-09 17:01:46,258 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects275
+2024-03-09 17:01:46,439 [INFO] [NoneStorage] - performing PUT at /GNL133/myobjects276
+2024-03-09 17:01:46,606 [INFO] [NoneStorage] - performing PUT at /GNL134/myobjects277
+2024-03-09 17:01:46,699 [INFO] [NoneStorage] - performing PUT at /GNL135/myobjects278
+2024-03-09 17:01:46,773 [INFO] [NoneStorage] - performing PUT at /GNL136/myobjects279
+2024-03-09 17:01:46,833 [INFO] [NoneStorage] - performing PUT at /GNL137/myobjects280
+2024-03-09 17:01:47,086 [INFO] [NoneStorage] - performing PUT at /GNL138/myobjects281
+2024-03-09 17:01:47,087 [INFO] [NoneStorage] - performing PUT at /GNL139/myobjects282
+2024-03-09 17:01:47,220 [INFO] [NoneStorage] - performing PUT at /GNL1310/myobjects283
+2024-03-09 17:01:47,474 [INFO] [NoneStorage] - performing PUT at /GNL1311/myobjects284
+2024-03-09 17:01:47,559 [INFO] [NoneStorage] - performing PUT at /GNL1312/myobjects285
+2024-03-09 17:01:47,679 [INFO] [NoneStorage] - performing PUT at /GNL1313/myobjects286
+2024-03-09 17:01:47,701 [INFO] [NoneStorage] - performing PUT at /GNL131/myobjects287
+2024-03-09 17:01:48,059 [INFO] [NoneStorage] - performing PUT at /GNL132/myobjects288
+================================================== stage: s3-dispose ==================================================
+---------------------------------- mission: MB2369B0A35, driver: driver1 ----------------------------------
+2024-03-09 17:01:53,007 [INFO] [Log4jLogManager] - will append log to file /root/0.4.2.c4/log/mission/MB2369B0A35.log
+2024-03-09 17:01:53,220 [INFO] [NoneStorage] - performing DELETE at /GNL131
+2024-03-09 17:01:53,222 [INFO] [NoneStorage] - performing DELETE at /GNL136
+2024-03-09 17:01:53,223 [INFO] [NoneStorage] - performing DELETE at /GNL1310
+2024-03-09 17:01:53,222 [INFO] [NoneStorage] - performing DELETE at /GNL139
+2024-03-09 17:01:53,222 [INFO] [NoneStorage] - performing DELETE at /GNL138
+2024-03-09 17:01:53,222 [INFO] [NoneStorage] - performing DELETE at /GNL137
+2024-03-09 17:01:53,222 [INFO] [NoneStorage] - performing DELETE at /GNL134
+2024-03-09 17:01:53,222 [INFO] [NoneStorage] - performing DELETE at /GNL135
+2024-03-09 17:01:53,222 [INFO] [NoneStorage] - performing DELETE at /GNL133
+2024-03-09 17:01:53,221 [INFO] [NoneStorage] - performing DELETE at /GNL132
+2024-03-09 17:01:53,223 [INFO] [NoneStorage] - performing DELETE at /GNL1312
+2024-03-09 17:01:53,223 [INFO] [NoneStorage] - performing DELETE at /GNL1313
+2024-03-09 17:01:53,223 [INFO] [NoneStorage] - performing DELETE at /GNL1311
+2024-03-09 17:01:53,256 [ERROR] [AbstractOperator] - Error deleting container GNL133
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL133
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,257 [INFO] [NoneStorage] - performing LIST at /GNL133/
+2024-03-09 17:01:53,262 [ERROR] [AbstractOperator] - Error deleting container GNL131
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL131
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,262 [INFO] [NoneStorage] - performing LIST at /GNL131/
+2024-03-09 17:01:53,266 [ERROR] [AbstractOperator] - Error deleting container GNL134
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL134
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,266 [INFO] [NoneStorage] - performing LIST at /GNL134/
+2024-03-09 17:01:53,272 [ERROR] [AbstractOperator] - Error deleting container GNL1310
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL1310
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,272 [INFO] [NoneStorage] - performing LIST at /GNL1310/
+2024-03-09 17:01:53,279 [ERROR] [AbstractOperator] - Error deleting container GNL1311
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL1311
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,280 [ERROR] [AbstractOperator] - Error deleting container GNL139
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL139
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,280 [INFO] [NoneStorage] - performing LIST at /GNL139/
+2024-03-09 17:01:53,280 [INFO] [NoneStorage] - performing LIST at /GNL1311/
+2024-03-09 17:01:53,283 [ERROR] [AbstractOperator] - Error deleting container GNL135
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL135
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,283 [INFO] [NoneStorage] - performing LIST at /GNL135/
+2024-03-09 17:01:53,285 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects107
+2024-03-09 17:01:53,289 [ERROR] [AbstractOperator] - Error deleting container GNL1312
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL1312
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,290 [INFO] [NoneStorage] - performing LIST at /GNL1312/
+2024-03-09 17:01:53,293 [ERROR] [AbstractOperator] - Error deleting container GNL136
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL136
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,293 [INFO] [NoneStorage] - performing LIST at /GNL136/
+2024-03-09 17:01:53,294 [ERROR] [AbstractOperator] - Error deleting container GNL138
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL138
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,295 [INFO] [NoneStorage] - performing LIST at /GNL138/
+2024-03-09 17:01:53,295 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects1
+2024-03-09 17:01:53,300 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects108
+2024-03-09 17:01:53,300 [ERROR] [AbstractOperator] - Error deleting container GNL137
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL137
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,300 [INFO] [NoneStorage] - performing LIST at /GNL137/
+2024-03-09 17:01:53,320 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects10
+2024-03-09 17:01:53,327 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects109
+2024-03-09 17:01:53,330 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects102
+2024-03-09 17:01:53,342 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects100
+2024-03-09 17:01:53,354 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects103
+2024-03-09 17:01:53,359 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects112
+2024-03-09 17:01:53,366 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects111
+2024-03-09 17:01:53,371 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects110
+2024-03-09 17:01:53,472 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects120
+2024-03-09 17:01:53,547 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects105
+2024-03-09 17:01:53,558 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects121
+2024-03-09 17:01:53,611 [ERROR] [AbstractOperator] - Error deleting container GNL132
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL132
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,611 [INFO] [NoneStorage] - performing LIST at /GNL132/
+2024-03-09 17:01:53,615 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects101
+2024-03-09 17:01:53,615 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects113
+2024-03-09 17:01:53,619 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects123
+2024-03-09 17:01:53,640 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects106
+2024-03-09 17:01:53,675 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects122
+2024-03-09 17:01:53,676 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects124
+2024-03-09 17:01:53,679 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects11
+2024-03-09 17:01:53,725 [ERROR] [AbstractOperator] - Error deleting container GNL1313
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container GNL1313
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:01:53,726 [INFO] [NoneStorage] - performing LIST at /GNL1313/
+2024-03-09 17:01:53,733 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects116
+2024-03-09 17:01:53,737 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects125
+2024-03-09 17:01:53,758 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects104
+2024-03-09 17:01:53,783 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects133
+2024-03-09 17:01:53,842 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects134
+2024-03-09 17:01:53,845 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects118
+2024-03-09 17:01:53,900 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects126
+2024-03-09 17:01:53,948 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects115
+2024-03-09 17:01:53,948 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects136
+2024-03-09 17:01:53,952 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects135
+2024-03-09 17:01:53,982 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects119
+2024-03-09 17:01:53,983 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects138
+2024-03-09 17:01:53,985 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects117
+2024-03-09 17:01:53,987 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects137
+2024-03-09 17:01:54,027 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects131
+2024-03-09 17:01:54,028 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects12
+2024-03-09 17:01:54,029 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects146
+2024-03-09 17:01:54,054 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects114
+2024-03-09 17:01:54,055 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects147
+2024-03-09 17:01:54,095 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects139
+2024-03-09 17:01:54,106 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects148
+2024-03-09 17:01:54,111 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects149
+2024-03-09 17:01:54,156 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects128
+2024-03-09 17:01:54,214 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects13
+2024-03-09 17:01:54,214 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects151
+2024-03-09 17:01:54,218 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects132
+2024-03-09 17:01:54,218 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects150
+2024-03-09 17:01:54,245 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects14
+2024-03-09 17:01:54,277 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects129
+2024-03-09 17:01:54,289 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects127
+2024-03-09 17:01:54,290 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects160
+2024-03-09 17:01:54,293 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects159
+2024-03-09 17:01:54,334 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects161
+2024-03-09 17:01:54,334 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects162
+2024-03-09 17:01:54,366 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects152
+2024-03-09 17:01:54,367 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects141
+2024-03-09 17:01:54,367 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects130
+2024-03-09 17:01:54,412 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects164
+2024-03-09 17:01:54,415 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects163
+2024-03-09 17:01:54,511 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects16
+2024-03-09 17:01:54,512 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects144
+2024-03-09 17:01:54,512 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects142
+2024-03-09 17:01:54,513 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects140
+2024-03-09 17:01:54,515 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects17
+2024-03-09 17:01:54,562 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects175
+2024-03-09 17:01:54,626 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects154
+2024-03-09 17:01:54,679 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects143
+2024-03-09 17:01:54,680 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects177
+2024-03-09 17:01:54,727 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects174
+2024-03-09 17:01:54,729 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects165
+2024-03-09 17:01:54,778 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects188
+2024-03-09 17:01:54,780 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects172
+2024-03-09 17:01:54,781 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects173
+2024-03-09 17:01:54,782 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects153
+2024-03-09 17:01:54,784 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects157
+2024-03-09 17:01:54,789 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects176
+2024-03-09 17:01:54,841 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects167
+2024-03-09 17:01:54,845 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects155
+2024-03-09 17:01:54,891 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects145
+2024-03-09 17:01:54,993 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects178
+2024-03-09 17:01:54,995 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects18
+2024-03-09 17:01:54,996 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects189
+2024-03-09 17:01:55,006 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects185
+2024-03-09 17:01:55,007 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects190
+2024-03-09 17:01:55,009 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects156
+2024-03-09 17:01:55,020 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects166
+2024-03-09 17:01:55,020 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects19
+2024-03-09 17:01:55,040 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects170
+2024-03-09 17:01:55,060 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects186
+2024-03-09 17:01:55,063 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects180
+2024-03-09 17:01:55,119 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects168
+2024-03-09 17:01:55,266 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects15
+2024-03-09 17:01:55,270 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects187
+2024-03-09 17:01:55,451 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects20
+2024-03-09 17:01:55,473 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects198
+2024-03-09 17:01:55,473 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects169
+2024-03-09 17:01:55,475 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects203
+2024-03-09 17:01:55,475 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects183
+2024-03-09 17:01:55,490 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects201
+2024-03-09 17:01:55,534 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects179
+2024-03-09 17:01:55,559 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects199
+2024-03-09 17:01:55,594 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects181
+2024-03-09 17:01:55,653 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects193
+2024-03-09 17:01:55,797 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects191
+2024-03-09 17:01:55,901 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects158
+2024-03-09 17:01:55,972 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects202
+2024-03-09 17:01:55,989 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects206
+2024-03-09 17:01:55,990 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects182
+2024-03-09 17:01:56,059 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects212
+2024-03-09 17:01:56,059 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects192
+2024-03-09 17:01:56,106 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects196
+2024-03-09 17:01:56,106 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects21
+2024-03-09 17:01:56,108 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects211
+2024-03-09 17:01:56,111 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects194
+2024-03-09 17:01:56,113 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects214
+2024-03-09 17:01:56,266 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects204
+2024-03-09 17:01:56,283 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects200
+2024-03-09 17:01:56,352 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects171
+2024-03-09 17:01:56,446 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects195
+2024-03-09 17:01:56,450 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects219
+2024-03-09 17:01:56,477 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects225
+2024-03-09 17:01:56,478 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects215
+2024-03-09 17:01:56,481 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects207
+2024-03-09 17:01:56,506 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects224
+2024-03-09 17:01:56,534 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects227
+2024-03-09 17:01:56,658 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects209
+2024-03-09 17:01:56,666 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects205
+2024-03-09 17:01:56,770 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects217
+2024-03-09 17:01:56,796 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects213
+2024-03-09 17:01:56,931 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects184
+2024-03-09 17:01:56,978 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects216
+2024-03-09 17:01:56,980 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects208
+2024-03-09 17:01:57,039 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects232
+2024-03-09 17:01:57,043 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects240
+2024-03-09 17:01:57,065 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects238
+2024-03-09 17:01:57,243 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects220
+2024-03-09 17:01:57,244 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects218
+2024-03-09 17:01:57,247 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects228
+2024-03-09 17:01:57,318 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects221
+2024-03-09 17:01:57,321 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects22
+2024-03-09 17:01:57,352 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects222
+2024-03-09 17:01:57,377 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects253
+2024-03-09 17:01:57,408 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects197
+2024-03-09 17:01:57,408 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects226
+2024-03-09 17:01:57,408 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects229
+2024-03-09 17:01:57,412 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects237
+2024-03-09 17:01:57,521 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects24
+2024-03-09 17:01:57,522 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects233
+2024-03-09 17:01:57,695 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects230
+2024-03-09 17:01:57,723 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects241
+2024-03-09 17:01:57,849 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects266
+2024-03-09 17:01:57,850 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects235
+2024-03-09 17:01:57,866 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects251
+2024-03-09 17:01:57,886 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects2
+2024-03-09 17:01:57,886 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects250
+2024-03-09 17:01:57,887 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects239
+2024-03-09 17:01:57,935 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects23
+2024-03-09 17:01:58,011 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects246
+2024-03-09 17:01:58,163 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects254
+2024-03-09 17:01:58,166 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects248
+2024-03-09 17:01:58,220 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects234
+2024-03-09 17:01:58,267 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects279
+2024-03-09 17:01:58,271 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects243
+2024-03-09 17:01:58,272 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects210
+2024-03-09 17:01:58,305 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects242
+2024-03-09 17:01:58,367 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects245
+2024-03-09 17:01:58,465 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects263
+2024-03-09 17:01:58,468 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects252
+2024-03-09 17:01:58,496 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects261
+2024-03-09 17:01:58,528 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects264
+2024-03-09 17:01:58,528 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects25
+2024-03-09 17:01:58,743 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects231
+2024-03-09 17:01:58,773 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects258
+2024-03-09 17:01:58,855 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects247
+2024-03-09 17:01:58,857 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects267
+2024-03-09 17:01:58,862 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects32
+2024-03-09 17:01:58,884 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects256
+2024-03-09 17:01:58,888 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects265
+2024-03-09 17:01:58,945 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects223
+2024-03-09 17:01:58,947 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects255
+2024-03-09 17:01:59,031 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects276
+2024-03-09 17:01:59,092 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects27
+2024-03-09 17:01:59,095 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects271
+2024-03-09 17:01:59,096 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects259
+2024-03-09 17:01:59,111 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects277
+2024-03-09 17:01:59,134 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects244
+2024-03-09 17:01:59,236 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects269
+2024-03-09 17:01:59,237 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects236
+2024-03-09 17:01:59,238 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects278
+2024-03-09 17:01:59,239 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects45
+2024-03-09 17:01:59,298 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects29
+2024-03-09 17:01:59,303 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects26
+2024-03-09 17:01:59,403 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects280
+2024-03-09 17:01:59,415 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects274
+2024-03-09 17:01:59,503 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects268
+2024-03-09 17:01:59,549 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects284
+2024-03-09 17:01:59,586 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects30
+2024-03-09 17:01:59,650 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects282
+2024-03-09 17:01:59,652 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects249
+2024-03-09 17:01:59,664 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects31
+2024-03-09 17:01:59,666 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects3
+2024-03-09 17:01:59,668 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects58
+2024-03-09 17:01:59,711 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects257
+2024-03-09 17:01:59,736 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects33
+2024-03-09 17:01:59,833 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects287
+2024-03-09 17:01:59,889 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects260
+2024-03-09 17:01:59,957 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects272
+2024-03-09 17:01:59,973 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects37
+2024-03-09 17:02:00,025 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects4
+2024-03-09 17:02:00,076 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects6
+2024-03-09 17:02:00,079 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects262
+2024-03-09 17:02:00,080 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects42
+2024-03-09 17:02:00,082 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects35
+2024-03-09 17:02:00,084 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects270
+2024-03-09 17:02:00,167 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects40
+2024-03-09 17:02:00,226 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects46
+2024-03-09 17:02:00,278 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects50
+2024-03-09 17:02:00,335 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects43
+2024-03-09 17:02:00,347 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects281
+2024-03-09 17:02:00,423 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects71
+2024-03-09 17:02:00,425 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects44
+2024-03-09 17:02:00,575 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects48
+2024-03-09 17:02:00,597 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects273
+2024-03-09 17:02:00,649 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects55
+2024-03-09 17:02:00,667 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects285
+2024-03-09 17:02:00,771 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects59
+2024-03-09 17:02:00,775 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects34
+2024-03-09 17:02:00,921 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects275
+2024-03-09 17:02:01,004 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects68
+2024-03-09 17:02:01,005 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects61
+2024-03-09 17:02:01,005 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects53
+2024-03-09 17:02:01,061 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects56
+2024-03-09 17:02:01,118 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects5
+2024-03-09 17:02:01,150 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects283
+2024-03-09 17:02:01,229 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects63
+2024-03-09 17:02:01,246 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects7
+2024-03-09 17:02:01,373 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects47
+2024-03-09 17:02:01,376 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects38
+2024-03-09 17:02:01,386 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects286
+2024-03-09 17:02:01,388 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects84
+2024-03-09 17:02:01,540 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects28
+2024-03-09 17:02:01,542 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects66
+2024-03-09 17:02:01,544 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects74
+2024-03-09 17:02:01,598 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects81
+2024-03-09 17:02:01,773 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects57
+2024-03-09 17:02:01,831 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects72
+2024-03-09 17:02:01,955 [INFO] [NoneStorage] - performing DELETE at /GNL136/myobjects97
+2024-03-09 17:02:01,997 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects69
+2024-03-09 17:02:02,119 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects79
+2024-03-09 17:02:02,133 [INFO] [NoneStorage] - performing DELETE at /GNL133/myobjects94
+2024-03-09 17:02:02,143 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects60
+2024-03-09 17:02:02,149 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects87
+2024-03-09 17:02:02,152 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects36
+2024-03-09 17:02:02,234 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects39
+2024-03-09 17:02:02,287 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects85
+2024-03-09 17:02:02,336 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects51
+2024-03-09 17:02:02,368 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects70
+2024-03-09 17:02:02,388 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects76
+2024-03-09 17:02:02,413 [INFO] [NoneStorage] - performing DELETE at /GNL133
+2024-03-09 17:02:02,419 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects288
+2024-03-09 17:02:02,462 [INFO] [NoneStorage] - performing DELETE at /GNL131/myobjects92
+2024-03-09 17:02:02,555 [INFO] [NoneStorage] - performing DELETE at /GNL136
+2024-03-09 17:02:02,647 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects64
+2024-03-09 17:02:02,707 [INFO] [NoneStorage] - performing DELETE at /GNL137/myobjects98
+2024-03-09 17:02:02,737 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects41
+2024-03-09 17:02:02,760 [INFO] [NoneStorage] - performing DELETE at /GNL139/myobjects9
+2024-03-09 17:02:02,760 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects52
+2024-03-09 17:02:02,870 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects82
+2024-03-09 17:02:02,959 [INFO] [NoneStorage] - performing DELETE at /GNL1311/myobjects89
+2024-03-09 17:02:02,998 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects49
+2024-03-09 17:02:03,067 [INFO] [NoneStorage] - performing DELETE at /GNL137
+2024-03-09 17:02:03,117 [INFO] [NoneStorage] - performing DELETE at /GNL131
+2024-03-09 17:02:03,165 [INFO] [NoneStorage] - performing DELETE at /GNL139
+2024-03-09 17:02:03,283 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects73
+2024-03-09 17:02:03,284 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects83
+2024-03-09 17:02:03,379 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects65
+2024-03-09 17:02:03,396 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects77
+2024-03-09 17:02:03,472 [INFO] [NoneStorage] - performing DELETE at /GNL134/myobjects95
+2024-03-09 17:02:03,514 [INFO] [NoneStorage] - performing DELETE at /GNL1311
+2024-03-09 17:02:03,568 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects54
+2024-03-09 17:02:03,642 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects8
+2024-03-09 17:02:03,688 [INFO] [NoneStorage] - performing DELETE at /GNL135/myobjects96
+2024-03-09 17:02:03,805 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects67
+2024-03-09 17:02:03,813 [INFO] [NoneStorage] - performing DELETE at /GNL1312/myobjects90
+2024-03-09 17:02:03,992 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects62
+2024-03-09 17:02:03,996 [INFO] [NoneStorage] - performing DELETE at /GNL135
+2024-03-09 17:02:04,103 [INFO] [NoneStorage] - performing DELETE at /GNL134
+2024-03-09 17:02:04,127 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects80
+2024-03-09 17:02:04,255 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects78
+2024-03-09 17:02:04,318 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects86
+2024-03-09 17:02:04,347 [INFO] [NoneStorage] - performing DELETE at /GNL132/myobjects93
+2024-03-09 17:02:04,513 [INFO] [NoneStorage] - performing DELETE at /GNL138/myobjects99
+2024-03-09 17:02:04,518 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects75
+2024-03-09 17:02:04,551 [INFO] [NoneStorage] - performing DELETE at /GNL1312
+2024-03-09 17:02:04,799 [INFO] [NoneStorage] - performing DELETE at /GNL1313/myobjects91
+2024-03-09 17:02:04,985 [INFO] [NoneStorage] - performing DELETE at /GNL1310/myobjects88
+2024-03-09 17:02:04,996 [INFO] [NoneStorage] - performing DELETE at /GNL1313
+2024-03-09 17:02:05,061 [INFO] [NoneStorage] - performing DELETE at /GNL138
+2024-03-09 17:02:05,069 [INFO] [NoneStorage] - performing DELETE at /GNL132
+2024-03-09 17:02:05,617 [INFO] [NoneStorage] - performing DELETE at /GNL1310

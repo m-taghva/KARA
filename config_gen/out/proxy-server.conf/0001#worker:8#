@@ -1,0 +1,72 @@
+[DEFAULT]
+bind_ip = 0.0.0.0
+bind_port = 8080
+workers = 8
+user = swift
+
+log_statsd_host = controller
+log_statsd_port = 8125
+log_statsd_default_sample_rate = 1.0
+log_statsd_sample_rate_factor = 1.0
+log_statsd_metric_prefix = swift
+
+[pipeline:main]
+pipeline = catch_errors gatekeeper healthcheck proxy-logging cache bulk tempurl ratelimit crossdomain tempauth staticweb container-quotas account-quotas slo dlo proxy-logging proxy-server
+
+[filter:catch_errors]
+use = egg:swift#catch_errors
+
+[filter:healthcheck]
+use = egg:swift#healthcheck
+
+[filter:proxy-logging]
+use = egg:swift#proxy_logging
+
+[filter:bulk]
+use = egg:swift#bulk
+
+[filter:ratelimit]
+use = egg:swift#ratelimit
+
+[filter:crossdomain]
+use = egg:swift#crossdomain
+
+[filter:dlo]
+use = egg:swift#dlo
+
+[filter:slo]
+use = egg:swift#slo
+
+[filter:tempurl]
+use = egg:swift#tempurl
+
+[filter:s3api]
+use = egg:swift#s3api
+
+[filter:tempauth]
+storage_url_scheme = default
+use = egg:swift#tempauth
+user_admin_admin = admin .admin .reseller_admin
+user_test_tester = testing .admin
+user_test2_tester2 = testing2 .admin
+user_test_tester3 = testing3
+
+[filter:staticweb]
+use = egg:swift#staticweb
+
+[filter:account-quotas]
+use = egg:swift#account_quotas
+
+[filter:container-quotas]
+use = egg:swift#container_quotas
+
+[filter:cache]
+use = egg:swift#memcache
+
+[filter:gatekeeper]
+use = egg:swift#gatekeeper
+
+[app:proxy-server]
+use = egg:swift#proxy
+allow_account_management = true
+account_autocreate = true

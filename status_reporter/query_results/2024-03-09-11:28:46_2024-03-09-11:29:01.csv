@@ -1,0 +1,3 @@
+Host_alias,sum_system.cpu.user,sum_system.cpu.system,mean_system.cpu.iowait,mean_system.cpu.idle
+r1z1s1,9.739206,1.844957,0.125519,87.016721
+r1z1s2,11.3898917,2.1700575,0.0952841,84.920974

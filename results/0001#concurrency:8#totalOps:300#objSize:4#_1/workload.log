@@ -1,0 +1,926 @@
+================================================== stage: s1-init ==================================================
+---------------------------------- mission: MC236EB3E4F, driver: driver1 ----------------------------------
+2024-03-09 17:07:21,004 [INFO] [Log4jLogManager] - will append log to file /root/0.4.2.c4/log/mission/MC236EB3E4F.log
+2024-03-09 17:07:21,214 [INFO] [NoneStorage] - performing PUT at /RCO3Z2
+2024-03-09 17:07:21,218 [INFO] [NoneStorage] - performing PUT at /RCO3Z12
+2024-03-09 17:07:21,217 [INFO] [NoneStorage] - performing PUT at /RCO3Z11
+2024-03-09 17:07:21,217 [INFO] [NoneStorage] - performing PUT at /RCO3Z10
+2024-03-09 17:07:21,217 [INFO] [NoneStorage] - performing PUT at /RCO3Z9
+2024-03-09 17:07:21,217 [INFO] [NoneStorage] - performing PUT at /RCO3Z8
+2024-03-09 17:07:21,217 [INFO] [NoneStorage] - performing PUT at /RCO3Z7
+2024-03-09 17:07:21,217 [INFO] [NoneStorage] - performing PUT at /RCO3Z6
+2024-03-09 17:07:21,216 [INFO] [NoneStorage] - performing PUT at /RCO3Z5
+2024-03-09 17:07:21,216 [INFO] [NoneStorage] - performing PUT at /RCO3Z4
+2024-03-09 17:07:21,214 [INFO] [NoneStorage] - performing PUT at /RCO3Z3
+2024-03-09 17:07:21,214 [INFO] [NoneStorage] - performing PUT at /RCO3Z1
+2024-03-09 17:07:21,218 [INFO] [NoneStorage] - performing PUT at /RCO3Z13
+================================================== stage: s2-main ==================================================
+---------------------------------- mission: M0236ECC4CF, driver: driver1 ----------------------------------
+2024-03-09 17:07:28,005 [INFO] [Log4jLogManager] - will append log to file /root/0.4.2.c4/log/mission/M0236ECC4CF.log
+2024-03-09 17:07:28,217 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects1
+2024-03-09 17:07:28,220 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects8
+2024-03-09 17:07:28,220 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects7
+2024-03-09 17:07:28,220 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects3
+2024-03-09 17:07:28,219 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects6
+2024-03-09 17:07:28,218 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects2
+2024-03-09 17:07:28,218 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects4
+2024-03-09 17:07:28,218 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects5
+2024-03-09 17:07:28,531 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects9
+2024-03-09 17:07:28,532 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects10
+2024-03-09 17:07:28,534 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects11
+2024-03-09 17:07:28,536 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects12
+2024-03-09 17:07:28,557 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects13
+2024-03-09 17:07:28,558 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects14
+2024-03-09 17:07:28,559 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects15
+2024-03-09 17:07:28,561 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects16
+2024-03-09 17:07:28,743 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects17
+2024-03-09 17:07:28,771 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects18
+2024-03-09 17:07:28,806 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects19
+2024-03-09 17:07:28,824 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects20
+2024-03-09 17:07:28,825 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects22
+2024-03-09 17:07:28,824 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects21
+2024-03-09 17:07:28,836 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects23
+2024-03-09 17:07:28,836 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects24
+2024-03-09 17:07:29,002 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects25
+2024-03-09 17:07:29,016 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects26
+2024-03-09 17:07:29,028 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects27
+2024-03-09 17:07:29,031 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects28
+2024-03-09 17:07:29,083 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects29
+2024-03-09 17:07:29,152 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects30
+2024-03-09 17:07:29,152 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects31
+2024-03-09 17:07:29,193 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects32
+2024-03-09 17:07:29,401 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects33
+2024-03-09 17:07:29,469 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects34
+2024-03-09 17:07:29,538 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects35
+2024-03-09 17:07:29,607 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects36
+2024-03-09 17:07:29,609 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects37
+2024-03-09 17:07:29,612 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects38
+2024-03-09 17:07:29,671 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects39
+2024-03-09 17:07:29,791 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects40
+2024-03-09 17:07:29,856 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects41
+2024-03-09 17:07:29,858 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects42
+2024-03-09 17:07:29,949 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects43
+2024-03-09 17:07:30,050 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects44
+2024-03-09 17:07:30,053 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects45
+2024-03-09 17:07:30,067 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects46
+2024-03-09 17:07:30,144 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects47
+2024-03-09 17:07:30,144 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects48
+2024-03-09 17:07:30,164 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects49
+2024-03-09 17:07:30,294 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects50
+2024-03-09 17:07:30,326 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects51
+2024-03-09 17:07:30,403 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects52
+2024-03-09 17:07:30,441 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects53
+2024-03-09 17:07:30,464 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects54
+2024-03-09 17:07:30,480 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects55
+2024-03-09 17:07:30,505 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects56
+2024-03-09 17:07:30,521 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects57
+2024-03-09 17:07:30,613 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects58
+2024-03-09 17:07:30,640 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects59
+2024-03-09 17:07:30,676 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects60
+2024-03-09 17:07:30,752 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects61
+2024-03-09 17:07:30,776 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects62
+2024-03-09 17:07:30,777 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects63
+2024-03-09 17:07:30,779 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects64
+2024-03-09 17:07:30,805 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects65
+2024-03-09 17:07:30,816 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects66
+2024-03-09 17:07:30,873 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects67
+2024-03-09 17:07:30,914 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects68
+2024-03-09 17:07:30,999 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects69
+2024-03-09 17:07:31,014 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects70
+2024-03-09 17:07:31,015 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects71
+2024-03-09 17:07:31,017 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects72
+2024-03-09 17:07:31,048 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects73
+2024-03-09 17:07:31,163 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects74
+2024-03-09 17:07:31,205 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects75
+2024-03-09 17:07:31,224 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects76
+2024-03-09 17:07:31,225 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects77
+2024-03-09 17:07:31,279 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects78
+2024-03-09 17:07:31,382 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects79
+2024-03-09 17:07:31,401 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects80
+2024-03-09 17:07:31,402 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects81
+2024-03-09 17:07:31,414 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects82
+2024-03-09 17:07:31,578 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects83
+2024-03-09 17:07:31,603 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects84
+2024-03-09 17:07:31,623 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects85
+2024-03-09 17:07:31,657 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects86
+2024-03-09 17:07:31,673 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects88
+2024-03-09 17:07:31,673 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects87
+2024-03-09 17:07:31,732 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects89
+2024-03-09 17:07:31,801 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects90
+2024-03-09 17:07:32,107 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects91
+2024-03-09 17:07:32,143 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects92
+2024-03-09 17:07:32,170 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects93
+2024-03-09 17:07:32,266 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects94
+2024-03-09 17:07:32,269 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects95
+2024-03-09 17:07:32,269 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects96
+2024-03-09 17:07:32,430 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects97
+2024-03-09 17:07:32,519 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects98
+2024-03-09 17:07:32,592 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects99
+2024-03-09 17:07:32,653 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects100
+2024-03-09 17:07:32,700 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects101
+2024-03-09 17:07:32,952 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects102
+2024-03-09 17:07:33,001 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects103
+2024-03-09 17:07:33,036 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects104
+2024-03-09 17:07:33,087 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects105
+2024-03-09 17:07:33,167 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects106
+2024-03-09 17:07:33,168 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects107
+2024-03-09 17:07:33,168 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects108
+2024-03-09 17:07:33,226 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects109
+2024-03-09 17:07:33,435 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects110
+2024-03-09 17:07:33,537 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects111
+2024-03-09 17:07:33,538 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects112
+2024-03-09 17:07:33,540 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects113
+2024-03-09 17:07:33,667 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects114
+2024-03-09 17:07:33,760 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects115
+2024-03-09 17:07:33,800 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects116
+2024-03-09 17:07:33,914 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects117
+2024-03-09 17:07:34,010 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects118
+2024-03-09 17:07:34,011 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects119
+2024-03-09 17:07:34,110 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects120
+2024-03-09 17:07:34,119 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects121
+2024-03-09 17:07:34,314 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects122
+2024-03-09 17:07:34,429 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects123
+2024-03-09 17:07:34,630 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects124
+2024-03-09 17:07:34,631 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects125
+2024-03-09 17:07:34,641 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects126
+2024-03-09 17:07:34,662 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects127
+2024-03-09 17:07:34,841 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects128
+2024-03-09 17:07:34,857 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects129
+2024-03-09 17:07:34,934 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects130
+2024-03-09 17:07:35,063 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects131
+2024-03-09 17:07:35,132 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects132
+2024-03-09 17:07:35,133 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects133
+2024-03-09 17:07:35,226 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects135
+2024-03-09 17:07:35,226 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects134
+2024-03-09 17:07:35,304 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects136
+2024-03-09 17:07:35,316 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects137
+2024-03-09 17:07:35,439 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects138
+2024-03-09 17:07:35,587 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects139
+2024-03-09 17:07:35,640 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects140
+2024-03-09 17:07:35,683 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects141
+2024-03-09 17:07:35,705 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects142
+2024-03-09 17:07:35,830 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects143
+2024-03-09 17:07:35,886 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects144
+2024-03-09 17:07:35,888 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects145
+2024-03-09 17:07:35,922 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects146
+2024-03-09 17:07:35,976 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects147
+2024-03-09 17:07:35,977 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects148
+2024-03-09 17:07:36,045 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects149
+2024-03-09 17:07:36,180 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects150
+2024-03-09 17:07:36,224 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects151
+2024-03-09 17:07:36,241 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects152
+2024-03-09 17:07:36,264 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects153
+2024-03-09 17:07:36,335 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects154
+2024-03-09 17:07:36,446 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects155
+2024-03-09 17:07:36,495 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects156
+2024-03-09 17:07:36,500 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects157
+2024-03-09 17:07:36,519 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects158
+2024-03-09 17:07:36,591 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects159
+2024-03-09 17:07:36,650 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects160
+2024-03-09 17:07:36,795 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects161
+2024-03-09 17:07:36,796 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects162
+2024-03-09 17:07:36,797 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects163
+2024-03-09 17:07:36,845 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects164
+2024-03-09 17:07:36,872 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects165
+2024-03-09 17:07:36,959 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects166
+2024-03-09 17:07:37,008 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects167
+2024-03-09 17:07:37,376 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects168
+2024-03-09 17:07:37,402 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects169
+2024-03-09 17:07:37,404 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects170
+2024-03-09 17:07:37,502 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects171
+2024-03-09 17:07:37,506 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects172
+2024-03-09 17:07:37,707 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects173
+2024-03-09 17:07:37,770 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects174
+2024-03-09 17:07:38,012 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects175
+2024-03-09 17:07:38,075 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects176
+2024-03-09 17:07:38,100 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects177
+2024-03-09 17:07:38,347 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects178
+2024-03-09 17:07:38,447 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects179
+2024-03-09 17:07:38,467 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects180
+2024-03-09 17:07:38,546 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects181
+2024-03-09 17:07:38,554 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects182
+2024-03-09 17:07:38,728 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects183
+2024-03-09 17:07:39,335 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects184
+2024-03-09 17:07:39,361 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects185
+2024-03-09 17:07:39,361 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects186
+2024-03-09 17:07:39,461 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects187
+2024-03-09 17:07:39,476 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects188
+2024-03-09 17:07:39,506 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects189
+2024-03-09 17:07:39,793 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects190
+2024-03-09 17:07:39,976 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects191
+2024-03-09 17:07:40,006 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects192
+2024-03-09 17:07:40,080 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects193
+2024-03-09 17:07:40,105 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects194
+2024-03-09 17:07:40,218 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects195
+2024-03-09 17:07:40,343 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects196
+2024-03-09 17:07:40,348 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects197
+2024-03-09 17:07:40,428 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects198
+2024-03-09 17:07:40,498 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects199
+2024-03-09 17:07:40,615 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects200
+2024-03-09 17:07:40,743 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects201
+2024-03-09 17:07:40,758 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects202
+2024-03-09 17:07:40,779 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects203
+2024-03-09 17:07:40,879 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects204
+2024-03-09 17:07:40,942 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects205
+2024-03-09 17:07:40,966 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects206
+2024-03-09 17:07:41,208 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects207
+2024-03-09 17:07:41,209 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects208
+2024-03-09 17:07:41,209 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects209
+2024-03-09 17:07:41,263 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects210
+2024-03-09 17:07:41,264 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects211
+2024-03-09 17:07:41,279 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects212
+2024-03-09 17:07:41,439 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects213
+2024-03-09 17:07:41,547 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects214
+2024-03-09 17:07:41,551 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects215
+2024-03-09 17:07:41,596 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects216
+2024-03-09 17:07:41,673 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects217
+2024-03-09 17:07:41,711 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects218
+2024-03-09 17:07:41,776 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects219
+2024-03-09 17:07:41,807 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects220
+2024-03-09 17:07:41,842 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects221
+2024-03-09 17:07:41,915 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects222
+2024-03-09 17:07:42,009 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects223
+2024-03-09 17:07:42,017 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects224
+2024-03-09 17:07:42,249 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects225
+2024-03-09 17:07:42,359 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects226
+2024-03-09 17:07:42,472 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects227
+2024-03-09 17:07:42,505 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects228
+2024-03-09 17:07:42,506 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects229
+2024-03-09 17:07:42,562 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects230
+2024-03-09 17:07:42,821 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects231
+2024-03-09 17:07:42,844 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects232
+2024-03-09 17:07:42,880 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects233
+2024-03-09 17:07:42,991 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects234
+2024-03-09 17:07:43,169 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects235
+2024-03-09 17:07:43,276 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects236
+2024-03-09 17:07:43,289 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects237
+2024-03-09 17:07:43,293 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects238
+2024-03-09 17:07:43,390 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects239
+2024-03-09 17:07:43,390 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects240
+2024-03-09 17:07:43,487 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects241
+2024-03-09 17:07:43,586 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects242
+2024-03-09 17:07:43,894 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects243
+2024-03-09 17:07:43,905 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects244
+2024-03-09 17:07:43,978 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects245
+2024-03-09 17:07:43,980 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects246
+2024-03-09 17:07:44,020 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects247
+2024-03-09 17:07:44,127 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects248
+2024-03-09 17:07:44,246 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects249
+2024-03-09 17:07:44,385 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects250
+2024-03-09 17:07:44,460 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects251
+2024-03-09 17:07:44,517 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects252
+2024-03-09 17:07:44,519 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects253
+2024-03-09 17:07:44,612 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects254
+2024-03-09 17:07:44,802 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects255
+2024-03-09 17:07:44,804 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects256
+2024-03-09 17:07:44,809 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects257
+2024-03-09 17:07:44,906 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects258
+2024-03-09 17:07:45,001 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects259
+2024-03-09 17:07:45,018 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects260
+2024-03-09 17:07:45,059 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects261
+2024-03-09 17:07:45,059 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects262
+2024-03-09 17:07:45,166 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects263
+2024-03-09 17:07:45,193 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects264
+2024-03-09 17:07:45,202 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects265
+2024-03-09 17:07:45,245 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects266
+2024-03-09 17:07:45,400 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects267
+2024-03-09 17:07:45,404 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects268
+2024-03-09 17:07:45,497 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects269
+2024-03-09 17:07:45,498 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects270
+2024-03-09 17:07:45,614 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects271
+2024-03-09 17:07:45,653 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects272
+2024-03-09 17:07:45,708 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects273
+2024-03-09 17:07:45,735 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects274
+2024-03-09 17:07:45,896 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects275
+2024-03-09 17:07:45,900 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects276
+2024-03-09 17:07:45,905 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects277
+2024-03-09 17:07:45,939 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects278
+2024-03-09 17:07:45,989 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects279
+2024-03-09 17:07:46,208 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects280
+2024-03-09 17:07:46,250 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects281
+2024-03-09 17:07:46,291 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects282
+2024-03-09 17:07:46,374 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects283
+2024-03-09 17:07:46,375 [INFO] [NoneStorage] - performing PUT at /RCO3Z11/myobjects284
+2024-03-09 17:07:46,417 [INFO] [NoneStorage] - performing PUT at /RCO3Z12/myobjects285
+2024-03-09 17:07:46,536 [INFO] [NoneStorage] - performing PUT at /RCO3Z13/myobjects286
+2024-03-09 17:07:46,537 [INFO] [NoneStorage] - performing PUT at /RCO3Z1/myobjects287
+2024-03-09 17:07:46,580 [INFO] [NoneStorage] - performing PUT at /RCO3Z2/myobjects288
+2024-03-09 17:07:46,636 [INFO] [NoneStorage] - performing PUT at /RCO3Z3/myobjects289
+2024-03-09 17:07:46,700 [INFO] [NoneStorage] - performing PUT at /RCO3Z4/myobjects290
+2024-03-09 17:07:46,756 [INFO] [NoneStorage] - performing PUT at /RCO3Z5/myobjects291
+2024-03-09 17:07:46,986 [INFO] [NoneStorage] - performing PUT at /RCO3Z6/myobjects292
+2024-03-09 17:07:47,262 [INFO] [NoneStorage] - performing PUT at /RCO3Z7/myobjects293
+2024-03-09 17:07:47,440 [INFO] [NoneStorage] - performing PUT at /RCO3Z8/myobjects294
+2024-03-09 17:07:47,685 [INFO] [NoneStorage] - performing PUT at /RCO3Z9/myobjects295
+2024-03-09 17:07:47,986 [INFO] [NoneStorage] - performing PUT at /RCO3Z10/myobjects296
+================================================== stage: s3-dispose ==================================================
+---------------------------------- mission: MF236F223CE, driver: driver1 ----------------------------------
+2024-03-09 17:07:50,005 [INFO] [Log4jLogManager] - will append log to file /root/0.4.2.c4/log/mission/MF236F223CE.log
+2024-03-09 17:07:50,221 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3
+2024-03-09 17:07:50,223 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10
+2024-03-09 17:07:50,223 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13
+2024-03-09 17:07:50,223 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12
+2024-03-09 17:07:50,223 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11
+2024-03-09 17:07:50,222 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9
+2024-03-09 17:07:50,222 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8
+2024-03-09 17:07:50,222 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7
+2024-03-09 17:07:50,222 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6
+2024-03-09 17:07:50,222 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5
+2024-03-09 17:07:50,221 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1
+2024-03-09 17:07:50,221 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2
+2024-03-09 17:07:50,221 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4
+2024-03-09 17:07:50,255 [ERROR] [AbstractOperator] - Error deleting container RCO3Z7
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z7
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,256 [INFO] [NoneStorage] - performing LIST at /RCO3Z7/
+2024-03-09 17:07:50,256 [ERROR] [AbstractOperator] - Error deleting container RCO3Z6
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z6
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,257 [INFO] [NoneStorage] - performing LIST at /RCO3Z6/
+2024-03-09 17:07:50,262 [ERROR] [AbstractOperator] - Error deleting container RCO3Z2
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z2
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,262 [INFO] [NoneStorage] - performing LIST at /RCO3Z2/
+2024-03-09 17:07:50,262 [ERROR] [AbstractOperator] - Error deleting container RCO3Z5
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z5
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,263 [INFO] [NoneStorage] - performing LIST at /RCO3Z5/
+2024-03-09 17:07:50,266 [ERROR] [AbstractOperator] - Error deleting container RCO3Z11
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z11
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,266 [INFO] [NoneStorage] - performing LIST at /RCO3Z11/
+2024-03-09 17:07:50,281 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects110
+2024-03-09 17:07:50,285 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects111
+2024-03-09 17:07:50,288 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects106
+2024-03-09 17:07:50,290 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects109
+2024-03-09 17:07:50,296 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects102
+2024-03-09 17:07:50,468 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects123
+2024-03-09 17:07:50,506 [ERROR] [AbstractOperator] - Error deleting container RCO3Z3
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z3
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,507 [INFO] [NoneStorage] - performing LIST at /RCO3Z3/
+2024-03-09 17:07:50,522 [ERROR] [AbstractOperator] - Error deleting container RCO3Z13
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z13
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,526 [INFO] [NoneStorage] - performing LIST at /RCO3Z13/
+2024-03-09 17:07:50,530 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects124
+2024-03-09 17:07:50,540 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects107
+2024-03-09 17:07:50,564 [ERROR] [AbstractOperator] - Error deleting container RCO3Z9
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z9
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,564 [INFO] [NoneStorage] - performing LIST at /RCO3Z9/
+2024-03-09 17:07:50,587 [ERROR] [AbstractOperator] - Error deleting container RCO3Z8
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z8
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,587 [INFO] [NoneStorage] - performing LIST at /RCO3Z8/
+2024-03-09 17:07:50,591 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects11
+2024-03-09 17:07:50,605 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects100
+2024-03-09 17:07:50,617 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects112
+2024-03-09 17:07:50,670 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects122
+2024-03-09 17:07:50,802 [ERROR] [AbstractOperator] - Error deleting container RCO3Z10
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z10
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,803 [INFO] [NoneStorage] - performing LIST at /RCO3Z10/
+2024-03-09 17:07:50,807 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects136
+2024-03-09 17:07:50,831 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects10
+2024-03-09 17:07:50,883 [ERROR] [AbstractOperator] - Error deleting container RCO3Z12
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z12
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:50,883 [INFO] [NoneStorage] - performing LIST at /RCO3Z12/
+2024-03-09 17:07:50,887 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects120
+2024-03-09 17:07:50,914 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects103
+2024-03-09 17:07:50,947 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects113
+2024-03-09 17:07:50,948 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects137
+2024-03-09 17:07:50,949 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects135
+2024-03-09 17:07:51,007 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects119
+2024-03-09 17:07:51,021 [ERROR] [AbstractOperator] - Error deleting container RCO3Z4
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z4
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:51,021 [INFO] [NoneStorage] - performing LIST at /RCO3Z4/
+2024-03-09 17:07:51,036 [ERROR] [AbstractOperator] - Error deleting container RCO3Z1
+com.intel.cosbench.api.storage.StorageException: HTTP/1.1 409 Conflict
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:246)
+	at com.intel.cosbench.driver.operator.Cleaner.doDispose(Cleaner.java:111)
+	at com.intel.cosbench.driver.operator.Disposer.doDispose(Disposer.java:1)
+	at com.intel.cosbench.driver.operator.Cleaner.operate(Cleaner.java:94)
+	at com.intel.cosbench.driver.operator.AbstractOperator.operate(AbstractOperator.java:76)
+	at com.intel.cosbench.driver.operator.Disposer.operate(Disposer.java:1)
+	at com.intel.cosbench.driver.agent.WorkAgent.performOperation(WorkAgent.java:197)
+	at com.intel.cosbench.driver.agent.WorkAgent.doWork(WorkAgent.java:177)
+	at com.intel.cosbench.driver.agent.WorkAgent.execute(WorkAgent.java:134)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:44)
+	at com.intel.cosbench.driver.agent.AbstractAgent.call(AbstractAgent.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: com.intel.cosbench.client.swift.SwiftConflictException: cannot delete an non-empty container RCO3Z1
+	at com.intel.cosbench.client.swift.SwiftClient.deleteContainer(SwiftClient.java:164)
+	at com.intel.cosbench.api.swift.SwiftStorage.deleteContainer(SwiftStorage.java:237)
+	... 14 more
+2024-03-09 17:07:51,036 [INFO] [NoneStorage] - performing LIST at /RCO3Z1/
+2024-03-09 17:07:51,065 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects149
+2024-03-09 17:07:51,066 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects1
+2024-03-09 17:07:51,066 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects101
+2024-03-09 17:07:51,074 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects116
+2024-03-09 17:07:51,145 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects133
+2024-03-09 17:07:51,192 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects126
+2024-03-09 17:07:51,312 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects125
+2024-03-09 17:07:51,333 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects150
+2024-03-09 17:07:51,393 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects148
+2024-03-09 17:07:51,393 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects105
+2024-03-09 17:07:51,449 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects115
+2024-03-09 17:07:51,458 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects104
+2024-03-09 17:07:51,488 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects12
+2024-03-09 17:07:51,489 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects114
+2024-03-09 17:07:51,563 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects132
+2024-03-09 17:07:51,655 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects146
+2024-03-09 17:07:51,764 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects162
+2024-03-09 17:07:51,785 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects108
+2024-03-09 17:07:51,786 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects163
+2024-03-09 17:07:51,786 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects139
+2024-03-09 17:07:51,850 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects161
+2024-03-09 17:07:51,872 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects138
+2024-03-09 17:07:51,886 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects127
+2024-03-09 17:07:51,887 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects128
+2024-03-09 17:07:51,930 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects118
+2024-03-09 17:07:51,931 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects145
+2024-03-09 17:07:51,982 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects117
+2024-03-09 17:07:52,144 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects159
+2024-03-09 17:07:52,202 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects129
+2024-03-09 17:07:52,264 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects152
+2024-03-09 17:07:52,278 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects174
+2024-03-09 17:07:52,281 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects176
+2024-03-09 17:07:52,349 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects175
+2024-03-09 17:07:52,388 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects140
+2024-03-09 17:07:52,390 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects121
+2024-03-09 17:07:52,414 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects131
+2024-03-09 17:07:52,416 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects141
+2024-03-09 17:07:52,464 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects13
+2024-03-09 17:07:52,536 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects16
+2024-03-09 17:07:52,595 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects151
+2024-03-09 17:07:52,668 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects189
+2024-03-09 17:07:52,669 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects165
+2024-03-09 17:07:52,755 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects154
+2024-03-09 17:07:52,757 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects188
+2024-03-09 17:07:52,759 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects18
+2024-03-09 17:07:52,867 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects130
+2024-03-09 17:07:52,867 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects134
+2024-03-09 17:07:52,917 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects14
+2024-03-09 17:07:52,957 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects15
+2024-03-09 17:07:53,047 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects172
+2024-03-09 17:07:53,066 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects164
+2024-03-09 17:07:53,080 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects142
+2024-03-09 17:07:53,204 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects178
+2024-03-09 17:07:53,205 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects167
+2024-03-09 17:07:53,205 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects143
+2024-03-09 17:07:53,230 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects153
+2024-03-09 17:07:53,277 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects187
+2024-03-09 17:07:53,297 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects147
+2024-03-09 17:07:53,412 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects177
+2024-03-09 17:07:53,414 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects144
+2024-03-09 17:07:53,433 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects20
+2024-03-09 17:07:53,564 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects19
+2024-03-09 17:07:53,626 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects156
+2024-03-09 17:07:53,631 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects166
+2024-03-09 17:07:53,645 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects200
+2024-03-09 17:07:53,721 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects190
+2024-03-09 17:07:53,721 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects160
+2024-03-09 17:07:53,724 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects191
+2024-03-09 17:07:53,880 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects157
+2024-03-09 17:07:53,966 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects158
+2024-03-09 17:07:53,977 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects202
+2024-03-09 17:07:53,981 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects201
+2024-03-09 17:07:54,015 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects155
+2024-03-09 17:07:54,057 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects213
+2024-03-09 17:07:54,059 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects179
+2024-03-09 17:07:54,060 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects203
+2024-03-09 17:07:54,061 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects169
+2024-03-09 17:07:54,063 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects185
+2024-03-09 17:07:54,155 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects180
+2024-03-09 17:07:54,163 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects204
+2024-03-09 17:07:54,175 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects17
+2024-03-09 17:07:54,335 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects170
+2024-03-09 17:07:54,336 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects214
+2024-03-09 17:07:54,336 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects215
+2024-03-09 17:07:54,406 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects198
+2024-03-09 17:07:54,406 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects182
+2024-03-09 17:07:54,454 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects21
+2024-03-09 17:07:54,457 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects217
+2024-03-09 17:07:54,499 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects226
+2024-03-09 17:07:54,534 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects173
+2024-03-09 17:07:54,686 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects171
+2024-03-09 17:07:54,774 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects216
+2024-03-09 17:07:54,831 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects183
+2024-03-09 17:07:54,832 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects195
+2024-03-09 17:07:54,838 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects168
+2024-03-09 17:07:54,918 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects192
+2024-03-09 17:07:54,942 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects239
+2024-03-09 17:07:54,944 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects186
+2024-03-09 17:07:55,111 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects193
+2024-03-09 17:07:55,241 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects229
+2024-03-09 17:07:55,247 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects228
+2024-03-09 17:07:55,285 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects184
+2024-03-09 17:07:55,287 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects211
+2024-03-09 17:07:55,292 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects22
+2024-03-09 17:07:55,317 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects196
+2024-03-09 17:07:55,335 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects227
+2024-03-09 17:07:55,376 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects208
+2024-03-09 17:07:55,421 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects252
+2024-03-09 17:07:55,453 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects181
+2024-03-09 17:07:55,571 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects206
+2024-03-09 17:07:55,572 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects199
+2024-03-09 17:07:55,573 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects241
+2024-03-09 17:07:55,712 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects209
+2024-03-09 17:07:55,712 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects224
+2024-03-09 17:07:55,758 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects205
+2024-03-09 17:07:55,821 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects240
+2024-03-09 17:07:55,883 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects265
+2024-03-09 17:07:55,915 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects221
+2024-03-09 17:07:56,016 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects194
+2024-03-09 17:07:56,017 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects212
+2024-03-09 17:07:56,018 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects254
+2024-03-09 17:07:56,023 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects242
+2024-03-09 17:07:56,166 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects230
+2024-03-09 17:07:56,213 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects197
+2024-03-09 17:07:56,229 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects237
+2024-03-09 17:07:56,262 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects278
+2024-03-09 17:07:56,315 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects234
+2024-03-09 17:07:56,330 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects219
+2024-03-09 17:07:56,365 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects218
+2024-03-09 17:07:56,391 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects267
+2024-03-09 17:07:56,439 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects225
+2024-03-09 17:07:56,519 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects222
+2024-03-09 17:07:56,537 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects207
+2024-03-09 17:07:56,610 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects243
+2024-03-09 17:07:56,721 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects2
+2024-03-09 17:07:56,763 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects253
+2024-03-09 17:07:56,771 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects250
+2024-03-09 17:07:56,772 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects247
+2024-03-09 17:07:56,772 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects291
+2024-03-09 17:07:56,823 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects255
+2024-03-09 17:07:56,881 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects280
+2024-03-09 17:07:57,112 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects23
+2024-03-09 17:07:57,183 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects26
+2024-03-09 17:07:57,228 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects220
+2024-03-09 17:07:57,278 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects256
+2024-03-09 17:07:57,317 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects238
+2024-03-09 17:07:57,364 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects268
+2024-03-09 17:07:57,385 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects235
+2024-03-09 17:07:57,493 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects232
+2024-03-09 17:07:57,529 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects260
+2024-03-09 17:07:57,631 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects31
+2024-03-09 17:07:57,631 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects210
+2024-03-09 17:07:57,634 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects263
+2024-03-09 17:07:57,767 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects266
+2024-03-09 17:07:57,864 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects293
+2024-03-09 17:07:57,942 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects281
+2024-03-09 17:07:58,003 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects248
+2024-03-09 17:07:58,004 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects231
+2024-03-09 17:07:58,030 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects276
+2024-03-09 17:07:58,030 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects24
+2024-03-09 17:07:58,031 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects273
+2024-03-09 17:07:58,064 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects269
+2024-03-09 17:07:58,179 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects233
+2024-03-09 17:07:58,207 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects251
+2024-03-09 17:07:58,311 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects33
+2024-03-09 17:07:58,423 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects294
+2024-03-09 17:07:58,427 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects261
+2024-03-09 17:07:58,537 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects244
+2024-03-09 17:07:58,542 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects44
+2024-03-09 17:07:58,556 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects245
+2024-03-09 17:07:58,563 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects223
+2024-03-09 17:07:58,586 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects282
+2024-03-09 17:07:58,641 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects286
+2024-03-09 17:07:58,781 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects264
+2024-03-09 17:07:58,826 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects34
+2024-03-09 17:07:58,852 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects279
+2024-03-09 17:07:59,036 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects5
+2024-03-09 17:07:59,086 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects289
+2024-03-09 17:07:59,090 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects246
+2024-03-09 17:07:59,113 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects46
+2024-03-09 17:07:59,183 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects39
+2024-03-09 17:07:59,231 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects47
+2024-03-09 17:07:59,281 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects27
+2024-03-09 17:07:59,281 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects257
+2024-03-09 17:07:59,334 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects277
+2024-03-09 17:07:59,357 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects292
+2024-03-09 17:07:59,438 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects295
+2024-03-09 17:07:59,479 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects236
+2024-03-09 17:07:59,609 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects258
+2024-03-09 17:07:59,614 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects57
+2024-03-09 17:07:59,616 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects25
+2024-03-09 17:07:59,694 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects60
+2024-03-09 17:07:59,748 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects274
+2024-03-09 17:07:59,812 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects270
+2024-03-09 17:07:59,863 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects59
+2024-03-09 17:07:59,939 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects290
+2024-03-09 17:07:59,939 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects32
+2024-03-09 17:07:59,958 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects35
+2024-03-09 17:07:59,959 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects52
+2024-03-09 17:08:00,088 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects29
+2024-03-09 17:08:00,193 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects73
+2024-03-09 17:08:00,238 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects287
+2024-03-09 17:08:00,281 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects48
+2024-03-09 17:08:00,376 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects249
+2024-03-09 17:08:00,379 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects30
+2024-03-09 17:08:00,379 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects65
+2024-03-09 17:08:00,467 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects259
+2024-03-09 17:08:00,483 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects7
+2024-03-09 17:08:00,485 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects8
+2024-03-09 17:08:00,501 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects70
+2024-03-09 17:08:00,543 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects3
+2024-03-09 17:08:00,569 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects271
+2024-03-09 17:08:00,660 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects283
+2024-03-09 17:08:00,833 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects45
+2024-03-09 17:08:00,901 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects86
+2024-03-09 17:08:00,946 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects272
+2024-03-09 17:08:00,947 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects78
+2024-03-09 17:08:00,949 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects4
+2024-03-09 17:08:01,041 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects72
+2024-03-09 17:08:01,054 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects61
+2024-03-09 17:08:01,110 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects40
+2024-03-09 17:08:01,118 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects42
+2024-03-09 17:08:01,216 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects83
+2024-03-09 17:08:01,227 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects296
+2024-03-09 17:08:01,248 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8/myobjects99
+2024-03-09 17:08:01,318 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects58
+2024-03-09 17:08:01,319 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13/myobjects91
+2024-03-09 17:08:01,373 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects262
+2024-03-09 17:08:01,534 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects43
+2024-03-09 17:08:01,613 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects55
+2024-03-09 17:08:01,664 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects85
+2024-03-09 17:08:01,689 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects275
+2024-03-09 17:08:01,689 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects53
+2024-03-09 17:08:01,727 [INFO] [NoneStorage] - performing DELETE at /RCO3Z8
+2024-03-09 17:08:01,729 [INFO] [NoneStorage] - performing DELETE at /RCO3Z13
+2024-03-09 17:08:01,769 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects36
+2024-03-09 17:08:01,857 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects285
+2024-03-09 17:08:01,923 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects56
+2024-03-09 17:08:02,036 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects284
+2024-03-09 17:08:02,066 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7/myobjects98
+2024-03-09 17:08:02,068 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects28
+2024-03-09 17:08:02,114 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects74
+2024-03-09 17:08:02,124 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects6
+2024-03-09 17:08:02,127 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5/myobjects96
+2024-03-09 17:08:02,190 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects49
+2024-03-09 17:08:02,256 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects69
+2024-03-09 17:08:02,407 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects68
+2024-03-09 17:08:02,543 [INFO] [NoneStorage] - performing DELETE at /RCO3Z5
+2024-03-09 17:08:02,590 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects37
+2024-03-09 17:08:02,657 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects288
+2024-03-09 17:08:02,665 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects82
+2024-03-09 17:08:02,725 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects87
+2024-03-09 17:08:02,739 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects66
+2024-03-09 17:08:02,770 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects71
+2024-03-09 17:08:02,902 [INFO] [NoneStorage] - performing DELETE at /RCO3Z7
+2024-03-09 17:08:02,908 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects38
+2024-03-09 17:08:03,165 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects41
+2024-03-09 17:08:03,269 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects81
+2024-03-09 17:08:03,375 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects62
+2024-03-09 17:08:03,421 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects51
+2024-03-09 17:08:03,425 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9/myobjects9
+2024-03-09 17:08:03,490 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4/myobjects95
+2024-03-09 17:08:03,578 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects84
+2024-03-09 17:08:03,622 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects50
+2024-03-09 17:08:03,771 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3/myobjects94
+2024-03-09 17:08:03,860 [INFO] [NoneStorage] - performing DELETE at /RCO3Z9
+2024-03-09 17:08:03,863 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects64
+2024-03-09 17:08:03,881 [INFO] [NoneStorage] - performing DELETE at /RCO3Z4
+2024-03-09 17:08:03,898 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects79
+2024-03-09 17:08:04,016 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects54
+2024-03-09 17:08:04,058 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects63
+2024-03-09 17:08:04,059 [INFO] [NoneStorage] - performing DELETE at /RCO3Z3
+2024-03-09 17:08:04,138 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects75
+2024-03-09 17:08:04,377 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects77
+2024-03-09 17:08:04,425 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6/myobjects97
+2024-03-09 17:08:04,453 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1/myobjects92
+2024-03-09 17:08:04,471 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10/myobjects88
+2024-03-09 17:08:04,582 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects67
+2024-03-09 17:08:04,716 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12/myobjects90
+2024-03-09 17:08:04,827 [INFO] [NoneStorage] - performing DELETE at /RCO3Z6
+2024-03-09 17:08:04,873 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects80
+2024-03-09 17:08:04,938 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects76
+2024-03-09 17:08:04,967 [INFO] [NoneStorage] - performing DELETE at /RCO3Z1
+2024-03-09 17:08:05,119 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2/myobjects93
+2024-03-09 17:08:05,135 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11/myobjects89
+2024-03-09 17:08:05,136 [INFO] [NoneStorage] - performing DELETE at /RCO3Z10
+2024-03-09 17:08:05,393 [INFO] [NoneStorage] - performing DELETE at /RCO3Z11
+2024-03-09 17:08:05,403 [INFO] [NoneStorage] - performing DELETE at /RCO3Z12
+2024-03-09 17:08:05,467 [INFO] [NoneStorage] - performing DELETE at /RCO3Z2

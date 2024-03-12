@@ -3,15 +3,15 @@
 
   <storage type="swift" />
 
-  <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://192.228.143.150:8080/auth/v1.0" />
+  <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://10.65.0.209:8080/auth/v1.0" />
 
   <workflow>
     <workstage name="init">
       <work type="init" workers="13" config="cprefix=?1L5s;containers=r(1,13)" />
     </workstage>
     <workstage name="main">
-      <work name="main" workers="#1{8,16}concurrency#" runtime="120">
-        <operation type="write" ratio="100" config="containers=r(1,13);cprefix=?1L5s;objects=s(1,10000);sizes=c(#2{4,128}objSize#)KB" />
+      <work name="main" workers="#1{8,16}concurrency#" totalOps="#3{300}totalOps#">
+        <operation type="write" ratio="100" config="containers=r(1,13);cprefix=?1L5s;objects=s(1,10000);sizes=c(#2{4}objSize#)KB" />
       </work>
     </workstage>
     <workstage name="dispose">

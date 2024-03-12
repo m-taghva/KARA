@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workload name="swift-sample" description="sample benchmark for swift" config="">
+    <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://10.65.0.209:8080/auth/v1.0"/>
+    <storage type="swift"/>
+    <workflow config="">
+        <workstage name="init" closuredelay="0" config="">
+            <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://10.65.0.209:8080/auth/v1.0"/>
+            <storage type="swift"/>
+            <work name="init" type="init" workers="13" interval="5"
+                division="container" runtime="0" rampup="0" rampdown="0"
+                afr="0" totalOps="13" totalBytes="0" config="cprefix=GNL13;containers=r(1,13)">
+                <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://10.65.0.209:8080/auth/v1.0"/>
+                <storage type="swift"/>
+                <operation type="init" ratio="100" division="container"
+                    config="cprefix=GNL13;containers=r(1,13);cprefix=GNL13;containers=r(1,13);cprefix=GNL13;containers=r(1,13);objects=r(0,0);sizes=c(0)B;cprefix=GNL13;containers=r(1,13)" id="op1"/>
+            </work>
+        </workstage>
+        <workstage name="main" closuredelay="0" config="">
+            <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://10.65.0.209:8080/auth/v1.0"/>
+            <storage type="swift"/>
+            <work name="main" type="normal" workers="16" interval="5"
+                division="none" runtime="0" rampup="0" rampdown="0"
+                afr="200000" totalOps="300" totalBytes="0" config="">
+                <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://10.65.0.209:8080/auth/v1.0"/>
+                <storage type="swift"/>
+                <operation type="write" ratio="100" division="none"
+                    config="containers=r(1,13);cprefix=GNL13;objects=s(1,10000);sizes=c(4)KB" id="op1"/>
+            </work>
+        </workstage>
+        <workstage name="dispose" closuredelay="0" config="">
+            <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://10.65.0.209:8080/auth/v1.0"/>
+            <storage type="swift"/>
+            <work name="dispose" type="dispose" workers="13"
+                interval="5" division="container" runtime="0" rampup="0"
+                rampdown="0" afr="0" totalOps="13" totalBytes="0" config="containers=r(1,13);cprefix=GNL13">
+                <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://10.65.0.209:8080/auth/v1.0"/>
+                <storage type="swift"/>
+                <operation type="dispose" ratio="100"
+                    division="container"
+                    config="containers=r(1,13);cprefix=GNL13;containers=r(1,13);cprefix=GNL13;containers=r(1,13);cprefix=GNL13;objects=r(0,0);sizes=c(0)B;containers=r(1,13);cprefix=GNL13" id="op1"/>
+            </work>
+        </workstage>
+    </workflow>
+</workload>

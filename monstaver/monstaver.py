@@ -216,7 +216,21 @@ def restore(data_loaded):
              print("error") 
 
 ##### BACKUP PARTS #####
-def backup(time_range, inputs, delete, data_loaded): 
+def backup(time_range, inputs, delete, data_loaded):
+    if time_range is None:
+        time_range = data_loaded['default'].get('time')
+    if inputs is not None:
+        if ',' in inputs:
+            inputs = inputs.split(',')
+        else:
+            inputs
+    else:
+        default_input_paths = data_loaded['default'].get('input_paths')
+        if default_input_paths:
+            inputs = default_input_paths
+        else:
+            inputs = []
+            
     backup_dir = data_loaded['default'].get('backup_output')
     start_time_str, end_time_str = time_range.split(',')
     margin_start, margin_end = map(int, data_loaded['default'].get('time_margin').split(',')) 
@@ -489,12 +503,13 @@ def backup(time_range, inputs, delete, data_loaded):
         else:
              print("\033[91mRemove time dir inside output dir failed.\033[0m")
              sys.exit(1)
+            
 def main(time_range, inputs, delete, backup_restore):
     data_loaded = load_config(config_file)
-    if backup_restore:
-       restore(data_loaded)
+    if backup_restore: 
+        restore(data_loaded)
     else:
-       backup(time_range, inputs, delete, data_loaded)
+        backup(time_range, inputs, delete, data_loaded)
 
 if __name__ == "__main__":
     # Command-line argument parsing
@@ -504,9 +519,4 @@ if __name__ == "__main__":
     argParser.add_argument("-i", "--inputs", help="Input paths for copying to result")
     argParser.add_argument("-r", "--restore", action="store_true", help="run restore function")
     args = argParser.parse_args()
-    data_loaded = load_config(config_file)
-    time_range = args.time_range if args.time_range else data_loaded['default'].get('time')
-    inputs = args.inputs.split(',') if args.inputs else data_loaded['default'].get('input_paths') if data_loaded['default'].get('input_paths') else []
-    delete = args.delete
-    backup_restore = args.restore
-    main(time_range, inputs, delete, backup_restore)
+    main(time_range=args.time_range , inputs=args.inputs, delete=args.delete, backup_restore=args.restore)

@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+    {
+    "name": "Python: Debug with Input and Output",
+    "type": "debugpy",
+    "request": "launch",
+    "program": "/root/KARA/manager/manager.py",
+    "args": ["-sn", "/root/KARA/manager/scenario_dir/manager_scenario.conf"],
+    "console": "integratedTerminal",
+    "cwd": "${workspaceFolder}"
+    }
+    ]
+    }
