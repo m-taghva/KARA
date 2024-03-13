@@ -81,7 +81,6 @@ def mrbench_agent(config_params, config_output):
                 for test_config in os.listdir(conf_dict["workloads.xml"]):
                     test_config_path = os.path.join(conf_dict["workloads.xml"], test_config)
                     start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
-                    print(start_time) ; print(end_time) ; print(result_file_path)
                     all_start_times.append(start_time) ; all_end_times.append(end_time)
                     if run_status_reporter:
                         status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
