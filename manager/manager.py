@@ -32,6 +32,7 @@ def mrbench_agent(config_params, config_output):
     all_start_times = [] ; all_end_times = []
     result_dir = config_params.get('output_path')
     run_status_reporter = config_params.get('Status_Reporter', False)
+    image_generate = config_params.get('image_generate', False)
     run_monstaver = config_params.get('monstaver', False)
     ring_dirs = config_params.get('ring_dirs', [])
     if config_output is None:
@@ -83,7 +84,7 @@ def mrbench_agent(config_params, config_output):
                     start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
                     all_start_times.append(start_time) ; all_end_times.append(end_time)
                     if run_status_reporter:
-                        status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
+                        status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=image_generate)  
                     if run_monstaver:
                         monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path], delete=True, backup_restore=None) 
     
@@ -114,12 +115,13 @@ def monstaver_agent(config_params, first_start_time, last_end_time):
 def status_reporter_agent(config_params):
     result_dir = config_params.get('output_path')
     times_file = config_params.get('times')
+    image_generate = config_params.get('image_generate', False)
     if times_file:
        with open(times_file, 'r') as file:
             times = file.readlines()
             for time_range in times:
                 start_time, end_time = time_range.strip().split(',')
-                status_reporter.main(path_dir=result_dir, time_range=f"{start_time},{end_time}", img=True)
+                status_reporter.main(path_dir=result_dir, time_range=f"{start_time},{end_time}", img=image_generate)
 
 def status_analyzer_agent(config_params):
     result_dir = config_params.get('input_path')
