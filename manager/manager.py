@@ -79,7 +79,7 @@ def mrbench_agent(config_params, config_output):
                     merged_conf_ring = {**swift_rings, **swift_configs}
                     mrbench.copy_swift_conf(merged_conf_ring)
                     time.sleep(40)
-                for test_config in os.listdir(conf_dict["workloads.xml"]):
+                for test_config in sorted(os.listdir(conf_dict["workloads.xml"])):
                     test_config_path = os.path.join(conf_dict["workloads.xml"], test_config)
                     start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
                     all_start_times.append(start_time) ; all_end_times.append(end_time)
