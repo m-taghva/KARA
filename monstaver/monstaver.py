@@ -519,4 +519,4 @@ if __name__ == "__main__":
     argParser.add_argument("-i", "--inputs", help="Input paths for copying to result")
     argParser.add_argument("-r", "--restore", action="store_true", help="run restore function")
     args = argParser.parse_args()
-    main(time_range=args.time_range , inputs=args.inputs, delete=args.delete, backup_restore=args.restore)
+    main(time_range=args.time_range , inputs=args.inputs.split(','), delete=args.delete, backup_restore=args.restore)
