@@ -10,6 +10,8 @@ import status_reporter
 import monstaver
 import analyzer
 
+kara_config_files = "/etc/KARA/"
+
 def load_config(config_file):
     with open(config_file, "r") as stream:
         try:
@@ -28,11 +30,10 @@ def config_gen_agent(config_params):
         config_gen.main(input_file, workloads_configs)
     return config_output
 
-def mrbench_agent(config_params, config_output):
+def mrbench_agent(config_params, config_file, config_output):
     all_start_times = [] ; all_end_times = []
     result_dir = config_params.get('output_path')
-    run_status_reporter = config_params.get('Status_Reporter', False)
-    image_generate = config_params.get('image_generate', False)
+    run_status_reporter = config_params.get('Status_Reporter', None)
     run_monstaver = config_params.get('monstaver', False)
     ring_dirs = config_params.get('ring_dirs', [])
     if config_output is None:
@@ -41,7 +42,6 @@ def mrbench_agent(config_params, config_output):
         else:
             print(f"\033[91mThere isn't any conf_dir in scenario file !\033[0m")
             exit()
-
     conf_dict = {}  
     for dir_name in os.listdir(config_output):
         dir_path = os.path.join(config_output, dir_name)
@@ -83,16 +83,18 @@ def mrbench_agent(config_params, config_output):
                 test_config_path = os.path.join(conf_dict["workloads.xml"], test_config)
                 start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
                 all_start_times.append(start_time) ; all_end_times.append(end_time)
-                if run_status_reporter:
-                    status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=image_generate)  
+                if run_status_reporter is not None:
+                    if run_status_reporter == 'csv':
+                        status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=False)  
+                    if run_status_reporter == 'csv,img':
+                        status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
                 if run_monstaver:
-                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path], delete=True, backup_restore=None) 
-    
+                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None) 
     # Extract first start time and last end time
     first_start_time = all_start_times[0] ; last_end_time = all_end_times[-1] 
     return first_start_time, last_end_time
 
-def monstaver_agent(config_params, first_start_time, last_end_time):
+def monstaver_agent(config_params, config_file, first_start_time, last_end_time):
     operation = config_params.get('operation')
     batch_mode = config_params.get('batch_mode', False)
     times_file = config_params.get('times')
@@ -103,19 +105,19 @@ def monstaver_agent(config_params, first_start_time, last_end_time):
             for time_range in times:
                 start_time, end_time = time_range.strip().split(',')
                 if operation == "backup":
-                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path], delete=True,  backup_restore=None)
+                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None)
                 elif operation == "restore":
                     monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)          
     elif operation == "backup": 
         if batch_mode:
-            monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path], delete=True, backup_restore=None)
+            monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None)
     elif operation == "restore":
         monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)
 
 def status_reporter_agent(config_params):
     result_dir = config_params.get('output_path')
     times_file = config_params.get('times')
-    image_generate = config_params.get('image_generate', False)
+    image_generate = config_params.get('image', False)
     if times_file:
        with open(times_file, 'r') as file:
             times = file.readlines()
@@ -156,13 +158,13 @@ def main():
                     config_output = config_gen_agent(config_params)
                 elif 'Mrbench' in task:
                     config_params = task['Mrbench']
-                    first_start_time, last_end_time = mrbench_agent(config_params, config_output)
+                    first_start_time, last_end_time = mrbench_agent(config_params, config_file, config_output)
                 elif 'Status-Reporter' in task:
                     config_params = task['Status-Reporter']
                     status_reporter_agent(config_params)
                 elif 'Monstaver' in task:
                     config_params = task['Monstaver']
-                    monstaver_agent(config_params, first_start_time, last_end_time)
+                    monstaver_agent(config_params, config_file, first_start_time, last_end_time)
                 elif 'Status_Analyzer' in task:
                     config_params = task['Status_Analyzer']
                     status_analyzer_agent(config_params)
