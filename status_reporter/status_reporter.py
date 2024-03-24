@@ -49,7 +49,7 @@ def main(metric_file, path_dir, time_range, img=False):
     print("")
     print(f"{YELLOW}========================================{RESET}")
     print("") 
-
+    
     # Create the output parent directory
     output_parent_dir= os.path.join(path_dir, "query_results")
     os.makedirs(output_parent_dir, exist_ok=True)
@@ -101,20 +101,29 @@ def main(metric_file, path_dir, time_range, img=False):
                             # Construct the curl command for query 1
                             query1_curl_command = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "db={db_name}" --data-urlencode "q=SELECT {metric_operation}(\\"value\\") FROM \\"{metric_name}\\" WHERE (\\"host\\" =~ /^{host_name}$/) AND time >= \'{start_time_utc}\' AND time <= \'{end_time_utc}\' fill(none)"'
                             query_result = subprocess.getoutput(query1_curl_command)
-                            values = json.loads(query_result).get('results', [{}])[0].get('series', [{}])[0].get('values', [])
-                            values = [str(v[1]) for v in values]
-                            output_csv_str[csvi] += "," + ",".join(values)
-                            print(f"{BOLD}Add metrics to CSV, please wait ...{RESET}")
-                            # Construct the curl command for query 2
-                            if img:
-                                query2_curl_command = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "db={db_name}" --data-urlencode "q=SELECT {metric_operation}(\\"value\\") FROM /{metric_name}/ WHERE (\\"host\\" =~ /^{host_name}$/) AND time >= \'{start_time_utc}\' AND time <= \'{end_time_utc}\' GROUP BY time({TIME_GROUP}s) fill(none)"'
-                                query2_output = subprocess.getoutput(query2_curl_command)
-                                os.system(f"python3 ./../status_reporter/image_renderer.py '{query2_output}' '{host_name}' '{path_dir}'")
+                            if query_result:
+                                values = json.loads(query_result).get('results', [{}])[0].get('series', [{}])[0].get('values', [])
+                                if values:
+                                    values = [str(v[1]) for v in values]
+                                    output_csv_str[csvi] += "," + ",".join(values)
+                                    print(f"{BOLD}Add metrics to CSV, please wait ...{RESET}")
+                                    # Construct the curl command for query 2
+                                    if img:
+                                        query2_curl_command = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "db={db_name}" --data-urlencode "q=SELECT {metric_operation}(\\"value\\") FROM /{metric_name}/ WHERE (\\"host\\" =~ /^{host_name}$/) AND time >= \'{start_time_utc}\' AND time <= \'{end_time_utc}\' GROUP BY time({TIME_GROUP}s) fill(none)"'
+                                        query2_output = subprocess.getoutput(query2_curl_command)
+                                        os.system(f"python3 ./../status_reporter/image_renderer.py '{query2_output}' '{host_name}' '{path_dir}'")
+                                else:
+                                    print("\033[91mSomething is wrong ! maybe database name, hostname or metric name inside files are not correct.\033[0m")
+                                    print()
+                                    exit()
+                            else:
+                                print("\033[91mSomething is wrong ! maybe ip, influxdb port are not correct.\033[0m")
+                                print()
+                                exit()
     # Write the CSV file for each time range
     with open(output_csv, 'a') as csv_file:
         for line in output_csv_str:
-            csv_file.write(line + "\n")        
-                           
+            csv_file.write(line + "\n")                        
     print("")
     print(f"{BOLD}Done! Csv and Images are saved in the {RESET}{YELLOW}'{output_parent_dir}'{RESET}{BOLD} directory{RESET}")
     print("")
@@ -124,11 +133,10 @@ def main(metric_file, path_dir, time_range, img=False):
 if __name__ == "__main__":
     # Parse command-line arguments for your new script
     parser = argparse.ArgumentParser(description="Your Script Description")
-    parser.add_argument("-m", "--metric_file", help="Comma-separated list of metric file paths")
-    parser.add_argument("-o", "--path_dir", help="Path to the parent directory")
-    parser.add_argument("-t", "--time_range", help="Time range in the format 'start_time,end_time'")
+    parser.add_argument("-m", "--metric_file", help="Enter your metric files comma-separated list of metric file paths or read them from config file.")
+    parser.add_argument("-o", "--path_dir", help="Enter path to the parent directory or it use current dir as default")
+    parser.add_argument("-t", "--time_range", help="Enter time range in the format 'start_time,end_time' or read time range from config file")
     parser.add_argument("--img", action="store_true", help="Create images and graphs")
     args = parser.parse_args()
-
     # Call your main function with the provided arguments
     main(metric_file=args.metric_file, path_dir=args.path_dir, time_range=args.time_range, img=args.img)   
