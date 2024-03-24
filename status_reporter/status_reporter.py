@@ -35,7 +35,10 @@ def get_metrics_from_file(metric_file_path):
         metrics = [metric.strip() for metric in f if metric.strip() and not metric.strip().startswith('#')]
     return metrics
                             
-def main(metric_file=None, path_dir=".", time_range=None, img=False):
+def main(metric_file, path_dir, time_range, img=False):
+    metric_file= metric_file.split(',') if metric_file else [] 
+    path_dir= path_dir if path_dir else "." 
+    time_range = time_range if time_range else load_config(config_file).get('time', [])['time_range']
     # Load configuration from config file
     data_loaded = load_config(config_file)
     time_section = data_loaded.get('time', {})
@@ -126,9 +129,6 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--time_range", help="Time range in the format 'start_time,end_time'")
     parser.add_argument("--img", action="store_true", help="Create images and graphs")
     args = parser.parse_args()
-    metric_file=args.metric_file.split(',') if args.metric_file else [] 
-    path_dir=args.path_dir if args.path_dir else "." 
-    time_range = args.time_range if args.time_range else load_config(config_file).get('time', [])['time_range']
 
     # Call your main function with the provided arguments
-    main(metric_file, path_dir, time_range, img=args.img)   
+    main(metric_file=args.metric_file, path_dir=args.path_dir, time_range=args.time_range, img=args.img)   
