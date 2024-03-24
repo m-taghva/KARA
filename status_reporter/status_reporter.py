@@ -5,20 +5,15 @@ import sys
 from datetime import datetime
 import argparse
 import yaml
-
 # For font style
 BOLD = "\033[1m"
 RESET = "\033[0m"
 YELLOW = "\033[1;33m"
 
-# Constants
-START_TIME_SUM = 1  # increase your report start time
-END_TIME_SUBTRACT = 1  # decrease your report end time
-TIME_GROUP = 10  # time group for query 2
-CONFIG_FILE = "/etc/KARA/status.conf"
+config_file = "/etc/KARA/status.conf"
 
-def load_config(CONFIG_FILE):
-    with open(CONFIG_FILE, "r") as stream:
+def load_config(config_file):
+    with open(config_file, "r") as stream:
         try:
             data_loaded = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -42,7 +37,11 @@ def get_metrics_from_file(metric_file_path):
                             
 def main(metric_file=None, path_dir=".", time_range=None, img=False):
     # Load configuration from config file
-    data_loaded = load_config(CONFIG_FILE)
+    data_loaded = load_config(config_file)
+    time_section = data_loaded.get('time', {})
+    START_TIME_SUM = time_section.get('start_time_sum')
+    END_TIME_SUBTRACT = time_section.get('end_time_subtract')
+    TIME_GROUP = time_section.get('time_group')
 
     print("")
     print(f"{YELLOW}========================================{RESET}")
@@ -51,17 +50,14 @@ def main(metric_file=None, path_dir=".", time_range=None, img=False):
     # Create the output parent directory
     output_parent_dir= os.path.join(path_dir, "query_results")
     os.makedirs(output_parent_dir, exist_ok=True)
-
     # Split time_range and generate output_csv
     time_range_parts = time_range.split(',')
     start_time, end_time = time_range_parts[0], time_range_parts[1]
     start_time_csv = start_time.replace(" ", "-")
     end_time_csv = end_time.replace(" ", "-")
     output_csv = os.path.join(output_parent_dir, f"{start_time_csv}_{end_time_csv}.csv")
-    
     if os.path.exists(output_csv):
         os.remove(output_csv)
-
     # Generate metric_operation_mapping
     metric_operation_mapping = {}
     metric_operations = []
@@ -130,10 +126,9 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--time_range", help="Time range in the format 'start_time,end_time'")
     parser.add_argument("--img", action="store_true", help="Create images and graphs")
     args = parser.parse_args()
-    metric_file = args.metric_file.split(',') if args.metric_file else [] 
-    path_dir = args.path_dir if args.path_dir else "." 
-    time_range = args.time_range if args.time_range else load_config(CONFIG_FILE).get('time', [])[0]
-    img=args.img
-    
+    metric_file=args.metric_file.split(',') if args.metric_file else [] 
+    path_dir=args.path_dir if args.path_dir else "." 
+    time_range = args.time_range if args.time_range else load_config(config_file).get('time', [])['time_range']
+
     # Call your main function with the provided arguments
-    main(metric_file, path_dir, time_range, img)
+    main(metric_file, path_dir, time_range, img=args.img)   
