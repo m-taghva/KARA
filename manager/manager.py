@@ -23,11 +23,14 @@ def load_config(config_file):
 
 def config_gen_agent(config_params):
     input_files = config_params.get('conf_templates', [])
-    config_output = config_params.get('output_path')
+    config_output = config_params.get('output_path') 
     for input_file in input_files:
+        firstConfNumber = 1
         # Create output directory for each input file
-        workloads_configs = os.path.join(config_output, os.path.basename(input_file))
-        config_gen.main(input_file, workloads_configs)
+        workloads_configs = os.path.join(config_output, os.path.basename(input_file).split('__')[0])
+        if os.path.isdir(workloads_configs): 
+            firstConfNumber = len(os.listdir(workloads_configs))+1
+        config_gen.main(input_file_path=input_file, output_directory=workloads_configs, conf_num=firstConfNumber)
     return config_output
 
 def mrbench_agent(config_params, config_file, config_output):
