@@ -10,7 +10,7 @@ import yaml
 import json
 
 config_file = "/etc/KARA/mrbench.conf"
-pre_test_script = "./../mrbench/pre_test_script.sh"
+pre_test_script = "./../mrbench/pre_test_script2.sh"
 
 # For font style
 BOLD = "\033[1m"
@@ -66,7 +66,6 @@ def copy_swift_conf(swift_configs):
                         elif diff_ring_result.stderr != "":
                             print("")
                             print(f"\033[91mWARNING: your ring file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
-
                     elif filename.endswith(".conf"):
                         diff_conf_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/{filename}' | diff - {filepath}"
                         diff_conf_result = subprocess.run(diff_conf_command, shell=True, capture_output=True, text=True)
@@ -88,13 +87,16 @@ def copy_swift_conf(swift_configs):
                         elif diff_conf_result.stderr != "":
                             print("")
                             print(f"\033[91mWARNING: your config file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
-              
                     if each_scp_successful: 
                         all_scp_file_successful = True  
-            else:
-                print("")
-                print(f"\033[91mWARNING: there is a problem in your mrbench's config file for \033[0m'\033[92m{container_name}\033[0m' \033[91mcontainer section so mrbench can't sync config and ring files !\033[0m") 
-                print(f"{YELLOW}========================================{RESET}")
+        else:
+            print("")
+            print(f"\033[91mWARNING: there is a problem in your config file for SSH info inside \033[0m'\033[92m{container_name}\033[0m' \033[91msection so mrbench can't sync config and ring files !\033[0m") 
+            print("")
+            if inspect_result.stdout == '[]\n':
+                print(f"\033[91mWARNING: your container name \033[0m'\033[92m{container_name}\033[0m' \033[91mis wrong !\033[0m")
+            print("")
+            print(f"{YELLOW}========================================{RESET}")
 
         if all_scp_file_successful is True:
             restart_cont_command = f"ssh -p {port} {user}@{ip} docker restart {container_name} > /dev/null 2>&1"
@@ -105,47 +107,50 @@ def copy_swift_conf(swift_configs):
             else:
                 print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m") 
        
-def submit(workload_file_path, output_path):
+def submit(workload_config_path, output_path):
     if not os.path.exists(output_path):
-       os.makedirs(output_path)
+       os.makedirs(output_path) 
     run_pre_test_process = subprocess.run(f"bash {pre_test_script}", shell=True)
     cosbenchBin = shutil.which("cosbench")
     if not(cosbenchBin):
         print("Command 'cosbench' not found, but can be add with:\n\n\t ln -s {cosbench-dir}/cli.sh /usr/bin/cosbench\n")
         return None, None, -1
     archive_path = os.readlink(cosbenchBin).split("cli.sh")[0]+"archive/"
-    print("Sending workload ...")
-    # Start workload
-    Cos_bench_command = subprocess.run(["cosbench", "submit", workload_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-    if Cos_bench_command.returncode == 1:
-        print("\033[91mStarting workload failed.\033[0m")
-        return None, None, -1
-    # Extract ID of workload
-    output_lines = Cos_bench_command.stdout.splitlines()
-    workload_id_regex = re.search('(?<=ID:\s)(w\d+)', output_lines[0])
-    workload_name = workload_file_path.split('/')[-1].replace('.xml','')
-    if workload_id_regex:
-        workload_id = workload_id_regex.group()
-        print(f"\033[1mWorkload Info:\033[0m ID: {workload_id} Name: {workload_name}")
+    if os.path.exists(workload_config_path):
+        print("Sending workload ...")
+        # Start workload
+        Cos_bench_command = subprocess.run(["cosbench", "submit", workload_config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        if Cos_bench_command.returncode == 1:
+            print("\033[91mStarting workload failed.\033[0m")
+            return None, None, -1
+        # Extract ID of workload
+        output_lines = Cos_bench_command.stdout.splitlines()
+        workload_id_regex = re.search('(?<=ID:\s)(w\d+)', output_lines[0])
+        workload_name = workload_config_path.split('/')[-1].replace('.xml','')
+        if workload_id_regex:
+            workload_id = workload_id_regex.group()
+            print(f"\033[1mWorkload Info:\033[0m ID: {workload_id} Name: {workload_name}")
+        else:
+            print("\033[91mStarting workload failed.\033[0m")
+            return None, None, -1
+        # Check every second if the workload has ended or not
+        archive_file_path = f"{archive_path}{workload_id}-swift-sample"
+        while True:
+            if os.path.exists(archive_file_path):
+                time.sleep(5) 
+                break
+            time.sleep(5)
+        result_path = create_test_dir(output_path, workload_name)
+        archive_workload_dir_name = f"{workload_id}-swift-sample"
+        print(f"Result Path: {result_path}")
+        cosbench_info = f"cosbench info > {result_path}/cosbench.info"
+        cosbench_info_result = subprocess.run(cosbench_info, shell=True, capture_output=True, text=True)
+        # run other functions 
+        start_time, end_time = save_time(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv", result_path)
+        copy_bench_files(archive_path, archive_workload_dir_name, result_path)
+        return  start_time, end_time, result_path
     else:
-        print("\033[91mStarting workload failed.\033[0m")
-        return None, None, -1
-    # Check every second if the workload has ended or not
-    archive_file_path = f"{archive_path}{workload_id}-swift-sample"
-    while True:
-        if os.path.exists(archive_file_path):
-            time.sleep(5) 
-            break
-        time.sleep(5)
-    result_path = create_test_dir(output_path, workload_name)
-    archive_workload_dir_name = f"{workload_id}-swift-sample"
-    print(f"Result Path: {result_path}")
-    cosbench_info = f"cosbench info > {result_path}/cosbench.info"
-    cosbench_info_result = subprocess.run(cosbench_info, shell=True, capture_output=True, text=True)
-    # run other functions 
-    start_time, end_time = save_time(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv", result_path)
-    copy_bench_files(archive_path, archive_workload_dir_name, result_path)
-    return  start_time, end_time, result_path
+        print(f"\033[91mWARNING: workload file doesn't exist !\033[0m")
 
 def create_test_dir(result_path, workload_name):
     result_file_path = os.path.join(result_path, workload_name)
@@ -160,7 +165,6 @@ def create_test_dir(result_path, workload_name):
 def save_time(file, result_path):
     start_time = None
     end_time = None
-    # save time
     try:
         # Find start of first main and end of last main
         with open(file, 'r') as csv_file:
@@ -188,7 +192,6 @@ def save_time(file, result_path):
         return -1
 
 def copy_bench_files(archive_path, archive_workload_dir_name, result_path):
-    # copy files
     time.sleep(5)
     copylistfiles = ["/workload.log","/workload-config.xml",'/'+ archive_workload_dir_name + '.csv']
     print("Copying Cosbench source files ...")
@@ -208,13 +211,17 @@ def copy_bench_files(archive_path, archive_workload_dir_name, result_path):
             print(f"\033[91mMaximum retries reached ({retry}). File {archive_file_path} copy failed.\033[0m")
   
 def main(workload_config_path, output_path, swift_configs):
-    
     if swift_configs:
        copy_swift_conf(swift_configs)
 
-    if workload_config_path is not None:
-       start_time, end_time, result_file_path = submit(workload_config_path, output_path)
-       return start_time, end_time, result_file_path
+    if os.path.exists(workload_config_path):
+        if output_path is not None:
+            start_time, end_time, result_file_path = submit(workload_config_path, output_path)
+            return start_time, end_time, result_file_path  
+        else:
+            print(f"\033[91mWARNING: output dir doesn't define !\033[0m")
+    else:
+        print(f"\033[91mWARNING: workload file doesn't exist !\033[0m")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Monster Benchmark')
@@ -222,10 +229,8 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', help='Output directory')
     parser.add_argument('-cr', '--conf_and_ring', help='ring directory')
     args = parser.parse_args()
-
     swift_configs = {}
     if args.conf_and_ring:
         for filename in os.listdir(args.conf_and_ring):
             swift_configs[filename] = os.path.join(args.conf_and_ring, filename)
-
     main(workload_config_path=args.input, output_path=args.output, swift_configs=swift_configs)
