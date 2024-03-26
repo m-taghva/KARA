@@ -217,7 +217,7 @@ def restore(data_loaded):
                 print("error") 
 
 ##### BACKUP PARTS #####
-def backup(time_range, inputs, delete, data_loaded):
+def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swift_info):
     if time_range is None:
         time_range = data_loaded['default'].get('time')
     if inputs is not None:
@@ -236,7 +236,7 @@ def backup(time_range, inputs, delete, data_loaded):
     start_time_str, end_time_str = time_range.split(',')
     margin_start, margin_end = map(int, data_loaded['default'].get('time_margin').split(',')) 
     start_time_backup, end_time_backup, time_dir_name = convert_time(start_time_str, end_time_str, margin_start, margin_end)
-    total_steps = 2 + (len(data_loaded['db_sources']) * 6 + sum([len(data_loaded["db_sources"][x]["databases"]) for x in data_loaded["db_sources"]]) + len(data_loaded['swift']) * 16)
+    total_steps = 2 + (len(data_loaded['db_sources']) * 6 + sum([len(data_loaded["db_sources"][x]["databases"]) for x in data_loaded["db_sources"]]) + len(data_loaded['swift']) * 6)
     with alive_bar(total_steps, title=f'\033[1mProcessing Backup\033[0m:\033[92m {start_time_str} - {end_time_str}\033[0m') as bar:
 
         subprocess.run(f"sudo mkdir -p {backup_dir}", shell=True)
@@ -359,22 +359,23 @@ def backup(time_range, inputs, delete, data_loaded):
                 sys.exit(1)
 
             # get swift config files and monster services
-            get_swift_conf = f"ssh -p {port} {user}@{ip} 'docker exec {container_name} swift-init all status' > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-swift-status.txt ; "
-            get_swift_conf += f"ssh -p {port} {user}@{ip} 'docker exec {container_name} service --status-all' > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-services-container.txt 2>&1 ; "
-            get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/container-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-container-server.conf ; "
-            get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/account-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-account-server.conf ; "
-            get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/proxy-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-proxy-server.conf ; "
-            get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/account.builder > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-account-ring.txt ; "
-            get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/container.builder > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-container-ring.txt ; "
-            get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/object.builder > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-object-ring.txt ; "
-            get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/object-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-object-server.conf ; "
-            get_swift_conf += f"ssh -p {port} {user}@{ip} docker inspect {container_name} > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-docker-inspect.txt "
-            get_swift_conf_process = subprocess.run(get_swift_conf, shell=True)
-            if get_swift_conf_process.returncode == 0:
-                bar()
-            else:
-                print("\033[91mget swift configs and monster services failed.\033[0m")
-                sys.exit(1)
+            if swift_info:
+                get_swift_conf = f"ssh -p {port} {user}@{ip} 'docker exec {container_name} swift-init all status' > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-swift-status.txt ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} 'docker exec {container_name} service --status-all' > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-services-container.txt 2>&1 ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/container-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-container-server.conf ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/account-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-account-server.conf ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/proxy-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-proxy-server.conf ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/account.builder > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-account-ring.txt ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/container.builder > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-container-ring.txt ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/object.builder > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-object-ring.txt ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/object-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-object-server.conf ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker inspect {container_name} > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-docker-inspect.txt "
+                get_swift_conf_process = subprocess.run(get_swift_conf, shell=True)
+                if get_swift_conf_process.returncode == 0:
+                    time.sleep(1)
+                else:
+                    print("\033[91mget swift configs and monster services failed.\033[0m")
+                    sys.exit(1)
 
             # extract docker compose file path and copy it
             docker_compose = f"ssh -p {port} {user}@{ip} docker inspect {container_name}"
@@ -411,92 +412,94 @@ def backup(time_range, inputs, delete, data_loaded):
                 bar()
 
             #### Execute commands to gather hardware information ####
-            lshw_command = f"ssh -p {port} {user}@{ip} sudo lshw > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lshw-host.txt"
-            lshw_process = subprocess.run(lshw_command, shell=True, capture_output=True, text=True)
-            if lshw_process.returncode == 0:
-                bar()
-            elif "command not found" in lshw_process.stderr:
-                print("\033[91mlshw is not installed. Please install it.\033[0m")
-            else:
-                print("\033[91m lshw failed.\033[0m")
-                sys.exit(0)
+            if hardware_info:
+                lshw_command = f"ssh -p {port} {user}@{ip} sudo lshw > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lshw-host.txt"
+                lshw_process = subprocess.run(lshw_command, shell=True, capture_output=True, text=True)
+                if lshw_process.returncode == 0:
+                    time.sleep(1)
+                elif "command not found" in lshw_process.stderr:
+                    print("\033[91mlshw is not installed. Please install it.\033[0m")
+                else:
+                    print("\033[91m lshw failed.\033[0m")
+                    sys.exit(0)
 
-            lscpu_command = f"ssh -p {port} {user}@{ip} sudo lscpu > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lscpu-host.txt"
-            lscpu_process = subprocess.run(lscpu_command, shell=True)
-            if lscpu_process.returncode == 0:
-                bar()
-            elif "command not found" in lscpu_process.stderr:
-                print("\033[91mlscpu is not installed. Please install it.\033[0m")
-            else:
-                print("\033[91m lscpu failed.\033[0m")
-                sys.exit(0)
+                lscpu_command = f"ssh -p {port} {user}@{ip} sudo lscpu > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lscpu-host.txt"
+                lscpu_process = subprocess.run(lscpu_command, shell=True)
+                if lscpu_process.returncode == 0:
+                    time.sleep(1)
+                elif "command not found" in lscpu_process.stderr:
+                    print("\033[91mlscpu is not installed. Please install it.\033[0m")
+                else:
+                    print("\033[91m lscpu failed.\033[0m")
+                    sys.exit(0)
 
-            lsmem_command = f"ssh -p {port} {user}@{ip} sudo lsmem > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lsmem-host.txt"
-            lsmem_process = subprocess.run(lsmem_command, shell=True)
-            if lsmem_process.returncode == 0:
-                bar()
-            elif "command not found" in lsmem_process.stderr:
-                print("\033[91mlsmem is not installed. Please install it.\033[0m")
-            else:
-                print("\033[91m lamem failed.\033[0m")
-                sys.exit(0)
+                lsmem_command = f"ssh -p {port} {user}@{ip} sudo lsmem > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lsmem-host.txt"
+                lsmem_process = subprocess.run(lsmem_command, shell=True)
+                if lsmem_process.returncode == 0:
+                    time.sleep(1)
+                elif "command not found" in lsmem_process.stderr:
+                    print("\033[91mlsmem is not installed. Please install it.\033[0m")
+                else:
+                    print("\033[91m lamem failed.\033[0m")
+                    sys.exit(0)
 
-            lspci_command = f"ssh -p {port} {user}@{ip} sudo lspci > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lspci-host.txt"
-            lspci_process = subprocess.run(lspci_command, shell=True)
-            if lspci_process.returncode == 0:
-                bar()
-            elif "command not found" in lspci_process.stderr:
-                print("\033[91mlspci is not installed. Please install it.\033[0m")
-            else:
-                print("\033[91m lspci failed.\033[0m")
-                sys.exit(0)
+                lspci_command = f"ssh -p {port} {user}@{ip} sudo lspci > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lspci-host.txt"
+                lspci_process = subprocess.run(lspci_command, shell=True)
+                if lspci_process.returncode == 0:
+                    time.sleep(1)
+                elif "command not found" in lspci_process.stderr:
+                    print("\033[91mlspci is not installed. Please install it.\033[0m")
+                else:
+                    print("\033[91m lspci failed.\033[0m")
+                    sys.exit(0)
          
             #### Execute commands to gather OS information ####
-            sysctl_command = f"ssh -p {port} {user}@{ip} sudo sysctl -a > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-sysctl-host.txt"
-            sysctl_process = subprocess.run(sysctl_command, shell=True)
-            if sysctl_process.returncode == 0:
-                bar()
-            elif "command not found" in sysctl_process.stderr:
-                print("\033[91msysctl is not installed. Please install it.\033[0m")
-            else:
-                print("\033[91m sysctl failed.\033[0m")
-                sys.exit(0)
+            if os_info:
+                sysctl_command = f"ssh -p {port} {user}@{ip} sudo sysctl -a > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-sysctl-host.txt"
+                sysctl_process = subprocess.run(sysctl_command, shell=True)
+                if sysctl_process.returncode == 0:
+                    time.sleep(1)
+                elif "command not found" in sysctl_process.stderr:
+                    print("\033[91msysctl is not installed. Please install it.\033[0m")
+                else:
+                    print("\033[91m sysctl failed.\033[0m")
+                    sys.exit(0)
 
-            ps_aux_command = f"ssh -p {port} {user}@{ip} sudo ps -aux > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-ps-aux-host.txt"
-            ps_aux_process = subprocess.run(ps_aux_command, shell=True)
-            if ps_aux_process.returncode == 0:
-                bar()
-            else:
-                print("\033[91m ps_aux failed.\033[0m")
-                sys.exit(0)
+                ps_aux_command = f"ssh -p {port} {user}@{ip} sudo ps -aux > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-ps-aux-host.txt"
+                ps_aux_process = subprocess.run(ps_aux_command, shell=True)
+                if ps_aux_process.returncode == 0:
+                    time.sleep(1)
+                else:
+                    print("\033[91m ps_aux failed.\033[0m")
+                    sys.exit(0)
 
-            list_unit_command = f"ssh -p {port} {user}@{ip} sudo systemctl list-units > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-list-units-host.txt"
-            list_unit_process = subprocess.run(list_unit_command, shell=True)
-            if list_unit_process.returncode == 0:
-                bar()
-            else:
-                print("\033[91m list_unit failed.\033[0m")
-                sys.exit(0)
+                list_unit_command = f"ssh -p {port} {user}@{ip} sudo systemctl list-units > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-list-units-host.txt"
+                list_unit_process = subprocess.run(list_unit_command, shell=True)
+                if list_unit_process.returncode == 0:
+                    time.sleep(1)
+                else:
+                    print("\033[91m list_unit failed.\033[0m")
+                    sys.exit(0)
 
-            lsmod_command = f"ssh -p {port} {user}@{ip} sudo lsmod > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-lsmod-host.txt"
-            lsmod_process = subprocess.run(lsmod_command, shell=True)
-            if lsmod_process.returncode == 0:
-                bar()
-            elif "command not found" in lsmod_process.stderr:
-                print("\033[91mlsmod is not installed. Please install it.\033[0m")
-            else:
-                print("\033[91m lsmod failed.\033[0m")
-                sys.exit(0)
-            
-            lsof_command = f"ssh -p {port} {user}@{ip} sudo lsof > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-lsof-host.txt 2>&1"
-            lsof_process = subprocess.run(lsof_command, shell=True)
-            if lsof_process.returncode == 0:
-                bar()
-            elif "command not found" in lsof_process.stderr:
-                print("\033[91mlsof is not installed. Please install it.\033[0m")
-            else:
-                print("\033[91m lsof failed.\033[0m")
-                sys.exit(0)
+                lsmod_command = f"ssh -p {port} {user}@{ip} sudo lsmod > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-lsmod-host.txt"
+                lsmod_process = subprocess.run(lsmod_command, shell=True)
+                if lsmod_process.returncode == 0:
+                    time.sleep(1)
+                elif "command not found" in lsmod_process.stderr:
+                    print("\033[91mlsmod is not installed. Please install it.\033[0m")
+                else:
+                    print("\033[91m lsmod failed.\033[0m")
+                    sys.exit(0)
+                
+                lsof_command = f"ssh -p {port} {user}@{ip} sudo lsof > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-lsof-host.txt 2>&1"
+                lsof_process = subprocess.run(lsof_command, shell=True)
+                if lsof_process.returncode == 0:
+                    time.sleep(1)
+                elif "command not found" in lsof_process.stderr:
+                    print("\033[91mlsof is not installed. Please install it.\033[0m")
+                else:
+                    print("\033[91m lsof failed.\033[0m")
+                    sys.exit(0)
             
             # remove /influxdb-backup/time_dir from container and host
             rm_cont_host_dir_command =  f"ssh -p {port} {user}@{ip} sudo rm -rf {backup_dir}-tmp/* ; ssh -p {port} {user}@{ip} sudo docker exec {container_name} rm -rf {backup_dir}-tmp/* "
@@ -526,12 +529,12 @@ def backup(time_range, inputs, delete, data_loaded):
                 print("\033[91mRemove time dir inside output dir failed.\033[0m")
                 sys.exit(1)
             
-def main(time_range, inputs, delete, backup_restore):
+def main(time_range, inputs, delete, backup_restore, hardware_info, software_info, swift_info):
     data_loaded = load_config(config_file)
     if backup_restore: 
         restore(data_loaded)
     else:
-        backup(time_range, inputs, delete, data_loaded)
+        backup(time_range, inputs, delete, data_loaded, hardware_info, software_info, swift_info)
 
 if __name__ == "__main__":
     # Command-line argument parsing
@@ -540,5 +543,8 @@ if __name__ == "__main__":
     argParser.add_argument("-d", "--delete", action="store_true", help="Remove the original time dir inside output dir")
     argParser.add_argument("-i", "--inputs", help="Input paths for copying to result")
     argParser.add_argument("-r", "--restore", action="store_true", help="run restore function")
+    argParser.add_argument("-hw", "--hardware_info", action="store_true", help="take hardware info from monster")
+    argParser.add_argument("-sw", "--software_info", action="store_true", help="take os info from monster")
+    argParser.add_argument("-sw", "--swift_info", action="store_true", help="take swift info from monster")
     args = argParser.parse_args()
-    main(time_range=args.time_range, inputs=args.inputs.split(',') if args.inputs is not None else args.inputs, delete=args.delete, backup_restore=args.restore)
+    main(time_range=args.time_range, inputs=args.inputs.split(',') if args.inputs is not None else args.inputs, delete=args.delete, backup_restore=args.restore, hardware_info=args.hardware_info, software_info=args.software_info, swift_info=args.swift_info)
