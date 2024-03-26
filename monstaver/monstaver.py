@@ -217,7 +217,7 @@ def restore(data_loaded):
                 print("error") 
 
 ##### BACKUP PARTS #####
-def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swift_info):
+def backup(time_range, inputs, delete, data_loaded, hardware_info, software_info, swift_info):
     if time_range is None:
         time_range = data_loaded['default'].get('time')
     if inputs is not None:
@@ -454,7 +454,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                     sys.exit(0)
          
             #### Execute commands to gather OS information ####
-            if os_info:
+            if software_info:
                 sysctl_command = f"ssh -p {port} {user}@{ip} sudo sysctl -a > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-sysctl-host.txt"
                 sysctl_process = subprocess.run(sysctl_command, shell=True)
                 if sysctl_process.returncode == 0:
