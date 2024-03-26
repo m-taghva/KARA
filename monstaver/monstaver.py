@@ -6,6 +6,7 @@ import argparse
 import sys
 import pytz
 import yaml
+import json
 from alive_progress import alive_bar
 
 config_file = "/etc/KARA/monstaver.conf"
@@ -235,7 +236,7 @@ def backup(time_range, inputs, delete, data_loaded):
     start_time_str, end_time_str = time_range.split(',')
     margin_start, margin_end = map(int, data_loaded['default'].get('time_margin').split(',')) 
     start_time_backup, end_time_backup, time_dir_name = convert_time(start_time_str, end_time_str, margin_start, margin_end)
-    total_steps = 2 + (len(data_loaded['db_sources']) * 6 + sum([len(data_loaded["db_sources"][x]["databases"]) for x in data_loaded["db_sources"]]) + len(data_loaded['swift']) * 15)
+    total_steps = 2 + (len(data_loaded['db_sources']) * 6 + sum([len(data_loaded["db_sources"][x]["databases"]) for x in data_loaded["db_sources"]]) + len(data_loaded['swift']) * 16)
     with alive_bar(total_steps, title=f'\033[1mProcessing Backup\033[0m:\033[92m {start_time_str} - {end_time_str}\033[0m') as bar:
 
         subprocess.run(f"sudo mkdir -p {backup_dir}", shell=True)
@@ -327,7 +328,15 @@ def backup(time_range, inputs, delete, data_loaded):
                 time.sleep(1)
             else:
                 print("\033[91mCopy paths failed.\033[0m")
-                sys.exit(1)  
+                sys.exit(0)
+        # copy monstaver config file in backup
+        monstaver_conf = f"sudo cp {config_file} {backup_dir}/{time_dir_name}/other_info/"
+        monstaver_conf_process =  subprocess.run(monstaver_conf, shell=True)
+        if monstaver_conf_process.returncode == 0:
+            time.sleep(1)
+        else:
+            print("\033[91mCopy monstaver config failed.\033[0m")
+            sys.exit(0)
 
         # copy ring and config to output
         for key,value in data_loaded['swift'].items():
@@ -366,7 +375,20 @@ def backup(time_range, inputs, delete, data_loaded):
             else:
                 print("\033[91mget swift configs and monster services failed.\033[0m")
                 sys.exit(1)
-         
+
+            # extract docker compose file path and copy it
+            docker_compose = f"ssh -p {port} {user}@{ip} docker inspect {container_name}"
+            docker_compose_process = subprocess.run(docker_compose, shell=True, capture_output=True, text=True)
+            if docker_compose_process.returncode == 0:
+                inspect_result = json.loads(docker_compose_process.stdout)
+                docker_compose_file = inspect_result[0]['Config']['Labels'].get('com.docker.compose.project.config_files')
+                docker_compose_path = inspect_result[0]['Config']['Labels'].get('com.docker.compose.project.working_dir')
+                docker_compose_result = os.path.join(docker_compose_path,docker_compose_file)
+            copy_compose_file = f"scp -r -P {port} {user}@{ip}:{docker_compose_result} {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/ > /dev/null 2>&1"
+            copy_compose_file_process = subprocess.run(copy_compose_file, shell=True)
+            if copy_compose_file_process.returncode == 0:
+                bar()
+
             # copy etc dir from container to host
             get_etc_command =  f"ssh -p {port} {user}@{ip} 'sudo docker cp {container_name}:/etc  {backup_dir}-tmp/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-etc-container/'"
             get_etc_process = subprocess.run(get_etc_command, shell=True)
@@ -519,4 +541,4 @@ if __name__ == "__main__":
     argParser.add_argument("-i", "--inputs", help="Input paths for copying to result")
     argParser.add_argument("-r", "--restore", action="store_true", help="run restore function")
     args = argParser.parse_args()
-    main(time_range=args.time_range , inputs=args.inputs.split(','), delete=args.delete, backup_restore=args.restore)
+    main(time_range=args.time_range, inputs=args.inputs.split(',') if args.inputs is not None else args.inputs, delete=args.delete, backup_restore=args.restore)
