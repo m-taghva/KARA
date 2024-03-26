@@ -10,15 +10,13 @@ import yaml
 import json
 
 config_file = "/etc/KARA/mrbench.conf"
-pre_test_script = "./../mrbench/pre_test_script2.sh"
+pre_test_script = "./../mrbench/pre_test_script.sh"
 
 # For font style
 BOLD = "\033[1m"
 RESET = "\033[0m"
 YELLOW = "\033[1;33m"
-print("")
 print(f"{YELLOW}========================================{RESET}")
-
 def load_config(config_file):
     with open(config_file, "r") as stream:
         try:
