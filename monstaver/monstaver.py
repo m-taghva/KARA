@@ -7,6 +7,7 @@ import sys
 import pytz
 import yaml
 import json
+import swiftclient
 from alive_progress import alive_bar
 
 config_file = "/etc/KARA/monstaver.conf"
@@ -217,7 +218,7 @@ def restore(data_loaded):
                 print("error") 
 
 ##### BACKUP PARTS #####
-def backup(time_range, inputs, delete, data_loaded, hardware_info, software_info, swift_info):
+def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swift_info):
     if time_range is None:
         time_range = data_loaded['default'].get('time')
     if inputs is not None:
@@ -232,6 +233,10 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, software_info
         else:
             inputs = []
             
+    auth_url = data_loaded['default'].get('auth_url')
+    username = data_loaded['default'].get('username')
+    password = data_loaded['default'].get('password')
+    cont_name = data_loaded['default'].get('cont_name')
     backup_dir = data_loaded['default'].get('backup_output')
     start_time_str, end_time_str = time_range.split(',')
     margin_start, margin_end = map(int, data_loaded['default'].get('time_margin').split(',')) 
@@ -454,7 +459,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, software_info
                     sys.exit(0)
          
             #### Execute commands to gather OS information ####
-            if software_info:
+            if os_info:
                 sysctl_command = f"ssh -p {port} {user}@{ip} sudo sysctl -a > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-sysctl-host.txt"
                 sysctl_process = subprocess.run(sysctl_command, shell=True)
                 if sysctl_process.returncode == 0:
@@ -528,13 +533,21 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, software_info
             else:
                 print("\033[91mRemove time dir inside output dir failed.\033[0m")
                 sys.exit(1)
-            
-def main(time_range, inputs, delete, backup_restore, hardware_info, software_info, swift_info):
+        # upload backup tar file to monster drive
+        #conn = swiftclient.Connection(authurl=auth_url, user=username, key=password, auth_version='1.0')
+        #file_to_upload = f"{backup_dir}/{time_dir_name}.tar.gz"
+        #object_name_in_swift = f"{time_dir_name}.kara"
+        # Upload file to Swift
+        #with open(file_to_upload, 'rb') as f:
+        #    conn.put_object(cont_name, object_name_in_swift, contents=f.read())
+        #print("File uploaded successfully to Swift!")
+
+def main(time_range, inputs, delete, backup_restore, hardware_info, os_info, swift_info):
     data_loaded = load_config(config_file)
     if backup_restore: 
         restore(data_loaded)
     else:
-        backup(time_range, inputs, delete, data_loaded, hardware_info, software_info, swift_info)
+        backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swift_info)
 
 if __name__ == "__main__":
     # Command-line argument parsing
@@ -544,7 +557,7 @@ if __name__ == "__main__":
     argParser.add_argument("-i", "--inputs", help="Input paths for copying to result")
     argParser.add_argument("-r", "--restore", action="store_true", help="run restore function")
     argParser.add_argument("-hw", "--hardware_info", action="store_true", help="take hardware info from monster")
-    argParser.add_argument("-sw", "--software_info", action="store_true", help="take os info from monster")
+    argParser.add_argument("-os", "--os_info", action="store_true", help="take os info from monster")
     argParser.add_argument("-sw", "--swift_info", action="store_true", help="take swift info from monster")
     args = argParser.parse_args()
-    main(time_range=args.time_range, inputs=args.inputs.split(',') if args.inputs is not None else args.inputs, delete=args.delete, backup_restore=args.restore, hardware_info=args.hardware_info, software_info=args.software_info, swift_info=args.swift_info)
+    main(time_range=args.time_range, inputs=args.inputs.split(',') if args.inputs is not None else args.inputs, delete=args.delete, backup_restore=args.restore, hardware_info=args.hardware_info, os_info=args.os_info, swift_info=args.swift_info)
