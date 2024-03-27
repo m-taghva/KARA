@@ -92,7 +92,7 @@ def mrbench_agent(config_params, config_file, config_output):
                     if run_status_reporter == 'csv,img':
                         status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
                 if run_monstaver:
-                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, software_info=True, swift_info=True) 
+                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True) 
     # Extract first start time and last end time
     first_start_time = all_start_times[0] ; last_end_time = all_end_times[-1] 
     return first_start_time, last_end_time
@@ -108,12 +108,12 @@ def monstaver_agent(config_params, config_file, first_start_time, last_end_time)
             for time_range in times:
                 start_time, end_time = time_range.strip().split(',')
                 if operation == "backup":
-                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None, hardware_info=True, software_info=True, swift_info=True)
+                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None, hardware_info=True, os_info=True, swift_info=True)
                 elif operation == "restore":
                     monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)          
     elif operation == "backup": 
         if batch_mode:
-            monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, software_info=True, swift_info=True)
+            monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True)
     elif operation == "restore":
         monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)
 
