@@ -117,36 +117,41 @@ def submit(workload_config_path, output_path):
     if os.path.exists(workload_config_path):
         print("Sending workload ...")
         # Start workload
-        Cos_bench_command = subprocess.run(["cosbench", "submit", workload_config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-        if Cos_bench_command.returncode == 1:
-            print("\033[91mStarting workload failed.\033[0m")
-            return None, None, -1
-        # Extract ID of workload
-        output_lines = Cos_bench_command.stdout.splitlines()
-        workload_id_regex = re.search('(?<=ID:\s)(w\d+)', output_lines[0])
-        workload_name = workload_config_path.split('/')[-1].replace('.xml','')
-        if workload_id_regex:
-            workload_id = workload_id_regex.group()
-            print(f"\033[1mWorkload Info:\033[0m ID: {workload_id} Name: {workload_name}")
+        cosbench_active_workload = subprocess.run(['cosbench', 'info'], capture_output=True, text=True)
+        if "Total: 0 active workloads" in cosbench_active_workload.stdout:
+            Cos_bench_command = subprocess.run(["cosbench", "submit", workload_config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+            if Cos_bench_command.returncode == 1:
+                print("\033[91mStarting workload failed.\033[0m")
+                return None, None, -1
+            # Extract ID of workload
+            output_lines = Cos_bench_command.stdout.splitlines()
+            workload_id_regex = re.search('(?<=ID:\s)(w\d+)', output_lines[0])
+            workload_name = workload_config_path.split('/')[-1].replace('.xml','')
+            if workload_id_regex:
+                workload_id = workload_id_regex.group()
+                print(f"\033[1mWorkload Info:\033[0m ID: {workload_id} Name: {workload_name}")
+            else:
+                print("\033[91mStarting workload failed.\033[0m")
+                return None, None, -1
+            # Check every second if the workload has ended or not
+            archive_file_path = f"{archive_path}{workload_id}-swift-sample"
+            while True:
+                if os.path.exists(archive_file_path):
+                    time.sleep(5) 
+                    break
+                time.sleep(5)
+            result_path = create_test_dir(output_path, workload_name)
+            archive_workload_dir_name = f"{workload_id}-swift-sample"
+            print(f"Result Path: {result_path}")
+            cosbench_info = f"cosbench info > {result_path}/cosbench.info"
+            cosbench_info_result = subprocess.run(cosbench_info, shell=True, capture_output=True, text=True)
+            # run other functions 
+            start_time, end_time = save_time(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv", result_path)
+            copy_bench_files(archive_path, archive_workload_dir_name, result_path)
+            return  start_time, end_time, result_path
         else:
-            print("\033[91mStarting workload failed.\033[0m")
+            print(f"\033[91mYou have actived workload so new workload can't run\033[0m")
             return None, None, -1
-        # Check every second if the workload has ended or not
-        archive_file_path = f"{archive_path}{workload_id}-swift-sample"
-        while True:
-            if os.path.exists(archive_file_path):
-                time.sleep(5) 
-                break
-            time.sleep(5)
-        result_path = create_test_dir(output_path, workload_name)
-        archive_workload_dir_name = f"{workload_id}-swift-sample"
-        print(f"Result Path: {result_path}")
-        cosbench_info = f"cosbench info > {result_path}/cosbench.info"
-        cosbench_info_result = subprocess.run(cosbench_info, shell=True, capture_output=True, text=True)
-        # run other functions 
-        start_time, end_time = save_time(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv", result_path)
-        copy_bench_files(archive_path, archive_workload_dir_name, result_path)
-        return  start_time, end_time, result_path
     else:
         print(f"\033[91mWARNING: workload file doesn't exist !\033[0m")
 
