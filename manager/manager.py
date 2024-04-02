@@ -199,6 +199,12 @@ if __name__ == "__main__":
     config_file = args.scenario_name
     # Set up logging
     log_level = load_config(config_file)['log'].get('level')
-    log_level_int = getattr(logging, log_level.upper())
-    logging.basicConfig(filename='/var/log/kara.log', level=log_level_int , format='%(asctime)s - %(levelname)s - %(message)s')
+    if log_level is not None:
+        log_level_int = getattr(logging, log_level.upper(), None)
+        if not isinstance(log_level_int, int):
+            print(f"\033[91mInvalid log level:{log_level}\033[0m")
+        else:
+            logging.basicConfig(filename='/var/log/kara.log', level=log_level_int , format='%(asctime)s - %(levelname)s - %(message)s')
+    else:
+        print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
     main()
