@@ -7,7 +7,6 @@ import sys
 import pytz
 import yaml
 import json
-import swiftclient
 from alive_progress import alive_bar
 
 config_file = "/etc/KARA/monstaver.conf"
@@ -233,10 +232,6 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
         else:
             inputs = []
             
-    auth_url = data_loaded['default'].get('auth_url')
-    username = data_loaded['default'].get('username')
-    password = data_loaded['default'].get('password')
-    cont_name = data_loaded['default'].get('cont_name')
     backup_dir = data_loaded['default'].get('backup_output')
     start_time_str, end_time_str = time_range.split(',')
     margin_start, margin_end = map(int, data_loaded['default'].get('time_margin').split(',')) 
@@ -533,14 +528,19 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
             else:
                 print("\033[91mRemove time dir inside output dir failed.\033[0m")
                 sys.exit(1)
-        # upload backup tar file to monster drive
-        #conn = swiftclient.Connection(authurl=auth_url, user=username, key=password, auth_version='1.0')
-        #file_to_upload = f"{backup_dir}/{time_dir_name}.tar.gz"
-        #object_name_in_swift = f"{time_dir_name}.kara"
-        # Upload file to Swift
-        #with open(file_to_upload, 'rb') as f:
-        #    conn.put_object(cont_name, object_name_in_swift, contents=f.read())
-        #print("File uploaded successfully to Swift!")
+                
+        # upload backup tar file to monster 
+        auth_url = data_loaded['default'].get('auth_url')
+        username = data_loaded['default'].get('username')
+        password = data_loaded['default'].get('password')
+        cont_name = data_loaded['default'].get('cont_name')
+        if auth_url and username and password and cont_name:
+            upload_backup = f"swift -A {auth_url} -U {username} -K {password} upload {cont_name} {backup_dir}/{time_dir_name}.tar.gz > /dev/null 2>&1"
+            upload_backup_process = subprocess.run(upload_backup, shell=True)
+            if upload_backup_process.returncode == 0:
+                time.sleep(1)
+            else:
+                print("\033[91mupload backup to monster failed.\033[0m")
 
 def main(time_range, inputs, delete, backup_restore, hardware_info, os_info, swift_info):
     data_loaded = load_config(config_file)
