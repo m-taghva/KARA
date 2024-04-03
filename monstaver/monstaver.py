@@ -7,6 +7,7 @@ import sys
 import pytz
 import yaml
 import json
+import requests
 from alive_progress import alive_bar
 
 config_file = "/etc/KARA/monstaver.conf"
@@ -530,17 +531,26 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                 sys.exit(1)
                 
         # upload backup tar file to monster 
-        auth_url = data_loaded['default'].get('auth_url')
+        token_url = data_loaded['default'].get('token_url')
+        public_url = data_loaded['default'].get('public_url')
         username = data_loaded['default'].get('username')
         password = data_loaded['default'].get('password')
         cont_name = data_loaded['default'].get('cont_name')
-        if auth_url and username and password and cont_name:
-            upload_backup = f"swift -A {auth_url} -U {username} -K {password} upload {cont_name} {backup_dir}/{time_dir_name}.tar.gz > /dev/null 2>&1"
-            upload_backup_process = subprocess.run(upload_backup, shell=True)
-            if upload_backup_process.returncode == 0:
-                time.sleep(1)
+        if token_url and username and password and cont_name and public_url:
+            heads = {f"X-Storage-User":username,"X-Storage-Pass":password}
+            response = requests.get(token_url,headers=heads)
+            token = response.headers["X-Auth-Token"]
+            headers = {"X-Auth-Token": token}
+            create_container = requests.put(f"{public_url}/{cont_name}", headers=headers)
+            if create_container.status_code == "200" or "201" or "202":
+                upload_backup = f"curl -X PUT -T {backup_dir}/{time_dir_name}.tar.gz -H 'X-Auth-Token:{token}' {public_url}/{cont_name}/{time_dir_name}.tar.gz"
+                upload_backup_process = subprocess.run(upload_backup, shell=True)
+                if upload_backup_process.returncode == 0:
+                    time.sleep(1)
+                else:
+                    print("\033[91mupload backup to monster failed.\033[0m")
             else:
-                print("\033[91mupload backup to monster failed.\033[0m")
+                print("\033[91mcreate container in monster fail before upload backup.\033[0m")
 
 def main(time_range, inputs, delete, backup_restore, hardware_info, os_info, swift_info):
     data_loaded = load_config(config_file)
