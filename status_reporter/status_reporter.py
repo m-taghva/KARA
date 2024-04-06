@@ -36,7 +36,7 @@ def get_metrics_from_file(metric_file_path):
     return metrics
                             
 def main(metric_file, path_dir, time_range, img=False):
-    metric_file= metric_file.split(',') if metric_file else [] 
+    metric_file= metric_file.split(',') if metric_file else []
     path_dir= path_dir if path_dir else "." 
     time_range = time_range if time_range else load_config(config_file).get('time', [])['time_range']
     # Load configuration from config file
@@ -66,9 +66,8 @@ def main(metric_file, path_dir, time_range, img=False):
     metric_operations = []
     if metric_file:
         # Extract metric operations from file names in the command-line argument
-        metric_files_command = metric_file
-        metric_operations = [os.path.basename(metric_file).split('_')[0] for metric_file in metric_files_command]
-        metric_operation_mapping = dict(zip(metric_files_command, metric_operations))
+        metric_operations = [os.path.basename(metric_file).split('_')[0] for metric_file in metric_file]
+        metric_operation_mapping = dict(zip(metric_file, metric_operations))
     else:
         # Read metric file paths and operations from the configuration file
         for metric_operation, metric_file in data_loaded.get('metrics', {}).items():
