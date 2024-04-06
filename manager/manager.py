@@ -94,9 +94,9 @@ def mrbench_agent(config_params, config_file, config_output):
                 all_start_times.append(start_time) ; all_end_times.append(end_time)
                 if run_status_reporter is not None:
                     if run_status_reporter == 'csv':
-                        status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=False)  
+                        status_reporter.main(metric_file=None, path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=False)  
                     if run_status_reporter == 'csv,img':
-                        status_reporter.main(path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
+                        status_reporter.main(metric_file=None, path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
                 if run_monstaver:
                     monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True) 
     # Extract first start time and last end time
@@ -134,7 +134,7 @@ def status_reporter_agent(config_params):
             times = file.readlines()
             for time_range in times:
                 start_time, end_time = time_range.strip().split(',')
-                status_reporter.main(path_dir=result_dir, time_range=f"{start_time},{end_time}", img=image_generate)
+                status_reporter.main(metric_file=None, path_dir=result_dir, time_range=f"{start_time},{end_time}", img=image_generate)
 
 def status_analyzer_agent(config_params):
     logging.info("Executing status_analyzer_agent function")
