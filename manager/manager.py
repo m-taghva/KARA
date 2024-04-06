@@ -23,9 +23,44 @@ def load_config(config_file):
     return data_loaded
 
 def config_gen_agent(config_params):
-    logging.info("Executing config_gen_agent function")
+    logging.info("Executing config_gen agent function")
     input_files = config_params.get('conf_templates', [])
-    config_output = config_params.get('output_path') 
+    config_output = config_params.get('output_path')
+    while True:
+        if os.listdir(config_output):
+            print(f"Output directory {config_output} is not empty and includes these files and directories:")
+            for item in os.listdir(config_output):
+                print(f"\033[91m{item}\033[0m")
+            # Ask user if they want to remove the contents
+            print("Do you want to remove these files and directories? (yes/no): ", end='', flush=True)
+            # Set up a timer for 20 seconds
+            rlist, _, _ = select.select([sys.stdin], [], [], 20)
+            if rlist:
+                response = input().lower() 
+                if response in ('y', 'yes'):
+                    response = 'yes'
+                elif response in ('n', 'no'):
+                    response = 'no'
+            else:
+                response = "yes" # If no input after 20 seconds, consider it as "yes"
+                
+            if response == 'yes':
+                # Remove all files and directories in the output directory
+                for item in os.listdir(config_output):
+                    item_path = os.path.join(config_output, item)
+                    if os.path.isfile(item_path):
+                        os.remove(item_path)
+                    elif os.path.isdir(item_path):
+                        rm__config_output_dir = subprocess.run(f"sudo rm -rf {item_path}", shell=True)
+                print("\033[92mContents removed successfully.\033[0m")
+                break
+            elif response == 'no':
+                print("\033[1;33mLeaving existing contents untouched.\033[0m")
+                break
+            else:
+                print("\033[91mInvalid input. Please enter 'yes' or 'no'\033[0m")
+        else:
+            break    
     for input_file in input_files:
         firstConfNumber = 1
         # Create output directory for each input file
