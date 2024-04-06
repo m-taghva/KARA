@@ -61,5 +61,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     input_file_path= args.input
     output_directory=args.output
-    conf_num = int(args.conf_number) if args.conf_number is not None else 1
+    conf_num = int(args.conf_num) if args.conf_num is not None else 1
     main(input_file_path, output_directory, conf_num)

@@ -10,7 +10,7 @@ import yaml
 import json
 
 config_file = "/etc/KARA/mrbench.conf"
-pre_test_script = "./../mrbench/pre_test_script.sh"
+pre_test_script = "./../mrbench/pre_test_script2.sh"
 
 # For font style
 BOLD = "\033[1m"
@@ -47,15 +47,18 @@ def copy_swift_conf(swift_configs):
                 for filename, filepath in swift_configs.items(): 
                     each_scp_successful = False 
                     if filename.endswith(".gz"):
-                        diff_ring_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/rings/{filename}' | diff - {filepath}"
+                        diff_ring_command = f"ssh -p {port} {user}@{ip} 'sudo cat {inspect_value}/rings/{filename}' | diff - {filepath}"
                         diff_ring_result = subprocess.run(diff_ring_command, shell=True, capture_output=True, text=True)
                         print("")
                         print(f"please wait for checking ring file [ {filename} ] inside {container_name}")
                         if diff_ring_result.stderr == "":
                             if diff_ring_result.stdout != "":
-                                copy_ring_command = f"scp -r -P {port} {filepath} {user}@{ip}:{inspect_value}/rings > /dev/null 2>&1"
-                                copy_ring_process = subprocess.run(copy_ring_command, shell=True)
-                                if copy_ring_process.returncode == 0:
+                                mkdir_tmp_rings = subprocess.run(f"ssh -p {port} {user}@{ip} sudo mkdir /tmp/rings/ > /dev/null 2>&1", shell=True)
+                                copy_ring_command = f"scp -r -P {port} {filepath} {user}@{ip}:/tmp/rings/ > /dev/null 2>&1"
+                                copy_ring_command_process = subprocess.run(copy_ring_command, shell=True)
+                                move_tmp_root_rings = f"ssh -p {port} {user}@{ip} sudo mv /tmp/rings/{filename} {inspect_value}/rings/ > /dev/null 2>&1"
+                                move_tmp_root_rings_process = subprocess.run(move_tmp_root_rings, shell=True)
+                                if move_tmp_root_rings_process.returncode == 0 and copy_ring_command_process.returncode == 0:
                                     each_scp_successful = True
                                     print("")
                                     print(f"\033[92mcopy ring file [ {filename} ] to {container_name} successful\033[0m")
@@ -65,15 +68,18 @@ def copy_swift_conf(swift_configs):
                             print("")
                             print(f"\033[91mWARNING: your ring file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
                     elif filename.endswith(".conf"):
-                        diff_conf_command = f"ssh -p {port} {user}@{ip} 'cat {inspect_value}/{filename}' | diff - {filepath}"
+                        diff_conf_command = f"ssh -p {port} {user}@{ip} 'sudo cat {inspect_value}/{filename}' | diff - {filepath}"
                         diff_conf_result = subprocess.run(diff_conf_command, shell=True, capture_output=True, text=True)
                         print("")
                         print(f"please wait for checking config file [ {filename} ] inside {container_name}")
                         if diff_conf_result.stderr == "":
                             if diff_conf_result.stdout != "":
-                                copy_conf_command = f"scp -r -P {port} {filepath} {user}@{ip}:{inspect_value}/ > /dev/null 2>&1"
-                                copy_conf_process = subprocess.run(copy_conf_command, shell=True)
-                                if copy_conf_process.returncode == 0:
+                                mkdir_tmp_configs = subprocess.run(f"ssh -p {port} {user}@{ip} sudo mkdir /tmp/configs/ > /dev/null 2>&1", shell=True)
+                                copy_conf_command = f"scp -r -P {port} {filepath} {user}@{ip}:/tmp/configs/ > /dev/null 2>&1"
+                                copy_conf_command_process = subprocess.run(copy_conf_command, shell=True)
+                                move_tmp_root_configs = f"ssh -p {port} {user}@{ip} sudo mv /tmp/rings/{filename} {inspect_value}/rings/ > /dev/null 2>&1"
+                                move_tmp_root_configs_process = subprocess.run(move_tmp_root_configs, shell=True)
+                                if move_tmp_root_configs_process.returncode == 0 and copy_conf_command_process.returncode == 0:
                                     each_scp_successful = True
                                     print("")
                                     print(f"\033[92mcopy config file [ {filename} ] to {container_name} successful\033[0m")
