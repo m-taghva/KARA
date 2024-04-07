@@ -105,7 +105,7 @@ def main(metric_file, path_dir, time_range, img=False):
                                 if values:
                                     values = [str(v[1]) for v in values]
                                     output_csv_str[csvi] += "," + ",".join(values)
-                                    print(f"{BOLD}Add metrics to CSV, please wait ...{RESET}")
+                                    print(f"{BOLD}Add this metric to CSV: {metric_name}{RESET}")
                                     # Construct the curl command for query 2
                                     if img:
                                         query2_curl_command = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "db={db_name}" --data-urlencode "q=SELECT {metric_operation}(\\"value\\") FROM /{metric_name}/ WHERE (\\"host\\" =~ /^{host_name}$/) AND time >= \'{start_time_utc}\' AND time <= \'{end_time_utc}\' GROUP BY time({TIME_GROUP}s) fill(none)"'
