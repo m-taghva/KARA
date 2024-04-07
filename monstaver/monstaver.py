@@ -268,7 +268,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                     end_time = time.time() 
                     response_time = end_time - start_time
                     if response_time > 120:  # Check if the time taken exceeds 2 minutes (120 seconds)
-                        print("\033[Backup process took more than 2 minutes. Skipping this part. there is a problem in your influxdb\033[0m")
+                        print("\033[91mBackup process took more than 2 minutes. Skipping this part. there is a problem in your influxdb\033[0m")
                         sys.exit(0)  # Skip further execution
                     if backup_process.returncode == 0:
                         print("backup successful")
