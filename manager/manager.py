@@ -1,10 +1,13 @@
 import sys
 import os
+import select
 import subprocess
 import time
 import yaml
+import shutil
 import argparse
 import logging
+from datetime import datetime
 import mrbench
 import config_gen
 import status_reporter
@@ -23,13 +26,14 @@ def load_config(config_file):
     return data_loaded
 
 def config_gen_agent(config_params):
-    logging.info("Executing config_gen agent function")
+    logging.info("Executing config_gen_agent function")
     input_files = config_params.get('conf_templates', [])
     config_output = config_params.get('output_path')
     while True:
         if os.listdir(config_output):
             print(f"Output directory {config_output} is not empty and includes these files and directories:")
             for item in os.listdir(config_output):
+                logging.info(f"dir and file in {config_output}: {item}")
                 print(f"\033[91m{item}\033[0m")
             # Ask user if they want to remove the contents
             print("Do you want to remove these files and directories? (yes/no): ", end='', flush=True)
@@ -42,16 +46,19 @@ def config_gen_agent(config_params):
                 elif response in ('n', 'no'):
                     response = 'no'
             else:
-                response = "yes" # If no input after 20 seconds, consider it as "yes"
-                
-            if response == 'yes':
-                # Remove all files and directories in the output directory
+                current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                destination_dir = os.path.join(os.path.dirname(os.path.dirname(config_output)), os.path.dirname(config_output)+"_"+current_time)
+                logging.info(f"user do not enter any answer so current files inside {config_output} moved to : {destination_dir}")
+                os.makedirs(destination_dir)
                 for item in os.listdir(config_output):
                     item_path = os.path.join(config_output, item)
-                    if os.path.isfile(item_path):
-                        os.remove(item_path)
-                    elif os.path.isdir(item_path):
-                        rm__config_output_dir = subprocess.run(f"sudo rm -rf {item_path}", shell=True)
+                    shutil.move(item_path, destination_dir)
+                response = "yes" # If no input after 20 seconds, consider it as "yes"
+
+            if response == 'yes':
+                logging.info("answer to config_gen_agent remove request is YES")
+                # Remove all files and directories in the output directory
+                rm_config_output_dir = subprocess.run(f"sudo rm -rf {config_output}/*", shell=True)
                 print("\033[92mContents removed successfully.\033[0m")
                 break
             elif response == 'no':
@@ -62,13 +69,15 @@ def config_gen_agent(config_params):
         else:
             break    
     for input_file in input_files:
+        logging.info(f"config_gen_agent input_files : {input_file}")
         firstConfNumber = 1
         # Create output directory for each input file
         workloads_configs = os.path.join(config_output, os.path.basename(input_file).split('__')[0])
+        logging.debug(f"path to config_gen_agent output : {workloads_configs}")
         if os.path.isdir(workloads_configs): 
             firstConfNumber = len(os.listdir(workloads_configs))+1
+            logging.debug(f"config_gen_agent firstConfNumber : {firstConfNumber}")
         config_gen.main(input_file_path=input_file, output_directory=workloads_configs, conf_num=firstConfNumber)
-    logging.debug(config_output)
     return config_output
 
 def mrbench_agent(config_params, config_file, config_output):
@@ -78,10 +87,51 @@ def mrbench_agent(config_params, config_file, config_output):
     run_status_reporter = config_params.get('Status_Reporter', None)
     run_monstaver = config_params.get('monstaver', False)
     ring_dirs = config_params.get('ring_dirs', [])
+    logging.info(f"ring directories in mrbench_agent : {ring_dirs}")
+    while True:
+        if os.listdir(result_dir):
+            print(f"Results directory {result_dir} is not empty and includes these files and directories:")
+            for item in os.listdir(result_dir):
+                logging.info(f"dir and file in {result_dir}: {item}")
+                print(f"\033[91m{item}\033[0m")
+            # Ask user if they want to remove the contents
+            print("Do you want to remove these files and directories? (yes/no): ", end='', flush=True)
+            # Set up a timer for 20 seconds
+            rlist, _, _ = select.select([sys.stdin], [], [], 20)
+            if rlist:
+                response = input().lower() 
+                if response in ('y', 'yes'):
+                    response = 'yes'
+                elif response in ('n', 'no'):
+                    response = 'no'
+            else:
+                current_time_results = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                destination_dir_results = os.path.join(os.path.dirname(os.path.dirname(result_dir)), os.path.dirname(result_dir)+"_"+current_time_results)
+                logging.info(f"user do not enter any answer so current files inside {result_dir} moved to : {destination_dir_results}")
+                os.makedirs(destination_dir_results)
+                for item in os.listdir(result_dir):
+                    item_path = os.path.join(result_dir, item)
+                    shutil.move(item_path, destination_dir_results)
+                response = "yes" # If no input after 20 seconds, consider it as "yes"
+
+            if response == 'yes':
+                logging.info("answer to mrbench_agent remove request is YES")
+                # Remove all files and directories in the output directory
+                rm_result_dir = subprocess.run(f"sudo rm -rf {result_dir}/*", shell=True)
+                print("\033[92mContents removed successfully.\033[0m")
+                break
+            elif response == 'no':
+                print("\033[1;33mLeaving existing contents untouched.\033[0m")
+                break
+            else:
+                print("\033[91mInvalid input. Please enter 'yes' or 'no'\033[0m")
+        else:
+            break    
     if config_output is None:
         if(config_params.get('conf_dir')):
             config_output = config_params.get('conf_dir')
         else:
+            logging.critical("There isn't any conf_dir in scenario file")
             print(f"\033[91mThere isn't any conf_dir in scenario file !\033[0m")
             exit()
     conf_dict = {}  
@@ -93,6 +143,7 @@ def mrbench_agent(config_params, config_file, config_output):
     swift_rings = {}
     swift_configs = {}
     if conf_dict["workloads.xml"] is None:
+        logging.critical("There isn't any workload in mrbench_agent input config dictionary")
         print(f"\033[91mThere isn't any workload !\033[0m")
         exit()
     if len(conf_dict)>1:
@@ -119,12 +170,12 @@ def mrbench_agent(config_params, config_file, config_output):
                     swift_configs[key] = os.path.join(config_output,key,list_dir[(i//m)%len(list_dir)])
                     m *= len(list_dir)
                 merged_conf_ring = {**swift_rings, **swift_configs}
-                logging.debug(merged_conf_ring)
+                logging.info(f"rings and configs dictionary is : {merged_conf_ring}")
                 mrbench.copy_swift_conf(merged_conf_ring)
                 time.sleep(40)
             for test_config in sorted(os.listdir(conf_dict["workloads.xml"])):
                 test_config_path = os.path.join(conf_dict["workloads.xml"], test_config)
-                logging.debug(test_config_path)
+                logging.info(f"test config path in mrbench_agent submit function is : {test_config_path}")
                 start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
                 all_start_times.append(start_time) ; all_end_times.append(end_time)
                 if run_status_reporter is not None:
@@ -133,9 +184,10 @@ def mrbench_agent(config_params, config_file, config_output):
                     if run_status_reporter == 'csv,img':
                         status_reporter.main(metric_file=None, path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
                 if run_monstaver:
-                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True) 
+                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True) 
     # Extract first start time and last end time
     first_start_time = all_start_times[0] ; last_end_time = all_end_times[-1] 
+    logging.debug(first_start_time,last_end_time)
     return first_start_time, last_end_time
 
 def monstaver_agent(config_params, config_file, first_start_time, last_end_time):
@@ -150,12 +202,12 @@ def monstaver_agent(config_params, config_file, first_start_time, last_end_time)
             for time_range in times:
                 start_time, end_time = time_range.strip().split(',')
                 if operation == "backup":
-                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None, hardware_info=True, os_info=True, swift_info=True)
+                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True)
                 elif operation == "restore":
                     monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)          
     elif operation == "backup": 
         if batch_mode:
-            monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True)
+            monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True)
     elif operation == "restore":
         monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)
 
@@ -169,7 +221,7 @@ def status_reporter_agent(config_params):
             times = file.readlines()
             for time_range in times:
                 start_time, end_time = time_range.strip().split(',')
-                status_reporter.main(metric_file=None, path_dir=result_dir, time_range=f"{start_time},{end_time}", img=image_generate)
+                status_reporter.main(path_dir=result_dir, time_range=f"{start_time},{end_time}", img=image_generate)
 
 def status_analyzer_agent(config_params):
     logging.info("Executing status_analyzer_agent function")
@@ -193,7 +245,18 @@ def report_recorder_agent(config_params):
     pybot = f"python3 ./../../pywikibot/report_recorder.py -it {input_template} -oh {output_html} -kt {kateb_title}"
     subprocess.call(pybot, shell=True)
 
-def main():
+def main(config_file):
+    log_level = load_config(config_file)['log'].get('level')
+    if log_level is not None:
+        log_level_upper = log_level.upper()
+        if log_level_upper == "DEBUG" or "INFO" or "WARNING" or "ERROR" or "CRITICAL":
+            os.makedirs('/var/log/kara/', exist_ok=True)
+            logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
+        else:
+            print(f"\033[91mInvalid log level:{log_level}\033[0m")  
+    else:
+        print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
+
     logging.info("Executing manager_main function")
     data_loaded = load_config(config_file)
     if 'scenario' in data_loaded:
@@ -232,14 +295,4 @@ if __name__ == "__main__":
     parser.add_argument('-sn', '--scenario_name', help='input scenario path')
     args = parser.parse_args()
     config_file = args.scenario_name
-    # Set up logging
-    log_level = load_config(config_file)['log'].get('level')
-    if log_level is not None:
-        log_level_int = getattr(logging, log_level.upper(), None)
-        if not isinstance(log_level_int, int):
-            print(f"\033[91mInvalid log level:{log_level}\033[0m")
-        else:
-            logging.basicConfig(filename='/var/log/kara.log', level=log_level_int , format='%(asctime)s - %(levelname)s - %(message)s')
-    else:
-        print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
-    main()
+    main(config_file)
