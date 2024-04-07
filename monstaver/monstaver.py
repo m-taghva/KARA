@@ -11,8 +11,6 @@ import json
 import requests
 from alive_progress import alive_bar
 
-#logging.basicConfig(filename='/var/log/kara.log', level=logging.CRITICAL , format='%(asctime)s - %(levelname)s - %(message)s')
-
 config_file = "/etc/KARA/monstaver.conf"
 
 def load_config(config_file):
@@ -25,6 +23,7 @@ def load_config(config_file):
     return data_loaded
 
 def tehran_time_to_utc(tehran_time_str):
+    logging.info("Executing monstaver tehran_time_to_utc function")
     tehran_tz = pytz.timezone('Asia/Tehran')
     utc_tz = pytz.utc
     tehran_time = tehran_tz.localize(tehran_time_str)
@@ -32,6 +31,7 @@ def tehran_time_to_utc(tehran_time_str):
     return utc_time
 
 def convert_time(start_time_str, end_time_str, margin_start, margin_end):
+    logging.info("Executing monstaver convert_time function")
     start_datetime = datetime.datetime.strptime(start_time_str, "%Y-%m-%d %H:%M:%S")
     end_datetime = datetime.datetime.strptime(end_time_str, "%Y-%m-%d %H:%M:%S")
     # Convert Tehran time to UTC
@@ -60,6 +60,7 @@ def convert_time(start_time_str, end_time_str, margin_start, margin_end):
 
 ##### RESTORE PARTS #####
 def restore(data_loaded):
+    logging.info("Executing monstaver restore function")
     for mc_server, config in data_loaded.get('influxdbs_restore', {}).items(): 
         ip_influxdb = config.get('ip')
         ssh_port = config.get('ssh_port')
@@ -222,6 +223,7 @@ def restore(data_loaded):
 
 ##### BACKUP PARTS #####
 def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swift_info, influx_backup):
+    logging.info("Executing monstaver backup function")
     if time_range is None:
         time_range = data_loaded['default'].get('time')
     if inputs is not None:
@@ -563,11 +565,23 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                 print("\033[91mMonstaver can't connect to monster cloud storage\033[0m")
 
 def main(time_range, inputs, delete, backup_restore, hardware_info, os_info, swift_info, influx_backup):
+    log_level = load_config(config_file)['log'].get('level')
+    if log_level is not None:
+        log_level_upper = log_level.upper()
+        if log_level_upper == "DEBUG" or "INFO" or "WARNING" or "ERROR" or "CRITICAL":
+            os.makedirs('/var/log/kara/', exist_ok=True)
+            logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
+        else:
+            print(f"\033[91mInvalid log level:{log_level}\033[0m")  
+    else:
+        print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
+    logging.info("\033[92m=*=*=*= monstaver main function start =*=*=*=\033[0m")
     data_loaded = load_config(config_file)
     if backup_restore: 
         restore(data_loaded)
     else:
         backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swift_info, influx_backup)
+    logging.info("\033[92m=*=*=*= monstaver main function end =*=*=*=\033[0m")
 
 if __name__ == "__main__":
     # Command-line argument parsing
