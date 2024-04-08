@@ -8,9 +8,10 @@ import argparse
 import sys
 import yaml
 import json
+import logging
 
 config_file = "/etc/KARA/mrbench.conf"
-pre_test_script = "./../mrbench/pre_test_script2.sh"
+pre_test_script = "./../mrbench/pre_test_script.sh"
 
 # For font style
 BOLD = "\033[1m"
@@ -27,6 +28,7 @@ def load_config(config_file):
     return data_loaded
 
 def copy_swift_conf(swift_configs):
+    logging.info("Executing mrbench copy_swift_conf function")
     data_loaded = load_config(config_file)
     for key,value in data_loaded['swift'].items():
         container_name = key
@@ -112,6 +114,7 @@ def copy_swift_conf(swift_configs):
                 print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m") 
        
 def submit(workload_config_path, output_path):
+    logging.info("Executing mrbench submit function")
     if not os.path.exists(output_path):
        os.makedirs(output_path) 
     run_pre_test_process = subprocess.run(f"bash {pre_test_script}", shell=True)
@@ -162,6 +165,7 @@ def submit(workload_config_path, output_path):
         print(f"\033[91mWARNING: workload file doesn't exist !\033[0m")
 
 def create_test_dir(result_path, workload_name):
+    logging.info("Executing mrbench create_test_dir function")
     result_file_path = os.path.join(result_path, workload_name)
     if os.path.exists(result_file_path):
         i = 1
@@ -172,6 +176,7 @@ def create_test_dir(result_path, workload_name):
     return result_file_path
 
 def save_time(file, result_path):
+    logging.info("Executing mrbench save_time function")
     start_time = None
     end_time = None
     try:
@@ -201,6 +206,7 @@ def save_time(file, result_path):
         return -1
 
 def copy_bench_files(archive_path, archive_workload_dir_name, result_path):
+    logging.info("Executing mrbench copy_bench_files function")
     time.sleep(5)
     copylistfiles = ["/workload.log","/workload-config.xml",'/'+ archive_workload_dir_name + '.csv']
     print("Copying Cosbench source files ...")
@@ -220,6 +226,18 @@ def copy_bench_files(archive_path, archive_workload_dir_name, result_path):
             print(f"\033[91mMaximum retries reached ({retry}). File {archive_file_path} copy failed.\033[0m")
   
 def main(workload_config_path, output_path, swift_configs):
+    log_level = load_config(config_file)['log'].get('level')
+    if log_level is not None:
+        log_level_upper = log_level.upper()
+        if log_level_upper == "DEBUG" or "INFO" or "WARNING" or "ERROR" or "CRITICAL":
+            os.makedirs('/var/log/kara/', exist_ok=True)
+            logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
+        else:
+            print(f"\033[91mInvalid log level:{log_level}\033[0m")  
+    else:
+        print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
+
+    logging.info("\033[92m****** mrbench main function start ******\033[0m")
     if swift_configs:
        copy_swift_conf(swift_configs)
 
@@ -231,6 +249,8 @@ def main(workload_config_path, output_path, swift_configs):
             print(f"\033[91mWARNING: output dir doesn't define !\033[0m")
     else:
         print(f"\033[91mWARNING: workload file doesn't exist !\033[0m")
+
+    logging.info("\033[92m****** mrbench main function end ******\033[0m")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Monster Benchmark')

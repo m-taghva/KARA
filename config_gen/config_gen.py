@@ -3,17 +3,20 @@ import string
 import random
 import os
 import argparse
+import logging
 
 conf_number = 0 # define global variable
 
 # cleanup output dir for new template
 def cleanup_output_config_gen(output_directory):
+    logging.info("Executing config_gen cleanup_output_config_gen function")
     for filename in os.listdir(output_directory):
         if "#" in filename:
             file_path = os.path.join(output_directory, filename)
             os.remove(file_path)
 
 def replace_vars(input_text, conf_name, output_directory):
+    logging.info("Executing config_gen replace_vars function")
     currentVar = re.search("\?\d+L\d+[sd]", input_text)
     if currentVar:
         if currentVar.group()[-1] == 's':
@@ -25,6 +28,7 @@ def replace_vars(input_text, conf_name, output_directory):
             outfile.write(input_text)
 
 def replace_tags(input_text, conf_name, output_directory):
+    logging.info("Executing config_gen replace_tags function")
     global conf_number
     currentTag = re.search("#\d+{", input_text)
     if currentTag:
@@ -42,6 +46,10 @@ def replace_tags(input_text, conf_name, output_directory):
         conf_number += 1
                     
 def main(input_file_path, output_directory, conf_num):
+    os.makedirs('/var/log/kara/', exist_ok=True)
+    logging.basicConfig(filename= '/var/log/kara/all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+    logging.info("\033[92m****** config_gen main function start ******\033[0m")
     global conf_number
     conf_number = int(conf_num) if conf_num is not None else 1
     if not os.path.exists(output_directory):
@@ -52,6 +60,7 @@ def main(input_file_path, output_directory, conf_num):
     with open(input_file_path, 'r') as inputFile:
         input_text = inputFile.read()
     replace_tags(input_text, "", output_directory)
+    logging.info("\033[92m****** config_gen main function end ******\033[0m")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate configuration files.')
