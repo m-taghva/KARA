@@ -257,7 +257,7 @@ def main(config_file):
     else:
         print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
 
-    logging.info("Executing manager_main function")
+    logging.info("\033[92m****** Manager_main function start ******\033[0m")
     data_loaded = load_config(config_file)
     if 'scenario' in data_loaded:
         config_output = None
@@ -289,6 +289,7 @@ def main(config_file):
                 print(f"Error executing task: {task}. Error: {str(e)}")
     else:
         print(f"\033[91mNo scenario found in the configuration file.\033[0m")
+    logging.info("\033[92m****** Manager_main function end ******\033[0m")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='kara tools manager')

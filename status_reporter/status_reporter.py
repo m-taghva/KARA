@@ -5,6 +5,7 @@ import sys
 from datetime import datetime
 import argparse
 import yaml
+import logging
 # For font style
 BOLD = "\033[1m"
 RESET = "\033[0m"
@@ -23,6 +24,7 @@ def load_config(config_file):
 
 # Function to convert Tehran timestamp to UTC
 def convert_tehran_to_utc(tehran_timestamp, add_seconds):
+    logging.info("Executing status reporter convert_tehran_to_utc function")
     tehran_timestamp_seconds = int(datetime.strptime(tehran_timestamp, "%Y-%m-%d %H:%M:%S").timestamp())
     utc_timestamp_seconds = tehran_timestamp_seconds + add_seconds
     utc_timestamp = datetime.utcfromtimestamp(utc_timestamp_seconds).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -30,12 +32,25 @@ def convert_tehran_to_utc(tehran_timestamp, add_seconds):
 
 # Function to extract metrics from files
 def get_metrics_from_file(metric_file_path):
+    logging.info("Executing status reporter get_metrics_from_file function")
     metrics = []
     with open(metric_file_path, 'r') as f:
         metrics = [metric.strip() for metric in f if metric.strip() and not metric.strip().startswith('#')]
     return metrics
                             
 def main(metric_file, path_dir, time_range, img=False):
+    log_level = load_config(config_file)['log'].get('level')
+    if log_level is not None:
+        log_level_upper = log_level.upper()
+        if log_level_upper == "DEBUG" or "INFO" or "WARNING" or "ERROR" or "CRITICAL":
+            os.makedirs('/var/log/kara/', exist_ok=True)
+            logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
+        else:
+            print(f"\033[91mInvalid log level:{log_level}\033[0m")  
+    else:
+        print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
+
+    logging.info("\033[92m****** status reporter main function start ******\033[0m")   
     metric_file= metric_file.split(',') if metric_file else []
     path_dir= path_dir if path_dir else "." 
     time_range = time_range if time_range else load_config(config_file).get('time', [])['time_range']
@@ -128,6 +143,7 @@ def main(metric_file, path_dir, time_range, img=False):
     print("")
     print(f"{YELLOW}========================================{RESET}")
     print("")
+    logging.info("\033[92m****** status reporter main function end ******\033[0m")   
 
 if __name__ == "__main__":
     # Parse command-line arguments for your new script
