@@ -30,6 +30,8 @@ def config_gen_agent(config_params):
     input_files = config_params.get('conf_templates', [])
     config_output = config_params.get('output_path')
     while True:
+        if not os.path.exists(config_output):
+            os.makedirs(config_output)
         if os.listdir(config_output):
             print(f"Output directory {config_output} is not empty and includes these files and directories:")
             for item in os.listdir(config_output):
@@ -150,7 +152,7 @@ def mrbench_agent(config_params, config_file, config_output):
         conf_exist = 1
     ring_exist = 0
     total_ring_index = 1
-    if len(ring_dirs):
+    if len(ring_dirs)>1:
         total_ring_index = len(ring_dirs)
         ring_exist = 1
     for ri in range(total_ring_index):
