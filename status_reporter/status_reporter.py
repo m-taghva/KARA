@@ -2,10 +2,11 @@ import os
 import json
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime , timedelta
 import argparse
 import yaml
 import logging
+import pytz
 # For font style
 BOLD = "\033[1m"
 RESET = "\033[0m"
@@ -22,13 +23,36 @@ def load_config(config_file):
             sys.exit(1)
     return data_loaded
 
+# Function to convert "now-nh" format to timestamp
+def parse_time(tehran_timestamp):
+    if tehran_timestamp.startswith("now-") and tehran_timestamp.endswith("h"):
+        try:
+            hours = int(tehran_timestamp.split("-")[1][:-1])
+            now_time_subtract = datetime.now() - timedelta(hours=hours) 
+            now_time_timestamp = int(now_time_subtract.timestamp())
+            return now_time_timestamp
+        except ValueError:
+            print("\033[91mInvalid time range format. Expected format: 'now-nh' where n is a number\033[0m") 
+            exit()          
+    else:
+        print("\033[91mInvalid time range format. Expected format: 'now-nh' where n is a number\033[0m")
+        exit()
+
 # Function to convert Tehran timestamp to UTC
 def convert_tehran_to_utc(tehran_timestamp, add_seconds):
-    logging.info("Executing status reporter convert_tehran_to_utc function")
-    tehran_timestamp_seconds = int(datetime.strptime(tehran_timestamp, "%Y-%m-%d %H:%M:%S").timestamp())
-    utc_timestamp_seconds = tehran_timestamp_seconds + add_seconds
-    utc_timestamp = datetime.utcfromtimestamp(utc_timestamp_seconds).strftime("%Y-%m-%dT%H:%M:%SZ")
-    return utc_timestamp
+    if tehran_timestamp.startswith("now-") and tehran_timestamp.endswith("h"):
+        now_time_result = parse_time(tehran_timestamp)
+        timesamp_time_add = now_time_result + add_seconds
+        utc_now_time_result = datetime.utcfromtimestamp(timesamp_time_add).strftime("%Y-%m-%dT%H:%M:%SZ")
+        return utc_now_time_result
+    elif not tehran_timestamp.startswith("now-") and not tehran_timestamp.endswith("h"):
+        tehran_timestamp_convert = int(datetime.strptime(tehran_timestamp, "%Y-%m-%d %H:%M:%S").timestamp())
+        timestamp_add = tehran_timestamp_convert + add_seconds
+        utc_timestamp_result = datetime.utcfromtimestamp(timestamp_add).strftime("%Y-%m-%dT%H:%M:%SZ")
+        return utc_timestamp_result
+    else:
+        print("\033[91mInvalid time range format. Expected format: 'now-nh' where n is a number or time stamp format (Y-M-D H:M:S) for start and end time !\033[0m")
+        exit()
 
 # Function to extract metrics from files
 def get_metrics_from_file(metric_file_path):
@@ -71,9 +95,19 @@ def main(metric_file, path_dir, time_range, img=False):
     # Split time_range and generate output_csv
     time_range_parts = time_range.split(',')
     start_time, end_time = time_range_parts[0], time_range_parts[1]
-    start_time_csv = start_time.replace(" ", "-")
-    end_time_csv = end_time.replace(" ", "-")
-    output_csv = os.path.join(output_parent_dir, f"{start_time_csv}_{end_time_csv}.csv")
+    if start_time.startswith("now-"):
+        tehran_tz = pytz.timezone('Asia/Tehran')
+        start_time_utc_csv = convert_tehran_to_utc(start_time, START_TIME_SUM) ; end_time_utc_csv = convert_tehran_to_utc(end_time, -END_TIME_SUBTRACT)
+        utc_datetime_start = datetime.strptime(start_time_utc_csv, "%Y-%m-%dT%H:%M:%SZ") ; utc_datetime_end = datetime.strptime(end_time_utc_csv, "%Y-%m-%dT%H:%M:%SZ")
+        start_timestamp = utc_datetime_start.replace(tzinfo=pytz.utc).astimezone(tehran_tz)
+        end_timestamp = utc_datetime_end.replace(tzinfo=pytz.utc).astimezone(tehran_tz)
+        start_timestamp_csv = start_timestamp.strftime("%Y-%m-%d %H:%M:%S") ; end_timestamp_csv = end_timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        start_time_name = start_timestamp_csv.replace(" ", "-") ; end_time_name = end_timestamp_csv.replace(" ", "-")
+        output_csv = os.path.join(output_parent_dir, f"{start_time_name}_{end_time_name}.csv")
+    else:
+        start_time_csv = start_time.replace(" ", "-")
+        end_time_csv = end_time.replace(" ", "-")
+        output_csv = os.path.join(output_parent_dir, f"{start_time_csv}_{end_time_csv}.csv")
     if os.path.exists(output_csv):
         os.remove(output_csv)
     # Generate metric_operation_mapping
