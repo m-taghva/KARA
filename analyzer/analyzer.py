@@ -15,9 +15,6 @@ def extract_string_number_pairs(target_directory):
     values = re.findall("(?<=:)[^#]*(?=#)", target_directory)
     return list(zip(keys, values))
 
-def create_extracted_data(pairs):
-    return dict(pairs)
-
 def read_csv_data(csv_file_path):
     with open(csv_file_path, mode='r') as input_csv:
         csv_reader = csv.reader(input_csv)
@@ -32,7 +29,7 @@ def merge_csv_files(input_directory, output_csv_writer, selected_csv):
         if os.path.isdir(subdirectory_path):
             pairs = extract_string_number_pairs(subdirectory_path)
             if pairs:
-                extracted_data = create_extracted_data(pairs)
+                extracted_data = dict(pairs)
                 csv_file_paths = glob(os.path.join(subdirectory_path, 'query_results', selected_csv))
                 if not csv_file_paths:
                     print(f"No CSV files found in {subdirectory_path}")
