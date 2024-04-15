@@ -711,7 +711,7 @@ def main(time_range, inputs, delete, backup_restore, hardware_info, os_info, swi
     data_loaded = load_config(config_file)
     if backup_restore: 
         restore(data_loaded)
-    elif influx_backup:
+    else:
         backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swift_info, influx_backup)
     logging.info("\033[92m****** Monstaver main function end ******\033[0m")
 
