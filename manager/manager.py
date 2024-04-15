@@ -91,6 +91,8 @@ def mrbench_agent(config_params, config_file, config_output):
     ring_dirs = config_params.get('ring_dirs', [])
     logging.info(f"ring directories in mrbench_agent : {ring_dirs}")
     while True:
+        if not os.path.exists(result_dir):
+            os.makedirs(result_dir)
         if os.listdir(result_dir):
             print(f"Results directory {result_dir} is not empty and includes these files and directories:")
             for item in os.listdir(result_dir):
