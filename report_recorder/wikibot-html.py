@@ -47,26 +47,24 @@ def upload_images(site, html_file_path):
         image_path = os.path.join(os.path.dirname(html_file_path), image_filename)
         page = pywikibot.FilePage(site, f'File:{image_filename}')
         if not page.exists():
-            upload_image(site, image_path, f"Uploaded image '{image_filename}' using Pywikibot", page.title())
+            # Create a FilePage object
+            file_page = pywikibot.FilePage(site, page.title())
+
+            # Check if the file already exists
+            if file_page.exists():
+                raise ValueError("File already exists!")
+
+            # Upload the file
+            success = file_page.upload(image_path, comment=f"Uploaded image '{image_filename}' using Pywikibot")
+
+            if success:
+                print(f"File uploaded successfully! File page: {file_page.full_url()}")
+            else:
+                print("Upload failed.")
+
             logging.info(f"Image '{image_filename}' uploaded successfully.")
         else:
             logging.warning(f"Image '{image_filename}' already exists on the wiki.")
-
-def upload_image(site, file_path, file_description, target_page_title):
-    # Create a FilePage object
-    file_page = pywikibot.FilePage(site, target_page_title)
-
-    # Check if the file already exists
-    if file_page.exists():
-        raise ValueError("File already exists!")
-
-    # Upload the file
-    success = file_page.upload(file_path, comment=file_description)
-
-    if success:
-        print(f"File uploaded successfully! File page: {file_page.full_url()}")
-    else:
-        print("Upload failed.")
 
 def main():
     # Configure logging
