@@ -114,6 +114,8 @@ def copy_swift_conf(swift_configs):
                 print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m") 
        
 def submit(workload_config_path, output_path):
+    print("")
+    print(f"{YELLOW}========================================{RESET}")
     logging.info("Executing mrbench submit function")
     if not os.path.exists(output_path):
        os.makedirs(output_path) 
@@ -144,20 +146,25 @@ def submit(workload_config_path, output_path):
                 return None, None, -1
             # Check every second if the workload has ended or not
             archive_file_path = f"{archive_path}{workload_id}-swift-sample"
+            time.sleep(5)
             while True:
-                if os.path.exists(archive_file_path):
+                active_workload_check = subprocess.run(['cosbench', 'info'], capture_output=True, text=True)
+                if "Total: 0 active workloads" in active_workload_check.stdout:
                     time.sleep(5) 
                     break
-                time.sleep(5)
-            result_path = create_test_dir(output_path, workload_name)
-            archive_workload_dir_name = f"{workload_id}-swift-sample"
-            print(f"Result Path: {result_path}")
-            cosbench_info = f"cosbench info > {result_path}/cosbench.info"
-            cosbench_info_result = subprocess.run(cosbench_info, shell=True, capture_output=True, text=True)
-            # run other functions 
-            start_time, end_time = save_time(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv", result_path)
-            copy_bench_files(archive_path, archive_workload_dir_name, result_path)
-            return  start_time, end_time, result_path
+            if os.path.exists(archive_file_path):   
+                result_path = create_test_dir(output_path, workload_name)
+                archive_workload_dir_name = f"{workload_id}-swift-sample"
+                print(f"Result Path: {result_path}")
+                cosbench_info = f"cosbench info > {result_path}/cosbench.info"
+                cosbench_info_result = subprocess.run(cosbench_info, shell=True, capture_output=True, text=True)
+                # run other functions 
+                start_time, end_time = save_time(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv", result_path)
+                copy_bench_files(archive_path, archive_workload_dir_name, result_path)
+                return  start_time, end_time, result_path
+            else:
+                print(f"\033[91mTest: {workload_name} can't run correctly so archive path {archive_file_path} doesn't exists.\033[0m")
+                return None, None, -1
         else:
             print(f"\033[91mYou have actived workload so new workload can't run\033[0m")
             return None, None, -1
