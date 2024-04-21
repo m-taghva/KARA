@@ -108,8 +108,17 @@ def copy_swift_conf(swift_configs):
             restart_cont_command = f"ssh -p {port} {user}@{ip} docker restart {container_name} > /dev/null 2>&1"
             restart_cont_command_process = subprocess.run(restart_cont_command, shell=True)
             if restart_cont_command_process.returncode == 0:
-                print("")
-                print(f"\033[92mcontainer {container_name} successfully restart\033[0m")
+                while True:
+                    check_container = f"ssh -p {port} {user}@{ip} 'sudo docker ps -f name={container_name}'"
+                    check_container_result = subprocess.run(check_container, shell=True, capture_output=True, text=True, check=True)
+                    if "Up" in check_container_result.stdout:
+                        check_services = f"ssh -p {port} {user}@{ip} 'sudo docker exec {container_name} service --status-all'"
+                        check_services_result = subprocess.run(check_services, shell=True, capture_output=True, text=True, check=True)
+                        if "[ + ]  swift-account\n" or "[ + ]  swift-container\n" or "[ + ]  swift-object\n" or "[ + ]  swift-proxy\n" in check_services_result:
+                            time.sleep(10)
+                            print("")
+                            print(f"\033[92mcontainer {container_name} successfully restart\033[0m")
+                            break
             else:
                 print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m") 
        
@@ -248,15 +257,15 @@ def main(workload_config_path, output_path, swift_configs):
     if swift_configs:
        copy_swift_conf(swift_configs)
 
-    if os.path.exists(workload_config_path):
-        if output_path is not None:
-            start_time, end_time, result_file_path = submit(workload_config_path, output_path)
-            return start_time, end_time, result_file_path  
+    if workload_config_path is not None:
+        if os.path.exists(workload_config_path):
+            if output_path is not None:
+                start_time, end_time, result_file_path = submit(workload_config_path, output_path)
+                return start_time, end_time, result_file_path  
+            else:
+                print(f"\033[91mWARNING: output dir doesn't define !\033[0m")
         else:
-            print(f"\033[91mWARNING: output dir doesn't define !\033[0m")
-    else:
-        print(f"\033[91mWARNING: workload file doesn't exist !\033[0m")
-
+            print(f"\033[91mWARNING: workload file doesn't exist !\033[0m")
     logging.info("\033[92m****** mrbench main function end ******\033[0m")
 
 if __name__ == "__main__":
