@@ -182,14 +182,18 @@ def main(metric_file, path_dir, time_range, img=False):
                                             check_host_name = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "q=SHOW TAG VALUES ON {db_name} FROM \\"{metric_name}\\" WITH KEY = \\"host\\""'
                                             check_host_name_result = subprocess.getoutput(check_host_name)
                                             host_json_data = json.loads(check_host_name_result)
-                                            host_names = [item[1] for item in host_json_data["results"][0]["series"][0]["values"]]
-                                            if host_name in host_names:
-                                                # check time range
-                                                logging.error(f"status_reporter - database name: {db_name}, metric name: {metric_name}, host name: {host_name} are correct but your TIME RANGE doesn't have any value")
-                                                print(f"database name: {db_name}, metric name: {metric_name}, host name: {host_name} are correct but \033[91myour TIME RANGE doesn't have any value !\033[0m")
+                                            if "series" in host_json_data["results"][0]:
+                                                host_names = [item[1] for item in host_json_data["results"][0]["series"][0]["values"]]
+                                                if host_name in host_names:
+                                                     # check time range
+                                                    logging.error(f"status_reporter - database name: {db_name}, metric name: {metric_name}, host name: {host_name} are correct but your TIME RANGE doesn't have any value")
+                                                    print(f"database name: {db_name}, metric name: {metric_name}, host name: {host_name} are correct but \033[91myour TIME RANGE doesn't have any value !\033[0m")
+                                                else:
+                                                    logging.error(f"status_reporter - The host {host_name} name is wrong")
+                                                    print(f"\033[91mThe host {host_name} name is wrong\033[0m")
                                             else:
-                                                logging.error(f"status_reporter - The host {host_name} name is wrong")
-                                                print(f"\033[91mThe host {host_name} name is wrong\033[0m")
+                                                    logging.error(f"status_reporter - metric: {metric_name} doesn't have host: {host_name} so value is null !")
+                                                    print(f"\033[91mmetric: {metric_name} doesn't have host: {host_name} so value is null !\033[0m")
                                         else:
                                             logging.error(f"status_reporter - metric {metric_name} doesn't exist in {db_name}")
                                             print(f"\033[91mmetric {metric_name} doesn't exist in {db_name}\033[0m")
