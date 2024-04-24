@@ -194,7 +194,9 @@ def submit(workload_config_path, output_path):
                 if response == 'yes':
                     cosbench_cancel_workload = subprocess.run(["cosbench", "cancel", workload_id], capture_output=True, text=True)
                     if cosbench_cancel_workload.returncode == 0:
-                        print(f"Workload {workload_id} canceled.")
+                        print(f"Workload {workload_id} canceled and new workload starting please wait !")
+                        time.sleep(10)
+                        submit(workload_config_path, output_path)
             return None, None, -1
     else:
         print(f"\033[91mWARNING: workload file doesn't exist !\033[0m")
