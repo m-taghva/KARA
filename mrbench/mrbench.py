@@ -8,6 +8,7 @@ import argparse
 import sys
 import yaml
 import json
+import select
 import logging
 
 config_file = "/etc/KARA/mrbench.conf"
@@ -18,6 +19,7 @@ BOLD = "\033[1m"
 RESET = "\033[0m"
 YELLOW = "\033[1;33m"
 print(f"{YELLOW}========================================{RESET}")
+
 def load_config(config_file):
     with open(config_file, "r") as stream:
         try:
@@ -101,9 +103,6 @@ def copy_swift_conf(swift_configs):
             print("")
             if inspect_result.stdout == '[]\n':
                 print(f"\033[91mWARNING: your container name \033[0m'\033[92m{container_name}\033[0m' \033[91mis wrong !\033[0m")
-            print("")
-            print(f"{YELLOW}========================================{RESET}")
-
         if all_scp_file_successful is True:
             restart_cont_command = f"ssh -p {port} {user}@{ip} docker restart {container_name} > /dev/null 2>&1"
             restart_cont_command_process = subprocess.run(restart_cont_command, shell=True)
@@ -121,10 +120,9 @@ def copy_swift_conf(swift_configs):
                             break
             else:
                 print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m") 
-       
-def submit(workload_config_path, output_path):
-    print("")
     print(f"{YELLOW}========================================{RESET}")
+    
+def submit(workload_config_path, output_path):
     logging.info("Executing mrbench submit function")
     if not os.path.exists(output_path):
        os.makedirs(output_path) 
@@ -135,6 +133,7 @@ def submit(workload_config_path, output_path):
         return None, None, -1
     archive_path = os.readlink(cosbenchBin).split("cli.sh")[0]+"archive/"
     if os.path.exists(workload_config_path):
+        print(f"{YELLOW}========================================{RESET}")
         print("Sending workload ...")
         # Start workload
         cosbench_active_workload = subprocess.run(['cosbench', 'info'], capture_output=True, text=True)
@@ -176,6 +175,26 @@ def submit(workload_config_path, output_path):
                 return None, None, -1
         else:
             print(f"\033[91mYou have actived workload so new workload can't run\033[0m")
+            cosbench_check_workload = subprocess.run(['cosbench', 'info'], capture_output=True, text=True)
+            info_output = cosbench_check_workload.stdout
+            # Extract workload ID
+            pattern = r'(w\d+)\s+.*'
+            match = re.search(pattern, info_output)
+            if match:
+                workload_id = match.group(1)
+                print(f"Do you want to cancel the current {workload_id} workload? (yes/no): ", end='', flush=True)
+                # Set up a timer for 20 seconds
+                rlist, _, _ = select.select([sys.stdin], [], [], 20)
+                if rlist:
+                    response = input().lower() 
+                    if response in ('y', 'yes'):
+                        response = 'yes'
+                    elif response in ('n', 'no'):
+                        response = 'no'
+                if response == 'yes':
+                    cosbench_cancel_workload = subprocess.run(["cosbench", "cancel", workload_id], capture_output=True, text=True)
+                    if cosbench_cancel_workload.returncode == 0:
+                        print(f"Workload {workload_id} canceled.")
             return None, None, -1
     else:
         print(f"\033[91mWARNING: workload file doesn't exist !\033[0m")
@@ -252,11 +271,9 @@ def main(workload_config_path, output_path, swift_configs):
             print(f"\033[91mInvalid log level:{log_level}\033[0m")  
     else:
         print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
-
     logging.info("\033[92m****** mrbench main function start ******\033[0m")
     if swift_configs:
        copy_swift_conf(swift_configs)
-
     if workload_config_path is not None:
         if os.path.exists(workload_config_path):
             if output_path is not None:
