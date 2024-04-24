@@ -181,8 +181,8 @@ def submit(workload_config_path, output_path):
             pattern = r'(w\d+)\s+.*'
             match = re.search(pattern, info_output)
             if match:
-                workload_id = match.group(1)
-                print(f"Do you want to cancel the current {workload_id} workload? (yes/no): ", end='', flush=True)
+                w_id = match.group(1)
+                print(f"Do you want to cancel the current {w_id} workload? (yes/no): ", end='', flush=True)
                 # Set up a timer for 20 seconds
                 rlist, _, _ = select.select([sys.stdin], [], [], 20)
                 if rlist:
@@ -194,9 +194,9 @@ def submit(workload_config_path, output_path):
                 else:
                     response = "yes"
                 if response == 'yes':
-                    cosbench_cancel_workload = subprocess.run(["cosbench", "cancel", workload_id], capture_output=True, text=True)
+                    cosbench_cancel_workload = subprocess.run(["cosbench", "cancel", w_id], capture_output=True, text=True)
                     if cosbench_cancel_workload.returncode == 0:
-                        print(f"Workload {workload_id} canceled and new workload starting please wait ...")
+                        print(f"Workload {w_id} canceled and new workload starting please wait ...")
                         time.sleep(10)
                         submit(workload_config_path, output_path)
             return None, None, -1
