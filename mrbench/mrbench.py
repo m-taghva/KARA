@@ -57,12 +57,13 @@ def copy_swift_conf(swift_configs):
                         print(f"please wait for checking ring file [ {filename} ] inside {container_name}")
                         if diff_ring_result.stderr == "":
                             if diff_ring_result.stdout != "":
-                                mkdir_tmp_rings = subprocess.run(f"ssh -p {port} {user}@{ip} sudo mkdir /tmp/rings/ > /dev/null 2>&1", shell=True)
-                                copy_ring_command = f"scp -r -P {port} {filepath} {user}@{ip}:/tmp/rings/ > /dev/null 2>&1"
+                                mkdir_tmp_rings = f"ssh -p {port} {user}@{ip} 'sudo mkdir -p /tmp/rings/ > /dev/null 2>&1 && sudo chmod -R 777 /tmp/rings/'"
+                                mkdir_tmp_rings_process = subprocess.run(mkdir_tmp_rings, shell=True)
+                                copy_ring_command = f"scp -r -P {port} {filepath} {user}@{ip}:/tmp/rings > /dev/null 2>&1"
                                 copy_ring_command_process = subprocess.run(copy_ring_command, shell=True)
-                                move_tmp_root_rings = f"ssh -p {port} {user}@{ip} sudo mv /tmp/rings/{filename} {inspect_value}/rings/ > /dev/null 2>&1"
+                                move_tmp_root_rings = f"ssh -p {port} {user}@{ip} 'sudo mv /tmp/rings/{filename} {inspect_value}/rings/ > /dev/null 2>&1'"
                                 move_tmp_root_rings_process = subprocess.run(move_tmp_root_rings, shell=True)
-                                if move_tmp_root_rings_process.returncode == 0 and copy_ring_command_process.returncode == 0:
+                                if move_tmp_root_rings_process.returncode == 0 and copy_ring_command_process.stderr is None:
                                     each_scp_successful = True
                                     print("")
                                     print(f"\033[92mcopy ring file [ {filename} ] to {container_name} successful\033[0m")
@@ -78,16 +79,17 @@ def copy_swift_conf(swift_configs):
                         print(f"please wait for checking config file [ {filename} ] inside {container_name}")
                         if diff_conf_result.stderr == "":
                             if diff_conf_result.stdout != "":
-                                mkdir_tmp_configs = subprocess.run(f"ssh -p {port} {user}@{ip} sudo mkdir /tmp/configs/ > /dev/null 2>&1", shell=True)
-                                copy_conf_command = f"scp -r -P {port} {filepath} {user}@{ip}:/tmp/configs/ > /dev/null 2>&1"
+                                mkdir_tmp_configs = f"ssh -p {port} {user}@{ip} 'sudo mkdir -p /tmp/configs/ > /dev/null 2>&1 && sudo chmod -R 777 /tmp/configs/'"
+                                mkdir_tmp_configs_process = subprocess.run(mkdir_tmp_configs, shell=True)
+                                copy_conf_command = f"scp -r -P {port} {filepath} {user}@{ip}:/tmp/configs > /dev/null 2>&1"
                                 copy_conf_command_process = subprocess.run(copy_conf_command, shell=True)
-                                move_tmp_root_configs = f"ssh -p {port} {user}@{ip} sudo mv /tmp/rings/{filename} {inspect_value}/rings/ > /dev/null 2>&1"
+                                base_name_changer = os.path.basename(filepath)
+                                move_tmp_root_configs = f"ssh -p {port} {user}@{ip} 'sudo mv /tmp/configs/{base_name_changer} {inspect_value}/ > /dev/null 2>&1'"
                                 move_tmp_root_configs_process = subprocess.run(move_tmp_root_configs, shell=True)
-                                if move_tmp_root_configs_process.returncode == 0 and copy_conf_command_process.returncode == 0:
+                                if move_tmp_root_configs_process.returncode == 0 and copy_conf_command_process.stderr is None:
                                     each_scp_successful = True
                                     print("")
                                     print(f"\033[92mcopy config file [ {filename} ] to {container_name} successful\033[0m")
-                                    base_name_changer = os.path.basename(filepath)
                                     name_changer = f"ssh -p {port} {user}@{ip} mv {inspect_value}/{base_name_changer} {inspect_value}/{filename} > /dev/null 2>&1" 
                                     name_changer_process = subprocess.run(name_changer, shell=True)
                                 else:

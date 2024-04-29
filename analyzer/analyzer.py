@@ -11,7 +11,7 @@ RESET = "\033[0m"
 YELLOW = "\033[1;33m"
 
 ####### MERGER #######
-def merge_csv(selected_csv, io_directory, extracted_data, all_csv):
+def merge_csv(selected_csv, output_directory, extracted_data, all_csv):
     logging.info("Executing status_analyzer merge_csv function")
     for file in selected_csv:
         try:
@@ -25,10 +25,10 @@ def merge_csv(selected_csv, io_directory, extracted_data, all_csv):
             print(f"File '{file}' not found. Skipping...")
     if len(all_csv) > 0:
         merged_csv = pd.concat(all_csv, ignore_index=True)
-        if not os.path.exists(io_directory):
-            os.makedirs(io_directory)
-        merged_csv.to_csv(f'{io_directory}/merged.csv', index=False)
-        print(f"CSV files merged successfully. Merged file saved as {YELLOW}'{io_directory}/merged.csv'{RESET}")
+        if not os.path.exists(output_directory):
+            os.makedirs(output_directory)
+        merged_csv.to_csv(f'{output_directory}/merged.csv', index=False)
+        print(f"CSV files merged successfully. Merged file saved as {YELLOW}'{output_directory}/merged.csv'{RESET}")
     else:
         print(f"\033[91mNo CSV files found for merging\033[0m")
 
@@ -38,26 +38,28 @@ def extract_string_number_pairs(target_directory):
     values = re.findall("(?<=:)[^#]*(?=#)", target_directory)
     return list(zip(keys, values))
 
-def csv_process(io_directory, selected_csv):
+def csv_process(output_directory, selected_csv):
     logging.info("Executing status_analyzer csv_process function")
-    if os.path.exists(f'{io_directory}/merged.csv'):
-       os.remove(f'{io_directory}/merged.csv')
+    if os.path.exists(f'{output_directory}/merged.csv'):
+       os.remove(f'{output_directory}/merged.csv')
     all_csv = []
     if '*' in selected_csv:
-        for subdirectory in sorted(os.listdir(io_directory)):
-            subdirectory_path = os.path.join(io_directory, subdirectory)
+        parent_dir, file_name = os.path.split(selected_csv)
+        for subdirectory in sorted(os.listdir(parent_dir)):
+            subdirectory_path = os.path.join(parent_dir, subdirectory)
             if os.path.isdir(subdirectory_path):
                 pairs = extract_string_number_pairs(subdirectory_path)
                 if pairs:
                     extracted_data = str(pairs)
-                    csv_file_paths = glob(os.path.join(subdirectory_path, 'query_results', selected_csv))
+                    print(selected_csv)
+                    csv_file_paths = glob(os.path.join(subdirectory_path, 'query_results', file_name))
                     if csv_file_paths:
-                        merge_csv(csv_file_paths, io_directory, extracted_data, all_csv)
+                        merge_csv(csv_file_paths, output_directory, extracted_data, all_csv)
                     else:
                         print(f"\033[91mNo CSV files found in {subdirectory_path}\033[0m")
                         exit(1)
     else:
-        merge_csv(selected_csv, io_directory, extracted_data=None, all_csv=all_csv)
+        merge_csv(selected_csv, output_directory, extracted_data=None, all_csv=all_csv)
     
 ####### ANALYZER #######
 def read_txt_file(file_path):
@@ -118,15 +120,14 @@ def plot_and_save_graph(selected_csv, x_column, y_column):
     image_file_path = selected_csv.replace('.csv', '_graph.png')
     plt.savefig(image_file_path)
 
-def main(merge, analyze, graph, csv_original, transformation_directory, io_directory, selected_csv, x_column, y_column):
+def main(merge, analyze, graph, csv_original, transformation_directory, output_directory, selected_csv, x_column, y_column):
     os.makedirs('/var/log/kara/', exist_ok=True)
     logging.basicConfig(filename= '/var/log/kara/all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
     logging.info("\033[92m****** status_analyzer main function start ******\033[0m")
     if analyze:
         analyze_and_save_csv(csv_original, transformation_directory)
     if merge:
-        csv_process(io_directory, selected_csv)
+        csv_process(output_directory, selected_csv)
     if graph:
         plot_and_save_graph(selected_csv, x_column, y_column)
     logging.info("\033[92m****** status_analyzer main function end ******\033[0m")
@@ -134,7 +135,7 @@ def main(merge, analyze, graph, csv_original, transformation_directory, io_direc
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Perform CSV operations and merge files.')
     parser.add_argument('-M', '--merge', action='store_true', help='Merge CSV files')
-    parser.add_argument('-io', '--io_directory', help='Path to the directory containing CSV files or output for merged csv file (required for -M)')
+    parser.add_argument('-o', '--output_directory', help='Path to the directory containing CSV files or output for merged csv file (required for -M)')
     parser.add_argument('-sc', '--selected_csv', help='Name of the selected CSV files or "*.csv" (required for -M)')
     parser.add_argument('-A', '--analyze', action='store_true', help='Analyze CSV files')
     parser.add_argument('-c', '--csv_org', help='Custom CSV file for analysis (required for -A)')
@@ -145,8 +146,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     # Check required arguments based on operation
-    if args.merge and (args.io_directory is None or args.selected_csv is None):
-        print("Error: Both -io (--input_directory) and -sc (--selected_csv) switches are required for merge operation -M")
+    if args.merge and (args.output_directory is None or args.selected_csv is None):
+        print("Error: Both -o (--input_directory) and -sc (--selected_csv) switches are required for merge operation -M")
         exit(1)
     if args.analyze and (args.csv_org is None or args.transformation_directory is None):
         print("Error: Both -c (--csv_org) and -t (--transformation_directory) switches are required for analyze operation -A")
@@ -158,7 +159,7 @@ if __name__ == "__main__":
     # Set values to None if not provided
     merge = args.merge ; analyze = args.analyze ; graph = args.graph
     x_column = args.x_column ; y_column = args.y_column
-    io_directory = args.io_directory.strip() if args.io_directory else None 
+    output_directory = args.output_directory.strip() if args.output_directory else None 
     if '*' in args.selected_csv:
         selected_csv = args.selected_csv.strip() if args.selected_csv else None
     else:
@@ -166,4 +167,4 @@ if __name__ == "__main__":
     csv_original = args.csv_org.strip() if args.csv_org else None
     transformation_directory = args.transformation_directory.strip() if args.transformation_directory else None
 
-    main(merge, analyze, graph, csv_original, transformation_directory, io_directory, selected_csv, x_column, y_column)
+    main(merge, analyze, graph, csv_original, transformation_directory, output_directory, selected_csv, x_column, y_column)

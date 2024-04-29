@@ -4,6 +4,7 @@ import select
 import subprocess
 import time
 import yaml
+import csv
 import shutil
 import argparse
 import logging
@@ -13,6 +14,11 @@ import config_gen
 import status_reporter
 import monstaver
 import analyzer
+
+# For font style
+BOLD = "\033[1m"
+RESET = "\033[0m"
+YELLOW = "\033[1;33m"
 
 kara_config_files = "/etc/KARA/"
 
@@ -69,7 +75,8 @@ def config_gen_agent(config_params):
             else:
                 print("\033[91mInvalid input. Please enter 'yes' or 'no'\033[0m")
         else:
-            break    
+            break 
+    print(f"{YELLOW}========================================{RESET}") 
     for input_file in input_files:
         logging.info(f"config_gen_agent input_files : {input_file}")
         firstConfNumber = 1
@@ -130,7 +137,8 @@ def mrbench_agent(config_params, config_file, config_output):
             else:
                 print("\033[91mInvalid input. Please enter 'yes' or 'no'\033[0m")
         else:
-            break    
+            break
+    print(f"{YELLOW}========================================{RESET}") 
     if config_output is None:
         if(config_params.get('conf_dir')):
             config_output = config_params.get('conf_dir')
@@ -182,6 +190,12 @@ def mrbench_agent(config_params, config_file, config_output):
                 test_config_path = os.path.join(conf_dict["workloads.xml"], test_config)
                 logging.info(f"test config path in mrbench_agent submit function is : {test_config_path}")
                 start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
+                if '#' in os.path.basename(swift_configs[key]) and '#' in test_config:
+                    with open(os.path.join(result_file_path, 'info.csv'), mode='w', newline='') as file:
+                        writer = csv.writer(file)
+                        writer.writerow(['swift_config', 'test_config'])
+                        for key in swift_configs:
+                            writer.writerow([os.path.basename(swift_configs[key]) , test_config])
                 all_start_times.append(start_time) ; all_end_times.append(end_time)
                 if run_status_reporter is not None:
                     if run_status_reporter == 'csv':
@@ -237,10 +251,10 @@ def status_analyzer_agent(config_params):
     analyze_csv = config_params.get('analyze_csv')
     transform_dir = config_params.get('transform')
     if merge:
-        analyzer.main_merge(input_directory=result_dir, selected_csv=merge_csv)
+        analyzer.main(merge=True, io_directory=result_dir, selected_csv=merge_csv)
         time.sleep(10)
     if analyze:
-        analyzer.main_analyze(csv_original=f"{result_dir}/{analyze_csv}", transformation_directory=transform_dir)
+        analyzer.main(analyze=True, csv_original=f"{result_dir}/{analyze_csv}", transformation_directory=transform_dir)
 
 def report_recorder_agent(config_params):
     logging.info("Executing report_recorder_agent function")
