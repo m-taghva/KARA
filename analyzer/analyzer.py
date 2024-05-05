@@ -121,7 +121,8 @@ def plot_and_save_graph(selected_csv, x_column, y_column):
     plt.savefig(image_file_path)
 
 def main(merge, analyze, graph, csv_original, transformation_directory, output_directory, selected_csv, x_column, y_column):
-    os.makedirs('/var/log/kara/', exist_ok=True)
+    log_dir = f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/"
+    log_dir_run = subprocess.run(log_dir, shell=True)
     logging.basicConfig(filename= '/var/log/kara/all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info("\033[92m****** status_analyzer main function start ******\033[0m")
     if analyze:

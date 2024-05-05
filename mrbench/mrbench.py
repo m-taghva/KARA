@@ -116,7 +116,7 @@ def copy_swift_conf(swift_configs):
                         check_services = f"ssh -p {port} {user}@{ip} 'sudo docker exec {container_name} service --status-all'"
                         check_services_result = subprocess.run(check_services, shell=True, capture_output=True, text=True, check=True)
                         if "[ + ]  swift-account\n" or "[ + ]  swift-container\n" or "[ + ]  swift-object\n" or "[ + ]  swift-proxy\n" in check_services_result:
-                            time.sleep(10)
+                            time.sleep(20)
                             print("")
                             print(f"\033[92mcontainer {container_name} successfully restart\033[0m")
                             break
@@ -271,7 +271,8 @@ def main(workload_config_path, output_path, swift_configs):
     if log_level is not None:
         log_level_upper = log_level.upper()
         if log_level_upper == "DEBUG" or "INFO" or "WARNING" or "ERROR" or "CRITICAL":
-            os.makedirs('/var/log/kara/', exist_ok=True)
+            log_dir = f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/"
+            log_dir_run = subprocess.run(log_dir, shell=True)
             logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
         else:
             print(f"\033[91mInvalid log level:{log_level}\033[0m")  

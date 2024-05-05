@@ -45,8 +45,8 @@ def config_gen_agent(config_params):
                 print(f"\033[91m{item}\033[0m")
             # Ask user if they want to remove the contents
             print("Do you want to remove these files and directories? (yes/no): ", end='', flush=True)
-            # Set up a timer for 20 seconds
-            rlist, _, _ = select.select([sys.stdin], [], [], 20)
+            # Set up a timer for 30 seconds
+            rlist, _, _ = select.select([sys.stdin], [], [], 30)
             if rlist:
                 response = input().lower() 
                 if response in ('y', 'yes'):
@@ -62,7 +62,6 @@ def config_gen_agent(config_params):
                     item_path = os.path.join(config_output, item)
                     shutil.move(item_path, destination_dir)
                 response = "yes" # If no input after 20 seconds, consider it as "yes"
-
             if response == 'yes':
                 logging.info("answer to config_gen_agent remove request is YES")
                 # Remove all files and directories in the output directory
@@ -75,18 +74,23 @@ def config_gen_agent(config_params):
             else:
                 print("\033[91mInvalid input. Please enter 'yes' or 'no'\033[0m")
         else:
-            break 
-    print(f"{YELLOW}========================================{RESET}") 
+            break
+    print(f"{YELLOW}========================================{RESET}")  
     for input_file in input_files:
-        logging.info(f"config_gen_agent input_files : {input_file}")
-        firstConfNumber = 1
-        # Create output directory for each input file
-        workloads_configs = os.path.join(config_output, os.path.basename(input_file).split('__')[0])
-        logging.debug(f"path to config_gen_agent output : {workloads_configs}")
-        if os.path.isdir(workloads_configs): 
-            firstConfNumber = len(os.listdir(workloads_configs))+1
-            logging.debug(f"config_gen_agent firstConfNumber : {firstConfNumber}")
-        config_gen.main(input_file_path=input_file, output_directory=workloads_configs, conf_num=firstConfNumber)
+        if os.path.exists(input_file):
+            logging.info(f"config_gen_agent input_files : {input_file}")
+            firstConfNumber = 1
+            # Create output directory for each input file
+            workloads_configs = os.path.join(config_output, os.path.basename(input_file).split('__')[0])
+            logging.debug(f"path to config_gen_agent output : {workloads_configs}")
+            if os.path.isdir(workloads_configs): 
+                firstConfNumber = len(os.listdir(workloads_configs))+1
+                logging.debug(f"config_gen_agent firstConfNumber : {firstConfNumber}")
+            config_gen.main(input_file_path=input_file, output_directory=workloads_configs, conf_num=firstConfNumber)
+        else:
+            print(f"this template doesn't exist: \033[91m{input_file}\033[0m")
+            exit()
+    print(f"{YELLOW}========================================{RESET}")
     return config_output
 
 def mrbench_agent(config_params, config_file, config_output):
@@ -94,7 +98,7 @@ def mrbench_agent(config_params, config_file, config_output):
     all_start_times = [] ; all_end_times = []
     result_dir = config_params.get('output_path')
     run_status_reporter = config_params.get('Status_Reporter', None)
-    run_monstaver = config_params.get('monstaver', False)
+    run_monstaver = config_params.get('monstaver', None)
     ring_dirs = config_params.get('ring_dirs', [])
     logging.info(f"ring directories in mrbench_agent : {ring_dirs}")
     while True:
@@ -107,8 +111,8 @@ def mrbench_agent(config_params, config_file, config_output):
                 print(f"\033[91m{item}\033[0m")
             # Ask user if they want to remove the contents
             print("Do you want to remove these files and directories? (yes/no): ", end='', flush=True)
-            # Set up a timer for 20 seconds
-            rlist, _, _ = select.select([sys.stdin], [], [], 20)
+            # Set up a timer for 30 seconds
+            rlist, _, _ = select.select([sys.stdin], [], [], 30)
             if rlist:
                 response = input().lower() 
                 if response in ('y', 'yes'):
@@ -124,7 +128,6 @@ def mrbench_agent(config_params, config_file, config_output):
                     item_path = os.path.join(result_dir, item)
                     shutil.move(item_path, destination_dir_results)
                 response = "yes" # If no input after 20 seconds, consider it as "yes"
-
             if response == 'yes':
                 logging.info("answer to mrbench_agent remove request is YES")
                 # Remove all files and directories in the output directory
@@ -137,7 +140,7 @@ def mrbench_agent(config_params, config_file, config_output):
             else:
                 print("\033[91mInvalid input. Please enter 'yes' or 'no'\033[0m")
         else:
-            break
+            break 
     print(f"{YELLOW}========================================{RESET}") 
     if config_output is None:
         if(config_params.get('conf_dir')):
@@ -154,7 +157,7 @@ def mrbench_agent(config_params, config_file, config_output):
     conf_exist = 0
     swift_rings = {}
     swift_configs = {}
-    if conf_dict["workloads.xml"] is None:
+    if '.xml' not in os.path.basename(dir_path):
         logging.critical("There isn't any workload in mrbench_agent input config dictionary")
         print(f"\033[91mThere isn't any workload !\033[0m")
         exit()
@@ -162,7 +165,7 @@ def mrbench_agent(config_params, config_file, config_output):
         conf_exist = 1
     ring_exist = 0
     total_ring_index = 1
-    if len(ring_dirs)>1:
+    if len(ring_dirs):
         total_ring_index = len(ring_dirs)
         ring_exist = 1
     for ri in range(total_ring_index):
@@ -171,39 +174,67 @@ def mrbench_agent(config_params, config_file, config_output):
                 file_path = os.path.join(ring_dirs[ri], filename)
                 swift_rings[filename] = file_path
         for key in conf_dict:
-            if key != "workloads.xml" and key is not None:
+            if key != ".xml" and key is not None and os.listdir(conf_dict[key]):
                 Total_index *=len(os.listdir(conf_dict[key]))
                 swift_configs[key]=""
         for i in range(Total_index):
             if conf_exist:
                 m=1
                 for key in swift_configs:
-                    list_dir = os.listdir(conf_dict[key])
+                    list_dir = sorted(os.listdir(conf_dict[key]))
                     swift_configs[key] = os.path.join(config_output,key,list_dir[(i//m)%len(list_dir)])
                     m *= len(list_dir)
-                if conf_exist or ring_exist:
-                    merged_conf_ring = {**swift_rings, **swift_configs}
-                    logging.info(f"rings and configs dictionary is : {merged_conf_ring}")
-                    mrbench.copy_swift_conf(merged_conf_ring)
-                    #time.sleep(40)
+            if conf_exist or ring_exist:
+                merged_conf_ring = {**swift_rings, **swift_configs}
+                logging.info(f"rings and configs dictionary is : {merged_conf_ring}")
+                mrbench.copy_swift_conf(merged_conf_ring)
             for test_config in sorted(os.listdir(conf_dict["workloads.xml"])):
                 test_config_path = os.path.join(conf_dict["workloads.xml"], test_config)
                 logging.info(f"test config path in mrbench_agent submit function is : {test_config_path}")
                 start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
+                copy_test_config = f"sudo cp {test_config_path} {result_file_path}"
+                copy_test_config_process = subprocess.run(copy_test_config, shell=True)
+                copy_ring_conf_files = f"sudo cp {swift_configs[key]} {result_file_path} && sudo cp {swift_rings[filename]} {result_file_path}"
+                copy_ring_conf_files_process = subprocess.run(copy_ring_conf_files, shell=True)
                 if '#' in os.path.basename(swift_configs[key]) and '#' in test_config:
                     with open(os.path.join(result_file_path, 'info.csv'), mode='w', newline='') as file:
                         writer = csv.writer(file)
-                        writer.writerow(['swift_config', 'test_config'])
+                        swift_keys = []
+                        swift_values = []
                         for key in swift_configs:
-                            writer.writerow([os.path.basename(swift_configs[key]) , test_config])
+                            pairs = swift_configs[key].split('#')
+                            for pair in pairs:
+                                if ':' in pair:
+                                    pair_split = pair.split(':')
+                                    if len(pair_split) == 2:
+                                        swift_keys.append(pair_split[0])
+                                        swift_values.append(pair_split[1])  
+                        test_keys = []
+                        test_values = []
+                        pairs = test_config.split('#')
+                        for pair in pairs:
+                            if ':' in pair:
+                                pair_split = pair.split(':')
+                                if len(pair_split) == 2:
+                                    test_keys.append(pair_split[0])
+                                    test_values.append(pair_split[1])
+                        writer.writerow(['workload_configs'] + test_keys)
+                        writer.writerow(['workload_values'] + test_values)
+                        writer.writerow(['swift_configs'] + swift_keys)
+                        writer.writerow(['swift_values'] + swift_values)
                 all_start_times.append(start_time) ; all_end_times.append(end_time)
                 if run_status_reporter is not None:
                     if run_status_reporter == 'csv':
                         status_reporter.main(metric_file=None, path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=False)  
                     if run_status_reporter == 'csv,img':
-                        status_reporter.main(metric_file=None, path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)  
-                if run_monstaver:
-                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True) 
+                        status_reporter.main(metric_file=None, path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True) 
+                if  run_monstaver is not None:
+                    if run_monstaver == 'backup,info':
+                        monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True) 
+                    if run_monstaver == 'backup':
+                        monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=False, os_info=False, swift_info=False, influx_backup=True) 
+                    if run_monstaver == 'info':
+                        monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=False)
     # Extract first start time and last end time
     first_start_time = all_start_times[0] ; last_end_time = all_end_times[-1] 
     logging.debug(first_start_time,last_end_time)
@@ -220,13 +251,21 @@ def monstaver_agent(config_params, config_file, first_start_time, last_end_time)
             times = file.readlines()
             for time_range in times:
                 start_time, end_time = time_range.strip().split(',')
-                if operation == "backup":
+                if operation == "backup,info":
                     monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True)
+                elif operation == 'backup':
+                        monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=False, os_info=False, swift_info=False, influx_backup=True) 
+                elif operation == 'info':
+                        monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=False)
                 elif operation == "restore":
-                    monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)          
-    elif operation == "backup": 
-        if batch_mode:
-            monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True)
+                    monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)   
+    elif batch_mode:       
+        if operation == "backup,info":
+            monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True)
+        elif operation == 'backup':
+            monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=False, os_info=False, swift_info=False, influx_backup=True) 
+        elif operation == 'info':
+            monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=False)
     elif operation == "restore":
         monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)
 
@@ -269,7 +308,8 @@ def main(config_file):
     if log_level is not None:
         log_level_upper = log_level.upper()
         if log_level_upper == "DEBUG" or "INFO" or "WARNING" or "ERROR" or "CRITICAL":
-            os.makedirs('/var/log/kara/', exist_ok=True)
+            log_dir = f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/"
+            log_dir_run = subprocess.run(log_dir, shell=True)
             logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
         else:
             print(f"\033[91mInvalid log level:{log_level}\033[0m")  
