@@ -46,7 +46,7 @@ def replace_tags(input_text, conf_name, output_directory):
         conf_number += 1
                     
 def main(input_file_path, output_directory, conf_num):
-    log_dir = f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && chmod -R 777 /var/log/kara/"
+    log_dir = f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/"
     log_dir_run = subprocess.run(log_dir, shell=True)
     logging.basicConfig(filename= '/var/log/kara/all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 

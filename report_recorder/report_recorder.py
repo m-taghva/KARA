@@ -96,7 +96,8 @@ def upload_images(site, html_file_path):
             logging.warning(f"Image '{image_filename}' already exists on the wiki.")
 
 def main(input_template_file, html_output, page_title):
-    os.makedirs('/var/log/kara/', exist_ok=True)
+    log_dir = f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/"
+    log_dir_run = subprocess.run(log_dir, shell=True)
     logging.basicConfig(filename= '/var/log/kara/all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
     logging.info("\033[92m****** report_recorder main function start ******\033[0m")
