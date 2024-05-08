@@ -11,55 +11,64 @@ RESET = "\033[0m"
 YELLOW = "\033[1;33m"
 
 ####### MERGER #######
-def merge_csv(selected_csv, output_directory, extracted_data, all_csv):
+def merge_csv(csv_file_path, output_directory, pairs_dict, all_csv):
     logging.info("Executing status_analyzer merge_csv function")
-    for file in selected_csv:
+    for file in csv_file_path:
         try:
             csv_data = pd.read_csv(file)
             # add csv name as a column 
             csv_data.insert(0, 'File', os.path.basename(file).split('.')[0])
-            if extracted_data:
-                csv_data.insert(1, 'config', extracted_data)
+            if pairs_dict:
+                # Read inside this dictionary and separate keys and values 
+                all_keys = list(pairs_dict.keys())
+                all_values = list(pairs_dict.values())
+                # Ensure that the length of all_keys matches the number of columns in the DataFrame
+                num_columns = len(csv_data.columns)
+                all_keys = all_keys[:num_columns - 1]  # -1 to exclude the 'File' column
+                # Insert keys as column headers and their corresponding values in the DataFrame
+                csv_data = csv_data.assign(**{key: value for key, value in zip(all_keys, all_values)})
             all_csv.append(csv_data)
         except FileNotFoundError:
             print(f"File '{file}' not found. Skipping...")
     if len(all_csv) > 0:
         merged_csv = pd.concat(all_csv, ignore_index=True)
-        if not os.path.exists(output_directory):
-            os.makedirs(output_directory)
         merged_csv.to_csv(f'{output_directory}/merged.csv', index=False)
         print(f"CSV files merged successfully. Merged file saved as {YELLOW}'{output_directory}/merged.csv'{RESET}")
     else:
         print(f"\033[91mNo CSV files found for merging\033[0m")
 
-def extract_string_number_pairs(target_directory):
+def extract_string_number_pairs(subdirectory_path):
     logging.info("Executing status_analyzer extract_string_number_pairs function")
-    keys = re.findall("(?<=#)[^:]*(?=:)", target_directory)
-    values = re.findall("(?<=:)[^#]*(?=#)", target_directory)
-    return list(zip(keys, values))
+    info_yaml_path = os.path.join(subdirectory_path, "info.yaml")
+    pairs_dict = {}
+    if os.path.exists(info_yaml_path):
+        with open(info_yaml_path, 'r') as file:
+            info_data = yaml.load(file, Loader=yaml.FullLoader)            
+            for section_name, section_data in info_data.items():
+                for key, value in section_data.items():
+                    pairs_dict[f"{section_name}.{key}"] = value
+    return pairs_dict
 
-def csv_process(output_directory, selected_csv):
-    logging.info("Executing status_analyzer csv_process function")
+def merge_process(output_directory, selected_csv):
+    logging.info("Executing status_analyzer merge_process function")
     if os.path.exists(f'{output_directory}/merged.csv'):
-       os.remove(f'{output_directory}/merged.csv')
+            remove_csv = subprocess.run(f"rm {output_directory}/merged.csv", shell=True)
     all_csv = []
     if '*' in selected_csv:
         parent_dir, file_name = os.path.split(selected_csv)
         for subdirectory in sorted(os.listdir(parent_dir)):
             subdirectory_path = os.path.join(parent_dir, subdirectory)
             if os.path.isdir(subdirectory_path):
-                pairs = extract_string_number_pairs(subdirectory_path)
-                if pairs:
-                    extracted_data = str(pairs)
-                    print(selected_csv)
+                pairs_dict = extract_string_number_pairs(subdirectory_path)
+                if pairs_dict:
                     csv_file_paths = glob(os.path.join(subdirectory_path, 'query_results', file_name))
                     if csv_file_paths:
-                        merge_csv(csv_file_paths, output_directory, extracted_data, all_csv)
+                        merge_csv(csv_file_paths, output_directory, pairs_dict, all_csv)
                     else:
                         print(f"\033[91mNo CSV files found in {subdirectory_path}\033[0m")
                         exit(1)
     else:
-        merge_csv(selected_csv, output_directory, extracted_data=None, all_csv=all_csv)
+        merge_csv(selected_csv, output_directory, pairs_dict=None, all_csv=all_csv)
     
 ####### ANALYZER #######
 def read_txt_file(file_path):
@@ -125,6 +134,8 @@ def main(merge, analyze, graph, csv_original, transformation_directory, output_d
     log_dir_run = subprocess.run(log_dir, shell=True)
     logging.basicConfig(filename= '/var/log/kara/all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info("\033[92m****** status_analyzer main function start ******\033[0m")
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory) 
     if analyze:
         analyze_and_save_csv(csv_original, transformation_directory)
     if merge:
@@ -160,12 +171,18 @@ if __name__ == "__main__":
     # Set values to None if not provided
     merge = args.merge ; analyze = args.analyze ; graph = args.graph
     x_column = args.x_column ; y_column = args.y_column
-    output_directory = args.output_directory.strip() if args.output_directory else None 
-    if '*' in args.selected_csv:
-        selected_csv = args.selected_csv.strip() if args.selected_csv else None
-    else:
-        selected_csv = args.selected_csv.split(',')
-    csv_original = args.csv_org.strip() if args.csv_org else None
     transformation_directory = args.transformation_directory.strip() if args.transformation_directory else None
-
+    csv_original = args.csv_org.strip() if args.csv_org else None
+    output_directory = args.output_directory.strip() if args.output_directory else None
+    if not os.path.exists(output_directory):
+            os.makedirs(output_directory) 
+    if args.selected_csv is not None:
+        if '*' in args.selected_csv:
+            selected_csv = args.selected_csv.strip() if args.selected_csv else None
+        else:
+            selected_csv = args.selected_csv.split(',')         
+    else:
+        print(f'\033[91mplease select correct csv file your file is wrong: {args.selected_csv}\033[0m')
+        exit(1)
+   
     main(merge, analyze, graph, csv_original, transformation_directory, output_directory, selected_csv, x_column, y_column)

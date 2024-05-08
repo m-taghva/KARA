@@ -55,6 +55,16 @@ def copy_swift_conf(swift_configs):
                         diff_ring_result = subprocess.run(diff_ring_command, shell=True, capture_output=True, text=True)
                         print("")
                         print(f"please wait for checking ring file [ {filename} ] inside {container_name}")
+                        ring_dict = {}
+                        get_account_builder = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/account.builder"
+                        get_account_builder_process = subprocess.run(get_account_builder, shell=True, capture_output=True, text=True)
+                        ring_dict['account.builder'] = get_account_builder_process.stdout
+                        get_container_builder = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/container.builder"
+                        get_container_builder_process = subprocess.run(get_container_builder, shell=True, capture_output=True, text=True)
+                        ring_dict['container.builder'] = get_container_builder_process.stdout
+                        get_object_builder = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/object.builder"
+                        get_object_builder_process = subprocess.run(get_object_builder, shell=True, capture_output=True, text=True)
+                        ring_dict['object.builder'] = get_object_builder_process.stdout
                         if diff_ring_result.stderr == "":
                             if diff_ring_result.stdout != "":
                                 mkdir_tmp_rings = f"ssh -p {port} {user}@{ip} 'sudo mkdir -p /tmp/rings/ > /dev/null 2>&1 && sudo chmod -R 777 /tmp/rings/'"
@@ -123,6 +133,7 @@ def copy_swift_conf(swift_configs):
             else:
                 print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m") 
     print(f"{YELLOW}========================================{RESET}")
+    return ring_dict
     
 def submit(workload_config_path, output_path):
     logging.info("Executing mrbench submit function")
