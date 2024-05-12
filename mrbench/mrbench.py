@@ -32,7 +32,14 @@ def load_config(config_file):
 def copy_swift_conf(swift_configs):
     logging.info("Executing mrbench copy_swift_conf function")
     data_loaded = load_config(config_file)
+    if not 'swift' in data_loaded:
+        print(f"Error there isn't \033[91mswift\033[0m section in mrbench.conf so ring and conf can't set.")
+        exit(1)
+    if not data_loaded['swift']:
+        print(f"Error there isn't any item in \033[91mswift\033[0m section (mrbench.conf) so ring and conf can't set.")
+        exit(1)
     for key,value in data_loaded['swift'].items():
+        ring_dict = {}
         container_name = key
         user = value['ssh_user']
         ip = value['ip_swift']
@@ -55,16 +62,15 @@ def copy_swift_conf(swift_configs):
                         diff_ring_result = subprocess.run(diff_ring_command, shell=True, capture_output=True, text=True)
                         print("")
                         print(f"please wait for checking ring file [ {filename} ] inside {container_name}")
-                        ring_dict = {}
-                        get_account_builder = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/account.builder"
-                        get_account_builder_process = subprocess.run(get_account_builder, shell=True, capture_output=True, text=True)
-                        ring_dict['account.builder'] = get_account_builder_process.stdout
-                        get_container_builder = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/container.builder"
-                        get_container_builder_process = subprocess.run(get_container_builder, shell=True, capture_output=True, text=True)
-                        ring_dict['container.builder'] = get_container_builder_process.stdout
-                        get_object_builder = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /rings/object.builder"
-                        get_object_builder_process = subprocess.run(get_object_builder, shell=True, capture_output=True, text=True)
-                        ring_dict['object.builder'] = get_object_builder_process.stdout
+                        if "account" in filename:
+                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/account.ring.gz"
+                            ring_dict['account'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
+                        elif "container" in filename:
+                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/container.ring.gz"
+                            ring_dict['container'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
+                        else:
+                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/object.ring.gz"
+                            ring_dict['object'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
                         if diff_ring_result.stderr == "":
                             if diff_ring_result.stdout != "":
                                 mkdir_tmp_rings = f"ssh -p {port} {user}@{ip} 'sudo mkdir -p /tmp/rings/ > /dev/null 2>&1 && sudo chmod -R 777 /tmp/rings/'"
@@ -79,9 +85,11 @@ def copy_swift_conf(swift_configs):
                                     print(f"\033[92mcopy ring file [ {filename} ] to {container_name} successful\033[0m")
                                 else: 
                                     print(f"\033[91mrings in {container_name} failed to sync\033[0m")
+                                    exit(1)
                         elif diff_ring_result.stderr != "":
                             print("")
                             print(f"\033[91mWARNING: your ring file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
+                            exit(1)
                     elif filename.endswith(".conf"):
                         diff_conf_command = f"ssh -p {port} {user}@{ip} 'sudo cat {inspect_value}/{filename}' | diff - {filepath}"
                         diff_conf_result = subprocess.run(diff_conf_command, shell=True, capture_output=True, text=True)
@@ -104,9 +112,11 @@ def copy_swift_conf(swift_configs):
                                     name_changer_process = subprocess.run(name_changer, shell=True)
                                 else:
                                     print(f"\033[91mconfigs in {container_name} failed to sync\033[0m")
+                                    exit(1)
                         elif diff_conf_result.stderr != "":
                             print("")
                             print(f"\033[91mWARNING: your config file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
+                            exit(1)
                     if each_scp_successful: 
                         all_scp_file_successful = True  
         else:
@@ -131,9 +141,9 @@ def copy_swift_conf(swift_configs):
                             print(f"\033[92mcontainer {container_name} successfully restart\033[0m")
                             break
             else:
-                print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m") 
+                print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m")
     print(f"{YELLOW}========================================{RESET}")
-    return ring_dict
+    return ring_dict 
     
 def submit(workload_config_path, output_path):
     logging.info("Executing mrbench submit function")

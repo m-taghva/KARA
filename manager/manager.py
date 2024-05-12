@@ -8,6 +8,7 @@ import shutil
 import argparse
 import logging
 from datetime import datetime
+from glob import glob
 import mrbench
 import config_gen
 import status_reporter
@@ -31,7 +32,6 @@ def load_config(config_file):
     return data_loaded
 
 def config_gen_agent(config_params):
-    logging.info("Executing config_gen_agent function")
     input_files = config_params.get('conf_templates', [])
     config_output = config_params.get('output_path')
     while True:
@@ -92,20 +92,19 @@ def config_gen_agent(config_params):
     return config_output
 
 def mrbench_agent(config_params, config_file, config_output):
-    logging.info("Executing mrbench_agent function")
     all_start_times = [] ; all_end_times = []
     result_dir = config_params.get('output_path')
     run_status_reporter = config_params.get('Status_Reporter', None)
     run_monstaver = config_params.get('monstaver', None)
     ring_dirs = config_params.get('ring_dirs', [])
-    logging.info(f"ring directories in mrbench_agent : {ring_dirs}")
+    logging.info(f"manager:mrbench_agent: ring directories in mrbench_agent : {ring_dirs}")
     while True:
         if not os.path.exists(result_dir):
             os.makedirs(result_dir)
         if os.listdir(result_dir):
             print(f"Results directory {result_dir} is not empty and includes these files and directories:")
             for item in os.listdir(result_dir):
-                logging.info(f"dir and file in {result_dir}: {item}")
+                logging.info(f"manager:mrbench_agent: dir and file in {result_dir}: {item}")
                 print(f"\033[91m{item}\033[0m")
             # Ask user if they want to remove the contents
             print("Do you want to remove these files and directories? (yes/no): ", end='', flush=True)
@@ -120,14 +119,14 @@ def mrbench_agent(config_params, config_file, config_output):
             else:
                 current_time_results = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
                 destination_dir_results = os.path.join(os.path.dirname(os.path.dirname(result_dir)), os.path.dirname(result_dir)+"_"+current_time_results)
-                logging.info(f"user do not enter any answer so current files inside {result_dir} moved to : {destination_dir_results}")
+                logging.info(f"manager:mrbench_agent: user do not enter any answer so current files inside {result_dir} moved to : {destination_dir_results}")
                 os.makedirs(destination_dir_results)
                 for item in os.listdir(result_dir):
                     item_path = os.path.join(result_dir, item)
                     shutil.move(item_path, destination_dir_results)
                 response = "yes" # If no input after 20 seconds, consider it as "yes"
             if response == 'yes':
-                logging.info("answer to mrbench_agent remove request is YES")
+                logging.info("manager:mrbench_agent: answer to mrbench_agent remove request is YES")
                 # Remove all files and directories in the output directory
                 rm_result_dir = subprocess.run(f"sudo rm -rf {result_dir}/*", shell=True)
                 print("\033[92mContents removed successfully.\033[0m")
@@ -140,20 +139,25 @@ def mrbench_agent(config_params, config_file, config_output):
         else:
             break
     print(f"{YELLOW}========================================{RESET}")
+    if os.path.exists(f'{result_dir}/analyzed/merged.csv'):
+        remove_csv = subprocess.run(f"rm {result_dir}/analyzed/merged.csv", shell=True)
+    # make empty dir for merging csv
+    elif not os.path.exists(f"{result_dir}/analyzed/"):
+        make_analyzed_dir = subprocess.run(f"sudo mkdir {result_dir}/analyzed/ > /dev/null 2>&1", shell=True)
     if config_output is None:
         if(config_params.get('conf_dir')):
             config_output = config_params.get('conf_dir')
         else:
-            logging.critical("There isn't any conf_dir in scenario file")
+            logging.critical("manager:mrbench_agent: There isn't any conf_dir in scenario file")
             print(f"\033[91mThere isn't any conf_dir in scenario file !\033[0m")
             exit()
     conf_dict = {}
     for dir_name in os.listdir(config_output):
         dir_path = os.path.join(config_output, dir_name)
         conf_dict[dir_name] = dir_path
+    logging.debug(f"manager:mrbench_agent: conf_dict: {conf_dict}")
     Total_index = 1
     conf_exist = 0
-    swift_rings = {}
     swift_configs = {}
     if '.xml' not in os.path.basename(dir_path):
         logging.critical("There isn't any workload in mrbench_agent input config dictionary")
@@ -167,6 +171,7 @@ def mrbench_agent(config_params, config_file, config_output):
         total_ring_index = len(ring_dirs)
         ring_exist = 1
     for ri in range(total_ring_index):
+        swift_rings = {}
         if ring_exist:
             for filename in os.listdir(ring_dirs[ri]):
                 file_path = os.path.join(ring_dirs[ri], filename)
@@ -184,18 +189,18 @@ def mrbench_agent(config_params, config_file, config_output):
                     m *= len(list_dir)
             if conf_exist or ring_exist:
                 merged_conf_ring = {**swift_rings, **swift_configs}
-                logging.info(f"rings and configs dictionary is : {merged_conf_ring}")
-                ring_dict = mrbench.copy_swift_conf(merged_conf_ring)
+                logging.info(f"manager:mrbench_agent: rings and configs dictionary is : {merged_conf_ring}")
+                ring_dict = mrbench.copy_swift_conf(merged_conf_ring)     
             for test_config in sorted(os.listdir(conf_dict["workloads.xml"])):
                 test_config_path = os.path.join(conf_dict["workloads.xml"], test_config)
-                logging.info(f"test config path in mrbench_agent submit function is : {test_config_path}")
+                logging.info(f"manager:mrbench_agent: test config path in mrbench_agent submit function is : {test_config_path}")
                 start_time, end_time, result_file_path = mrbench.submit(test_config_path, result_dir)
-                copy_test_config = f"sudo cp -r {test_config_path} {result_file_path}"
-                copy_test_config_process = subprocess.run(copy_test_config, shell=True)
-                copy_ring_conf_files = f"sudo cp -r {swift_configs[key]} {result_file_path} && sudo cp -r {swift_rings[filename]} {result_file_path}"
-                copy_ring_conf_files_process = subprocess.run(copy_ring_conf_files, shell=True)
-                if '#' in os.path.basename(swift_configs[key]) and '#' in test_config:
+                subprocess.run(f"sudo cp -r {test_config_path} {result_file_path}", shell=True)
+                print(test_config_path)
+                subprocess.run(f"sudo cp -r {swift_configs[key]} {result_file_path} && sudo cp -r {swift_rings[filename]} {result_file_path}", shell=True)
+                if '#' in test_config or ':' in test_config:    
                     data = {}
+                    data['Time'] = f"{start_time},{end_time}"
                     swift_keys = []
                     swift_values = []
                     swift_pairs = os.path.basename(swift_configs[key]).split('#')
@@ -216,17 +221,27 @@ def mrbench_agent(config_params, config_file, config_output):
                     data['workload_config'] = dict(zip(test_keys, test_values))
                     with open(os.path.join(result_file_path, 'info.yaml'), 'w') as yaml_file:
                         yaml.dump(data, yaml_file, default_flow_style=False)
+                if ring_dict:
                     data_ring = {'ring_config': ring_dict}
                     with open(os.path.join(result_file_path, 'info.yaml'), 'a') as yaml_file:
                         yaml.dump(data_ring, yaml_file, default_flow_style=False)
-
+                merge_data = {**data, **data_ring}
                 all_start_times.append(start_time) ; all_end_times.append(end_time)
-                if run_status_reporter is not None:
+                if run_status_reporter != 'none':
                     if run_status_reporter == 'csv':
-                        status_reporter.main(metric_file=None, path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=False)
+                        output_csv  = status_reporter.main(metric_file=None, path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=False)
                     if run_status_reporter == 'csv,img':
-                        status_reporter.main(metric_file=None, path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)
-                if  run_monstaver is not None:
+                        output_csv = status_reporter.main(metric_file=None, path_dir=result_file_path, time_range=f"{start_time},{end_time}", img=True)
+                    if os.path.exists(output_csv):
+                        formatted_data = {}
+                        for section_name, section_data in merge_data.items():
+                            if isinstance(section_data, dict):
+                                for name, val in section_data.items():
+                                    formatted_data[f"{section_name}.{name}"] = val
+                            else:
+                                formatted_data[section_name] = section_data
+                        analyzer.merge_csv(csv_file=output_csv, output_directory=f"{result_dir}/analyzed", pairs_dict=formatted_data)
+                if run_monstaver != 'none':
                     if run_monstaver == 'backup,info':
                         monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True)
                     if run_monstaver == 'backup':
@@ -235,40 +250,10 @@ def mrbench_agent(config_params, config_file, config_output):
                         monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_file_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=False)
     # Extract first start time and last end time
     first_start_time = all_start_times[0] ; last_end_time = all_end_times[-1]
-    logging.debug(first_start_time,last_end_time)
+    logging.debug(f"manager:mrbench_agent: {first_start_time},{last_end_time}")
     return first_start_time, last_end_time
 
-def monstaver_agent(config_params, config_file, first_start_time, last_end_time):
-    logging.info("Executing monstaver_agent function")
-    operation = config_params.get('operation')
-    batch_mode = config_params.get('batch_mode', False)
-    times_file = config_params.get('times')
-    input_path = config_params.get('input_path')
-    if times_file:
-       with open(times_file, 'r') as file:
-            times = file.readlines()
-            for time_range in times:
-                start_time, end_time = time_range.strip().split(',')
-                if operation == "backup,info":
-                    monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True)
-                elif operation == 'backup':
-                        monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=False, os_info=False, swift_info=False, influx_backup=True)
-                elif operation == 'info':
-                        monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=False)
-                elif operation == "restore":
-                    monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)
-    elif batch_mode:
-        if operation == "backup,info":
-            monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True)
-        elif operation == 'backup':
-            monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=False, os_info=False, swift_info=False, influx_backup=True)
-        elif operation == 'info':
-            monstaver.main(time_range=f"{start_time},{end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=False)
-    elif operation == "restore":
-        monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)
-
 def status_reporter_agent(config_params):
-    logging.info("Executing status_reporter_agent function")
     result_dir = config_params.get('output_path')
     times_file = config_params.get('times')
     image_generate = config_params.get('image', False)
@@ -279,8 +264,35 @@ def status_reporter_agent(config_params):
                 start_time, end_time = time_range.strip().split(',')
                 status_reporter.main(path_dir=result_dir, time_range=f"{start_time},{end_time}", img=image_generate)
 
+def monstaver_agent(config_params, config_file, first_start_time, last_end_time):
+    operation = config_params.get('operation')
+    batch_mode = config_params.get('batch_mode', False)
+    times_file = config_params.get('times')
+    input_path = config_params.get('input_path')
+    if times_file:
+       with open(times_file, 'r') as file:
+            times = file.readlines()
+            for time_range in times:
+                start_time, end_time = time_range.strip().split(',')
+                if operation == "backup,info":
+                    monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True)
+                elif operation == 'backup':
+                        monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=False, os_info=False, swift_info=False, influx_backup=True)
+                elif operation == 'info':
+                        monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=False)
+                elif operation == "restore":
+                    monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)
+    elif batch_mode:
+        if operation == "backup,info":
+            monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True,  backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=True)
+        elif operation == 'backup':
+            monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=False, os_info=False, swift_info=False, influx_backup=True)
+        elif operation == 'info':
+            monstaver.main(time_range=f"{first_start_time},{last_end_time}", inputs=[input_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=True, os_info=True, swift_info=True, influx_backup=False)
+    elif operation == "restore":
+        monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True)
+
 def status_analyzer_agent(config_params):
-    logging.info("Executing status_analyzer_agent function")
     result_dir = config_params.get('input_path')
     merge = config_params.get('merge', False)
     merge_csv = config_params.get('merge_csv')
@@ -294,7 +306,6 @@ def status_analyzer_agent(config_params):
         analyzer.main(analyze=True, csv_original=f"{result_dir}/{analyze_csv}", transformation_directory=transform_dir)
 
 def report_recorder_agent(config_params):
-    logging.info("Executing report_recorder_agent function")
     input_template = config_params.get('input_template')
     output_html = config_params.get('output_html')
     kateb_title = config_params.get('kateb_title')
@@ -314,7 +325,7 @@ def main(config_file):
     else:
         print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
 
-    logging.info("\033[92m****** Manager_main function start ******\033[0m")
+    logging.info("manager:main:\033[92m****** Manager_main function start ******\033[0m")
     data_loaded = load_config(config_file)
     if 'scenario' in data_loaded:
         config_output = None
@@ -324,21 +335,27 @@ def main(config_file):
             try:
                 if 'Config_gen' in task:
                     config_params = task['Config_gen']
+                    logging.info("manager:main: Executing config_gen_agent function")
                     config_output = config_gen_agent(config_params)
                 elif 'Mrbench' in task:
                     config_params = task['Mrbench']
+                    logging.info("manager:main: Executing mrbench_agent function")
                     first_start_time, last_end_time = mrbench_agent(config_params, config_file, config_output)
                 elif 'Status-Reporter' in task:
                     config_params = task['Status-Reporter']
+                    logging.info("manager:main: Executing status_reporter_agent function")
                     status_reporter_agent(config_params)
                 elif 'Monstaver' in task:
                     config_params = task['Monstaver']
+                    logging.info("manager:main: Executing monstaver_agent function")
                     monstaver_agent(config_params, config_file, first_start_time, last_end_time)
                 elif 'Status_Analyzer' in task:
                     config_params = task['Status_Analyzer']
+                    logging.info("manager:main: Executing status_analyzer_agent function")
                     status_analyzer_agent(config_params)
                 elif 'Report_Recorder' in task:
                     config_params = task['Report_Recorder']
+                    logging.info("manager:main: Executing report_recorder_agent function")
                     report_recorder_agent(config_params)
                 else:
                     print(f"Unknown task: {task}")
@@ -346,7 +363,7 @@ def main(config_file):
                 print(f"Error executing task: {task}. Error: {str(e)}")
     else:
         print(f"\033[91mNo scenario found in the configuration file.\033[0m")
-    logging.info("\033[92m****** Manager_main function end ******\033[0m")
+    logging.info("manager:main:\033[92m****** Manager_main function end ******\033[0m")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='kara tools manager')
