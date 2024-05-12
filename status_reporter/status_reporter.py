@@ -225,6 +225,7 @@ def main(metric_file, path_dir, time_range, img=False):
     print(f"{YELLOW}========================================{RESET}")
     print("")
     logging.info("\033[92m****** status reporter main function end ******\033[0m")   
+    return  output_csv
 
 if __name__ == "__main__":
     # Parse command-line arguments for your new script
