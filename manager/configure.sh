@@ -13,7 +13,7 @@ if [ -z "$PYTHON_DIR" ]; then
 fi
 echo -e "${BOLD}Python directory found: ${RESET}${YELLOW}$PYTHON_DIR${RESET}"
 
-# Find the "MPK" directory starting from the current directory
+# Find the "KARA" directory starting from the current directory
 KARA_DIR=$(dirname "$(pwd)")
 while [ "$KARA_DIR" != "/" ]; do
     if [ -d "$KARA_DIR/KARA" ]; then
@@ -48,19 +48,19 @@ for ((i=0; i<${#SCRIPTS[@]}; i++)); do
     fi
 done
 
+#### copy config files to /etc/KARA
 # Source directory where your files are located
 source_dir="./sample_configs"
 # Destination directory where you want to move the files
 destination_dir="/etc/KARA"
 mkdir -p "$destination_dir"
-cp "$source_dir"/* "$destination_dir"/
+mv "$source_dir"/* "$destination_dir"/
 # Check if files are successfully moved
 if [ $? -eq 0 ]; then
     echo -e "${YELLOW}Config files moved successfully to $destination_dir${RESET}"
 else
     echo -e "${BOLD}Failed to move config files${RESET}"
 fi
-
 #### unzip pywikibot
 zip_file="$KARA_DIR/KARA/report_recorder/report_recorder_bot.zip"
 zip_destination="$KARA_DIR/KARA/report_recorder"
