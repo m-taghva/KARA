@@ -57,19 +57,19 @@ def copy_swift_conf(swift_configs):
                 inspect_value = container_info[0]['Config']['Labels'][key_to_extract]
                 for filename, filepath in swift_configs.items(): 
                     each_scp_successful = False 
-                    if filename.endswith(".gz"):
+                    if filename.endswith(".gz") or filename.endswith(".builder"):
                         diff_ring_command = f"ssh -p {port} {user}@{ip} 'sudo cat {inspect_value}/rings/{filename}' | diff - {filepath}"
                         diff_ring_result = subprocess.run(diff_ring_command, shell=True, capture_output=True, text=True)
                         print("")
                         print(f"please wait for checking ring file [ {filename} ] inside {container_name}")
                         if "account" in filename:
-                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/account.ring.gz"
+                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/account.builder"
                             ring_dict['account'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
                         elif "container" in filename:
-                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/container.ring.gz"
+                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/container.builder"
                             ring_dict['container'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
                         else:
-                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/object.ring.gz"
+                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/object.builder"
                             ring_dict['object'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
                         if diff_ring_result.stderr == "":
                             if diff_ring_result.stdout != "":
