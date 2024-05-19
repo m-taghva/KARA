@@ -278,7 +278,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
         os.makedirs(f"{backup_dir}/{time_dir_name}", exist_ok=True)
         os.makedirs(f"{backup_dir}/{time_dir_name}/dbs", exist_ok=True)
         os.makedirs(f"{backup_dir}/{time_dir_name}/other_info", exist_ok=True)
-        os.makedirs(f"{backup_dir}/{time_dir_name}/monster_conf", exist_ok=True)
+        os.makedirs(f"{backup_dir}/{time_dir_name}/configs", exist_ok=True)
         subprocess.run(f"sudo chmod -R 777 {backup_dir}", shell=True)
         
         if influx_backup:
@@ -440,11 +440,18 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
             port = value['ssh_port']
          
             # make hardware/os/swift sub directories
-            mkdir_hwoss_output = f"ssh -p {port} {user}@{ip} sudo mkdir -p {backup_dir}-tmp/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-etc-container/ ; "
-            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/ ; "
-            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware ; " 
-            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-etc-host/ ; " 
-            mkdir_hwoss_output += f"sudo mkdir -p  {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-etc-container/ " 
+            mkdir_hwoss_output = f"ssh -p {port} {user}@{ip} sudo mkdir -p {backup_dir}-tmp/{time_dir_name}/configs/{container_name}/software/os/{container_name}-etc-container/ ; "
+            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/configs/{container_name}/software/system/ ; "
+            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/configs/{container_name}/software/swift/ ; "
+            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/cpu/ ; "
+            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/ram/ ; "
+            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/net/ ; "
+            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/pci/ ; "
+            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/disk/ ; "
+            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/motherboard/ ; "
+            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/server-manufacturer ; "
+            mkdir_hwoss_output += f"sudo mkdir -p {backup_dir}/{time_dir_name}/configs/{container_name}/software/os/{container_name}-etc-host/ ; " 
+            mkdir_hwoss_output += f"sudo mkdir -p  {backup_dir}/{time_dir_name}/configs/{container_name}/software/os/{container_name}-etc-container/  "
             mkdir_hwoss_process = subprocess.run(mkdir_hwoss_output, shell=True)
             if mkdir_hwoss_process.returncode == 0:
                 logging.info("monstaver - make hardware/os/swift sub directories successful")
@@ -457,16 +464,16 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
             # get swift config files and monster services
             if swift_info:
                 logging.info(f"monstaver - user select switch -sw for swift info") 
-                get_swift_conf = f"ssh -p {port} {user}@{ip} 'docker exec {container_name} swift-init all status' > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-swift-status.txt ; "
-                get_swift_conf += f"ssh -p {port} {user}@{ip} 'docker exec {container_name} service --status-all' > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-services-container.txt 2>&1 ; "
-                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/container-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-container-server.conf ; "
-                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/account-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-account-server.conf ; "
-                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/proxy-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-proxy-server.conf ; "
-                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/account.ring.gz > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-account-ring.txt ; "
-                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/container.ring.gz > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-container-ring.txt ; "
-                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/object.ring.gz > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-object-ring.txt ; "
-                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/object-server.conf > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/swift/{container_name}-object-server.conf ; "
-                get_swift_conf += f"ssh -p {port} {user}@{ip} docker inspect {container_name} > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-docker-inspect.txt "
+                get_swift_conf = f"ssh -p {port} {user}@{ip} 'docker exec {container_name} swift-init all status' > {backup_dir}/{time_dir_name}/configs/{container_name}/software/swift/{container_name}-swift-status.txt ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} 'docker exec {container_name} service --status-all' > {backup_dir}/{time_dir_name}/configs/{container_name}/software/swift/{container_name}-services-container.txt 2>&1 ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/container-server.conf > {backup_dir}/{time_dir_name}/configs/{container_name}/software/swift/{container_name}-container-server.conf ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/account-server.conf > {backup_dir}/{time_dir_name}/configs/{container_name}/software/swift/{container_name}-account-server.conf ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/proxy-server.conf > {backup_dir}/{time_dir_name}/configs/{container_name}/software/swift/{container_name}-proxy-server.conf ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/account.ring.builder > {backup_dir}/{time_dir_name}/configs/{container_name}/software/swift/{container_name}-account-ring.txt ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/container.ring.builder > {backup_dir}/{time_dir_name}/configs/{container_name}/software/swift/{container_name}-container-ring.txt ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/object.ring.builder > {backup_dir}/{time_dir_name}/configs/{container_name}/software/swift/{container_name}-object-ring.txt ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker exec {container_name} cat /etc/swift/object-server.conf > {backup_dir}/{time_dir_name}/configs/{container_name}/software/swift/{container_name}-object-server.conf ; "
+                get_swift_conf += f"ssh -p {port} {user}@{ip} docker inspect {container_name} > {backup_dir}/{time_dir_name}/configs/{container_name}/software/os/{container_name}-docker-inspect.txt "
                 get_swift_conf_process = subprocess.run(get_swift_conf, shell=True)
                 if get_swift_conf_process.returncode == 0:
                     logging.info("monstaver - all swift configs copy to swift dir")
@@ -484,7 +491,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                 docker_compose_file = inspect_result[0]['Config']['Labels'].get('com.docker.compose.project.config_files')
                 docker_compose_path = inspect_result[0]['Config']['Labels'].get('com.docker.compose.project.working_dir')
                 docker_compose_result = os.path.join(docker_compose_path,docker_compose_file)
-            copy_compose_file = f"scp -r -P {port} {user}@{ip}:{docker_compose_result} {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/ > /dev/null 2>&1"
+            copy_compose_file = f"scp -r -P {port} {user}@{ip}:{docker_compose_result} {backup_dir}/{time_dir_name}/configs/{container_name}/software/os/ > /dev/null 2>&1"
             copy_compose_file_process = subprocess.run(copy_compose_file, shell=True)
             if copy_compose_file_process.returncode == 0:
                 logging.info("monstaver - extract docker compose file path and copy to os dir successful")
@@ -494,7 +501,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                 print("\033[91mfailure in copy compose file\033[0m")
 
             # copy etc dir from container to host
-            get_etc_command =  f"ssh -p {port} {user}@{ip} 'sudo docker cp {container_name}:/etc  {backup_dir}-tmp/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-etc-container/'"
+            get_etc_command =  f"ssh -p {port} {user}@{ip} 'sudo docker cp {container_name}:/etc  {backup_dir}-tmp/{time_dir_name}/configs/{container_name}/software/os/{container_name}-etc-container/'"
             get_etc_process = subprocess.run(get_etc_command, shell=True)
             if get_etc_process.returncode == 0:
                 logging.info(f"monstaver - copy monster etc of {container_name} to hos successful")
@@ -504,7 +511,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                 print(f"\033[91mfailure in copy monster etc of {container_name} to host\033[0m")
 
             # copy container etc dir from host to your server
-            mv_etc_cont_command = f"scp -r -P {port} {user}@{ip}:{backup_dir}-tmp/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-etc-container/etc/*  {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-etc-container/ > /dev/null 2>&1"
+            mv_etc_cont_command = f"scp -r -P {port} {user}@{ip}:{backup_dir}-tmp/{time_dir_name}/configs/{container_name}/os/{container_name}-etc-container/etc/*  {backup_dir}/{time_dir_name}/configs/{container_name}/software/os/{container_name}-etc-container/ > /dev/null 2>&1"
             mv_etc_cont_process = subprocess.run(mv_etc_cont_command, shell=True)
             if mv_etc_cont_process.stderr is None:
                 logging.info(f"monstaver - copy container etc dir from host {container_name} to your server successful")
@@ -514,7 +521,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                 print(f"\033[91mfailure in copy container etc dir from host {container_name} to your server\033[0m")
             
             # copy host etc dir from host to your server
-            mv_etc_host_command = f"scp -r -P {port} {user}@{ip}:/etc/*  {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-etc-host/ > /dev/null 2>&1"
+            mv_etc_host_command = f"scp -r -P {port} {user}@{ip}:/etc/*  {backup_dir}/{time_dir_name}/configs/{container_name}/software/os/{container_name}-etc-host/ > /dev/null 2>&1"
             mv_etc_host_process = subprocess.run(mv_etc_host_command, shell=True)
             if mv_etc_host_process.stderr is None:
                 logging.info(f"monstaver - copy host etc from host {container_name} to your server successful")
@@ -526,7 +533,13 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
             #### Execute commands to gather hardware information ####
             if hardware_info:
                 logging.info(f"monstaver - user select switch -hw for hardware info") 
-                lshw_command = f"ssh -p {port} {user}@{ip} sudo lshw > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lshw-host.txt"
+                lshw_command = f"ssh -p {port} {user}@{ip} sudo lshw -C cpu > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/cpu/lshw.txt ; "
+                lshw_command += f"ssh -p {port} {user}@{ip} sudo lshw -C memory > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/ram/lshw.txt ; "
+                lshw_command += f"ssh -p {port} {user}@{ip} sudo lshw -C memory -short > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/ram/lshw-brief.txt ; "
+                lshw_command += f"ssh -p {port} {user}@{ip} sudo lshw -C net > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/net/lshw.txt ; "
+                lshw_command += f"ssh -p {port} {user}@{ip} sudo lshw -C net -json > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/net/lshw-json.txt ; "
+                lshw_command += f"ssh -p {port} {user}@{ip} sudo lshw -short -C disk > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/disk/lshw-brief.txt ; "
+                lshw_command += f"ssh -p {port} {user}@{ip} sudo lshw -C disk > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/disk/lshw.txt "
                 lshw_process = subprocess.run(lshw_command, shell=True, capture_output=True, text=True)
                 if lshw_process.returncode == 0:
                     logging.info(f"monstaver - lshw successful on {container_name} host")
@@ -538,7 +551,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                     logging.error(f"monstaver - lshw failed on {container_name} host")
                     print(f"\033[91m lshw failed on {container_name} host\033[0m")
 
-                lscpu_command = f"ssh -p {port} {user}@{ip} sudo lscpu > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lscpu-host.txt"
+                lscpu_command = f"ssh -p {port} {user}@{ip} sudo lscpu > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/cpu/lscpu.txt"
                 lscpu_process = subprocess.run(lscpu_command, shell=True)
                 if lscpu_process.returncode == 0:
                     logging.info(f"monstaver - lscpu successful on {container_name} host")
@@ -550,7 +563,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                     logging.error(f"lscpu failed on {container_name} host")
                     print(f"\033[91m lscpu failed on {container_name} host\033[0m")
 
-                lsmem_command = f"ssh -p {port} {user}@{ip} sudo lsmem > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lsmem-host.txt"
+                lsmem_command = f"ssh -p {port} {user}@{ip} sudo lsmem > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/ram/lsmem.txt"
                 lsmem_process = subprocess.run(lsmem_command, shell=True)
                 if lsmem_process.returncode == 0:
                     logging.info(f"monstaver - lsmem successful on {container_name} host")
@@ -562,22 +575,35 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                     logging.error(f"lsmem failed on {container_name} host")
                     print(f"\033[91m lamem failed on {container_name} host\033[0m")
 
-                lspci_command = f"ssh -p {port} {user}@{ip} sudo lspci > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/hardware/{container_name}-lspci-host.txt"
+                lspci_command = f"ssh -p {port} {user}@{ip} sudo lspci > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/pci/lspci.txt"
                 lspci_process = subprocess.run(lspci_command, shell=True)
                 if lspci_process.returncode == 0:
                     logging.info(f"monstaver - lspci successful on {container_name} host")
                     time.sleep(1)
                 elif "command not found" in lspci_process.stderr:
                     logging.info(f"monstaver - lspci is not installed. Please install it on {container_name} host")
-                    print("\033[91mlspci is not installed. Please install it.\033[0m")
+                    print("\033[91m lspci is not installed. Please install it.\033[0m")
                 else:
                     logging.error(f"monstaver - lspci failed on {container_name} host")
                     print(f"\033[91m lspci failed on {container_name} host\033[0m")
-         
+                
+                dmidecode_command = f"ssh -p {port} {user}@{ip} sudo dmidecode -t 1 > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/server-manufacturer/dmidecode.txt ; "
+                dmidecode_command += f"ssh -p {port} {user}@{ip} sudo dmidecode -t 2 > {backup_dir}/{time_dir_name}/configs/{container_name}/hardware/motherboard/dmidecode.txt"
+                dmidecode_process = subprocess.run(dmidecode_command, shell=True)
+                if dmidecode_process.returncode == 0:
+                    logging.info(f"monstaver - dmidecode successful on {container_name} host")
+                    time.sleep(1)
+                elif "command not found" in dmidecode_process.stderr:
+                    logging.info(f"monstaver - dmidecode is not installed. Please install it on {container_name} host")
+                    print("\033[91m dmidecode is not installed. Please install it.\033[0m")
+                else:
+                    logging.error(f"monstaver - dmidecode failed on {container_name} host")
+                    print(f"\033[91m dmidecode failed on {container_name} host\033[0m")
+                
             #### Execute commands to gather OS information ####
             if os_info:
                 logging.info(f"monstaver - user select switch -os for software info") 
-                sysctl_command = f"ssh -p {port} {user}@{ip} sudo sysctl -a > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-sysctl-host.txt"
+                sysctl_command = f"ssh -p {port} {user}@{ip} sudo sysctl -a > {backup_dir}/{time_dir_name}/configs/{container_name}/software/system/{container_name}-sysctl-host.txt"
                 sysctl_process = subprocess.run(sysctl_command, shell=True)
                 if sysctl_process.returncode == 0:
                     logging.info(f"monstaver - sysctl -a successful on {container_name}")
@@ -586,7 +612,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                     logging.error(f"monstaver - sysctl failed on {container_name}")
                     print(f"\033[91m sysctl failed on {container_name}\033[0m")
 
-                ps_aux_command = f"ssh -p {port} {user}@{ip} sudo ps -aux > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-ps-aux-host.txt"
+                ps_aux_command = f"ssh -p {port} {user}@{ip} sudo ps -aux > {backup_dir}/{time_dir_name}/configs/{container_name}/software/os/{container_name}-ps-aux-host.txt"
                 ps_aux_process = subprocess.run(ps_aux_command, shell=True)
                 if ps_aux_process.returncode == 0:
                     logging.info(f"monstaver - ps -aux successful on {container_name}")
@@ -595,7 +621,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                     logging.error(f"monstaver - ps_aux failed on {container_name}")          
                     print(f"\033[91m ps_aux failed on {container_name}\033[0m")
 
-                list_unit_command = f"ssh -p {port} {user}@{ip} sudo systemctl list-units > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-list-units-host.txt"
+                list_unit_command = f"ssh -p {port} {user}@{ip} sudo systemctl list-units > {backup_dir}/{time_dir_name}/configs/{container_name}/software/system/{container_name}-list-units-host.txt"
                 list_unit_process = subprocess.run(list_unit_command, shell=True)
                 if list_unit_process.returncode == 0:
                     logging.info(f"monstaver - systemctl list-units successful on {container_name}")
@@ -604,7 +630,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                     logging.error(f"monstaver - systemctl list-units failed on {container_name}")           
                     print(f"\033[91msystemctl list-units failed on {container_name}\033[0m")
 
-                lsmod_command = f"ssh -p {port} {user}@{ip} sudo lsmod > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-lsmod-host.txt"
+                lsmod_command = f"ssh -p {port} {user}@{ip} sudo lsmod > {backup_dir}/{time_dir_name}/configs/{container_name}/software/os/{container_name}-lsmod-host.txt"
                 lsmod_process = subprocess.run(lsmod_command, shell=True)
                 if lsmod_process.returncode == 0:
                     logging.info(f"monstaver - lsmod successful on {container_name}")
@@ -616,7 +642,7 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
                     logging.error(f"monstaver - lsmod failed on {container_name}")
                     print(f"\033[91mlsmod failed on {container_name}\033[0m")
                 
-                lsof_command = f"ssh -p {port} {user}@{ip} sudo lsof > {backup_dir}/{time_dir_name}/monster_conf/{container_name}/os/{container_name}-lsof-host.txt 2>&1"
+                lsof_command = f"ssh -p {port} {user}@{ip} sudo lsof > {backup_dir}/{time_dir_name}/configs/{container_name}/software/os/{container_name}-lsof-host.txt 2>&1"
                 lsof_process = subprocess.run(lsof_command, shell=True)
                 if lsof_process.returncode == 0:
                     logging.info(f"monstaver - lsof successful on {container_name}")
@@ -695,27 +721,28 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swif
             else:
                 logging.info("monstaver can't connect to monster cloud storage")
                 print("\033[91mmonstaver can't connect to monster cloud storage\033[0m") 
+    backup_to_report = f"{backup_dir}/{time_dir_name}"
+    return backup_to_report
 
 def main(time_range, inputs, delete, backup_restore, hardware_info, os_info, swift_info, influx_backup):
     log_level = load_config(config_file)['log'].get('level')
     if log_level is not None:
         log_level_upper = log_level.upper()
         if log_level_upper == "DEBUG" or "INFO" or "WARNING" or "ERROR" or "CRITICAL":
-            log_dir = f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/"
-            log_dir_run = subprocess.run(log_dir, shell=True)
+            os.makedirs('/var/log/kara/', exist_ok=True)
             logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
         else:
             print(f"\033[91mInvalid log level:{log_level}\033[0m")  
     else:
         print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
-    logging.info("\033[92m****** Monstaver main function start ******\033[0m")
+    logging.info("****** Monstaver main function start ******")
     data_loaded = load_config(config_file)
     if backup_restore: 
         restore(data_loaded)
+        return None
     else:
-        backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swift_info, influx_backup)
-    logging.info("\033[92m****** Monstaver main function end ******\033[0m")
-
+        return backup(time_range, inputs, delete, data_loaded, hardware_info, os_info, swift_info, influx_backup)
+    
 if __name__ == "__main__":
     # Command-line argument parsing
     argParser = argparse.ArgumentParser()

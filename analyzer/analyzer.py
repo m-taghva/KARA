@@ -16,9 +16,11 @@ def merge_csv(csv_file, output_directory, pairs_dict):
     try:
         csv_data = pd.read_csv(csv_file)
         if pairs_dict:  
-            all_keys = list(pairs_dict.keys())
-            all_values = list(pairs_dict.values())
-            for key, value in zip(all_keys, all_values):
+            if not os.path.exists(f'{output_directory}/merged_info.csv'):
+                pd.DataFrame(pairs_dict, index=[0]).to_csv(f'{output_directory}/merged_info.csv', index=False, mode='w', header=True)
+            else:
+                pd.DataFrame(pairs_dict, index=[0]).to_csv(f'{output_directory}/merged_info.csv', index=False, mode='a', header=False)
+            for key, value in pairs_dict.items():
                 csv_data.insert(0, key, value) 
         if os.path.exists(f'{output_directory}/merged.csv'):      
             csv_data.to_csv(f'{output_directory}/merged.csv', index=False, mode='a', header=False)
@@ -138,8 +140,8 @@ if __name__ == "__main__":
     if args.analyze and (args.csv_org is None or args.transformation_directory is None):
         print("Error: Both -c (--csv_org) and -t (--transformation_directory) switches are required for analyze operation -A")
         exit(1)
-    if args.graph and (args.x_column is None or args.y_column is None):
-        print("Error: Both -x (--x_column) and -y (--y_column) switches are required for make graph operation -G")
+    if args.graph and (args.x_column is None or args.y_column is None or args.selected_csv is None):
+        print("Error: these switch -x (--x_column) and -y (--y_column) and sc (--selected_csv) are required for make graph operation -G")
         exit(1)
 
     # Set values to None if not provided
