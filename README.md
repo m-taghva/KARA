@@ -6,13 +6,14 @@
     # Attention ! after clone repository, please remove (.placeholder) files inside ./result/ 
     
     - Install dependencies:
-       # pip install pytz datetime matplotlib pandas tqdm alive_progress BeautifulSoup pywikibot swiftclient
+       # pip install pytz datetime matplotlib pandas tqdm alive_progress BeautifulSoup4
+       edit sudoers file in both kara server and monster host and add new user to it after %sudo group :  user1   ALL=(ALL) NOPASSWD: ALL
        
        =======================Manager========================
        - manager.py can run all tools as you need with scenario file in yaml format with different options.
        - usage:
            # python3 manger.py -sn ./path/to/scenario_file.yaml or .conf
-
+           
        =======================Config_gen=====================
 
 
@@ -21,7 +22,6 @@
        =======================Monstaver======================
        - how to use backup script:
        - add new same users in influx host and your server : # adduser
-       - edit sudoers file in both servers and add new user to it after %sudo group :  user1   ALL=(ALL) NOPASSWD: ALL
        - switch to new user for influx host server and create ssh key: ssh-keygen (make sure new key just for new user and his .ssh directory)
        - copy public key to your server: ssh-copy-id -p <port> user@ip
        - now change setting inside BackupConfig.json

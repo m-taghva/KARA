@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<workload name="swift-sample" description="sample benchmark for swift">
+
+  <storage type="swift" />
+
+  <auth type="swauth" config="username=test:tester;password=testing;auth_url=http://192.168.143.158:8080/auth/v1.0" />
+
+  <workflow>
+    <workstage name="init">
+      <work type="init" workers="13" config="cprefix=?1L5s;containers=r(1,13)" />
+    </workstage>
+    <workstage name="main">
+      <work name="main" workers="#1{8}workload1#" runtime="60">
+        <operation type="write" ratio="100" config="containers=r(1,13);cprefix=?1L5s;objects=s(1,100);sizes=c(#1{89}objSize#)KB" />
+      </work>
+    </workstage>
+    <!--<workstage name="dispose">
+      <work type="dispose" workers="13" config="containers=r(1,13);cprefix=?1L5s" />
+    </workstage>-->
+  </workflow>
+</workload>
