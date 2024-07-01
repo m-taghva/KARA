@@ -11,7 +11,7 @@ scenario:
       - Mrbench:
             output_path: /root/monster/KARA/results/
             Status_Reporter: csv # values = none - csv - csv,img
-            monstaver: none # values = none , backup,hw,sw,os - backup - info
+            monstaver: none # values = none , backup,info - backup - info
             #conf_dir: /root/monster/KARA/config_gen/out/
             ring_dirs: 
                   - /root/monster/KARA/mrbench/ring/r1/
@@ -38,12 +38,13 @@ scenario:
       #      transform: /root/monster/KARA/analyzer/transform_dir/transformation-cpu
 
       #- Report_Recorder:
-      #     create_html_operation: True
-      #     input_template: /root/monster/KARA/report_recorder/report_template/html_temps_dir/input_html_temp.html
-      #     output_html: /root/monster/KARA/report_recorder/report_template/KARA2.html
-      #     temp_configs_directory: /tmp/influxdb-backup/240415T100000_240415T100500/
-      #     upload_operation: True
-      #     kateb_page_title: kara_test1
+      #     create_html: True
+      #     html_templates_path: /root/monster/KARA/report_recorder/report_template/html_temps_dir/
+      #     output_path: /root/monster/KARA/report_recorder/report_template/
+      #     configs_dir: /tmp/influxdb-backup/240415T100000_240415T100500/
+      #     upload_to_kateb: True
+      #     cluster_name: SADA
+      #     scenario_name: performance
 
 log: 
    level: info  # values = debug - info - warning - error - critical

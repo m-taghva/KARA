@@ -10,6 +10,7 @@ import yaml
 import json
 import select
 import logging
+import concurrent.futures
 
 config_file = "/etc/KARA/mrbench.conf"
 pre_test_script = "./../mrbench/pre_test_script.sh"
@@ -29,129 +30,148 @@ def load_config(config_file):
            sys.exit(1)
     return data_loaded
 
+def conf_ring_thread(swift_configs, port, user, ip, container_name, key_to_extract): 
+    logging.info("mrbench - Executing conf_ring_thread function")   
+    ring_dict = {}
+    all_scp_file_successful = False
+    # Run the docker inspect command and capture the output
+    inspect_result = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo docker inspect {container_name}'", shell=True, capture_output=True, text=True)
+    if inspect_result.returncode == 0:
+        # Parse the JSON output
+        container_info = json.loads(inspect_result.stdout)
+        # Check if the key exists in the JSON structure
+        if key_to_extract in container_info[0]['Config']['Labels']:
+            inspect_value = container_info[0]['Config']['Labels'][key_to_extract]
+            logging.info(f"mrbench - mount point path in container: {inspect_value}")
+            for filename, filepath in swift_configs.items(): 
+                each_scp_successful = False 
+                if filename.endswith(".gz") or filename.endswith(".builder"):
+                    logging.info(f"mrbench - diff ring files: {filename} and {filepath}")
+                    diff_ring_result = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo cat {inspect_value}/rings/{filename}' | diff - {filepath}", shell=True, capture_output=True, text=True)
+                    print("")
+                    print(f"please wait for checking ring file [ {filename} ] inside {container_name}")
+                    if diff_ring_result.stderr == "" and diff_ring_result.stdout != "":
+                        mkdir_tmp_rings_process = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo mkdir -p /tmp/rings/ > /dev/null 2>&1 && sudo chmod -R 777 /tmp/rings/'", shell=True)
+                        copy_ring_command_process = subprocess.run(f"scp -r -P {port} {filepath} {user}@{ip}:/tmp/rings > /dev/null 2>&1", shell=True)
+                        move_tmp_root_rings_process = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo mv /tmp/rings/{filename} {inspect_value}/rings/ > /dev/null 2>&1'", shell=True)
+                        if move_tmp_root_rings_process.returncode == 0 and copy_ring_command_process.stderr is None:
+                            each_scp_successful = True
+                            print("")
+                            logging.info(f"mrbench - copy ring file [ {filename} ] to {container_name} successful")
+                            print(f"\033[92mcopy ring file [ {filename} ] to {container_name} successful\033[0m")
+                        else: 
+                            logging.info(f"mrbench - rings in {container_name} failed to sync")
+                            print(f"\033[91mrings in {container_name} failed to sync\033[0m")
+                    elif diff_ring_result.stderr != "":
+                        print("")
+                        logging.info(f"mrbench - WARNING: your ring file naming is wrong [ {filename} ] or not exist inside {container_name}")
+                        print(f"\033[91mWARNING: your ring file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
+                        #exit(1)
+                    if "account" in filename:
+                        ring_command = f"ssh -p {port} {user}@{ip} 'sudo docker exec {container_name} swift-ring-builder /rings/account.builder'"
+                        ring_dict['account'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
+                        logging.info(f"mrbench - /rings/account.builder of {container_name} append to ring_dict")
+                    elif "container" in filename:
+                        ring_command = f"ssh -p {port} {user}@{ip} 'sudo docker exec {container_name} swift-ring-builder /rings/container.builder'"
+                        ring_dict['container'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
+                        logging.info(f"mrbench - /rings/container.builder of {container_name} append to ring_dict")
+                    else:
+                        ring_command = f"ssh -p {port} {user}@{ip} 'sudo docker exec {container_name} swift-ring-builder /rings/object.builder'"
+                        ring_dict['object'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
+                        logging.info(f"mrbench - /rings/object.builder of {container_name} append to ring_dict")
+                        
+                elif filename.endswith(".conf"):
+                    logging.info(f"mrbench - conf files: {filename} and {filepath}")
+                    diff_conf_result = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo cat {inspect_value}/{filename}' | diff - {filepath}", shell=True, capture_output=True, text=True)
+                    print("")
+                    print(f"please wait for checking config file [ {filename} ] inside {container_name}")
+                    if diff_conf_result.stderr == "" and diff_conf_result.stdout != "":
+                            mkdir_tmp_configs_process = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo mkdir -p /tmp/configs/ > /dev/null 2>&1 && sudo chmod -R 777 /tmp/configs/'", shell=True)
+                            copy_conf_command_process = subprocess.run(f"scp -r -P {port} {filepath} {user}@{ip}:/tmp/configs > /dev/null 2>&1", shell=True)
+                            base_name_changer = os.path.basename(filepath)
+                            move_tmp_root_configs_process = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo mv /tmp/configs/{base_name_changer} {inspect_value}/ > /dev/null 2>&1'", shell=True)
+                            if move_tmp_root_configs_process.returncode == 0 and copy_conf_command_process.stderr is None:
+                                each_scp_successful = True
+                                print("")
+                                logging.info(f"mrbench - copy config file [ {filename} ] to {container_name} successful")
+                                print(f"\033[92mcopy config file [ {filename} ] to {container_name} successful\033[0m")
+                                name_changer_process = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo mv {inspect_value}/{base_name_changer} {inspect_value}/{filename} > /dev/null 2>&1'", shell=True)
+                            else:
+                                logging.info(f"mrbench - configs in {container_name} failed to sync")
+                                print(f"\033[91mconfigs in {container_name} failed to sync\033[0m")
+                    elif diff_conf_result.stderr != "":
+                        print("")
+                        logging.info(f"mrbench - WARNING: your config file naming is wrong [ {filename} ] or not exist inside {container_name}")
+                        print(f"\033[91mWARNING: your config file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
+                        #exit(1)
+                if each_scp_successful: 
+                    all_scp_file_successful = True  
+    else:
+        print("")
+        logging.info(f"mrbench - WARNING: there is a problem in your config file for SSH info inside {container_name} section so mrbench can't sync config and ring files!")
+        print(f"\033[91mWARNING: there is a problem in your config file for SSH info inside \033[0m'\033[92m{container_name}\033[0m' \033[91msection so mrbench can't sync config and ring files !\033[0m") 
+        print("")
+        if inspect_result.stdout == '[]\n':
+            logging.info(f"mrbench - WARNING: your container name {container_name} is wrong !")
+            print(f"\033[91mWARNING: your container name \033[0m'\033[92m{container_name}\033[0m' \033[91mis wrong !\033[0m")
+    if all_scp_file_successful is True:
+        restart_cont_command_process = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo docker restart {container_name}' > /dev/null 2>&1", shell=True)
+        if restart_cont_command_process.returncode == 0:
+            while True:
+                check_container_result = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo docker ps -f name={container_name}'", shell=True, capture_output=True, text=True, check=True)
+                if "Up" in check_container_result.stdout and "healthy" in check_container_result.stdout:
+                    check_services_result = subprocess.run(f"ssh -p {port} {user}@{ip} 'sudo docker exec {container_name} service --status-all'", shell=True, capture_output=True, text=True, check=True)
+                    if "[ + ]  swift-account\n" or "[ + ]  swift-container\n" or "[ + ]  swift-object\n" or "[ + ]  swift-proxy\n" in check_services_result:
+                        time.sleep(30)
+                        print("")
+                        logging.info(f"mrbench - container {container_name} successfully restart")
+                        print(f"\033[92mcontainer {container_name} successfully restart\033[0m")
+                        break
+        else:
+            logging.info(f"mrbench - container {container_name} failed to reatsrt")
+            print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m")
+    print(f"{YELLOW}========================================{RESET}")
+    return ring_dict
+
 def copy_swift_conf(swift_configs):
-    logging.info("Executing mrbench copy_swift_conf function")
+    logging.info("mrbench - Executing copy_swift_conf function")
+    ring_dict = {}
     data_loaded = load_config(config_file)
     if not 'swift' in data_loaded:
+        logging.info("mrbench - Error there isn't swift section in mrbench.conf so ring and conf can't set.")
         print(f"Error there isn't \033[91mswift\033[0m section in mrbench.conf so ring and conf can't set.")
         exit(1)
     if not data_loaded['swift']:
+        logging.info("mrbench - Error there isn't any item in swift section (mrbench.conf) so ring and conf can't set.")
         print(f"Error there isn't any item in \033[91mswift\033[0m section (mrbench.conf) so ring and conf can't set.")
         exit(1)
-    for key,value in data_loaded['swift'].items():
-        ring_dict = {}
-        container_name = key
-        user = value['ssh_user']
-        ip = value['ip_swift']
-        port = value['ssh_port']
-        key_to_extract = "com.docker.compose.project.working_dir"
-        all_scp_file_successful = False
-        # Run the docker inspect command and capture the output
-        inspect_command = f"ssh -p {port} {user}@{ip} docker inspect {container_name}"
-        inspect_result = subprocess.run(inspect_command, shell=True, capture_output=True, text=True)
-        if inspect_result.returncode == 0:
-            # Parse the JSON output
-            container_info = json.loads(inspect_result.stdout)
-            # Check if the key exists in the JSON structure
-            if key_to_extract in container_info[0]['Config']['Labels']:
-                inspect_value = container_info[0]['Config']['Labels'][key_to_extract]
-                for filename, filepath in swift_configs.items(): 
-                    each_scp_successful = False 
-                    if filename.endswith(".gz") or filename.endswith(".builder"):
-                        diff_ring_command = f"ssh -p {port} {user}@{ip} 'sudo cat {inspect_value}/rings/{filename}' | diff - {filepath}"
-                        diff_ring_result = subprocess.run(diff_ring_command, shell=True, capture_output=True, text=True)
-                        print("")
-                        print(f"please wait for checking ring file [ {filename} ] inside {container_name}")
-                        if "account" in filename:
-                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/account.builder"
-                            ring_dict['account'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
-                        elif "container" in filename:
-                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/container.builder"
-                            ring_dict['container'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
-                        else:
-                            ring_command = f"ssh -p {port} {user}@{ip} docker exec {container_name} swift-ring-builder /etc/swift/object.builder"
-                            ring_dict['object'] = subprocess.run(ring_command, shell=True, capture_output=True, text=True).stdout
-                        if diff_ring_result.stderr == "":
-                            if diff_ring_result.stdout != "":
-                                mkdir_tmp_rings = f"ssh -p {port} {user}@{ip} 'sudo mkdir -p /tmp/rings/ > /dev/null 2>&1 && sudo chmod -R 777 /tmp/rings/'"
-                                mkdir_tmp_rings_process = subprocess.run(mkdir_tmp_rings, shell=True)
-                                copy_ring_command = f"scp -r -P {port} {filepath} {user}@{ip}:/tmp/rings > /dev/null 2>&1"
-                                copy_ring_command_process = subprocess.run(copy_ring_command, shell=True)
-                                move_tmp_root_rings = f"ssh -p {port} {user}@{ip} 'sudo mv /tmp/rings/{filename} {inspect_value}/rings/ > /dev/null 2>&1'"
-                                move_tmp_root_rings_process = subprocess.run(move_tmp_root_rings, shell=True)
-                                if move_tmp_root_rings_process.returncode == 0 and copy_ring_command_process.stderr is None:
-                                    each_scp_successful = True
-                                    print("")
-                                    print(f"\033[92mcopy ring file [ {filename} ] to {container_name} successful\033[0m")
-                                else: 
-                                    print(f"\033[91mrings in {container_name} failed to sync\033[0m")
-                                    exit(1)
-                        elif diff_ring_result.stderr != "":
-                            print("")
-                            print(f"\033[91mWARNING: your ring file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
-                            exit(1)
-                    elif filename.endswith(".conf"):
-                        diff_conf_command = f"ssh -p {port} {user}@{ip} 'sudo cat {inspect_value}/{filename}' | diff - {filepath}"
-                        diff_conf_result = subprocess.run(diff_conf_command, shell=True, capture_output=True, text=True)
-                        print("")
-                        print(f"please wait for checking config file [ {filename} ] inside {container_name}")
-                        if diff_conf_result.stderr == "":
-                            if diff_conf_result.stdout != "":
-                                mkdir_tmp_configs = f"ssh -p {port} {user}@{ip} 'sudo mkdir -p /tmp/configs/ > /dev/null 2>&1 && sudo chmod -R 777 /tmp/configs/'"
-                                mkdir_tmp_configs_process = subprocess.run(mkdir_tmp_configs, shell=True)
-                                copy_conf_command = f"scp -r -P {port} {filepath} {user}@{ip}:/tmp/configs > /dev/null 2>&1"
-                                copy_conf_command_process = subprocess.run(copy_conf_command, shell=True)
-                                base_name_changer = os.path.basename(filepath)
-                                move_tmp_root_configs = f"ssh -p {port} {user}@{ip} 'sudo mv /tmp/configs/{base_name_changer} {inspect_value}/ > /dev/null 2>&1'"
-                                move_tmp_root_configs_process = subprocess.run(move_tmp_root_configs, shell=True)
-                                if move_tmp_root_configs_process.returncode == 0 and copy_conf_command_process.stderr is None:
-                                    each_scp_successful = True
-                                    print("")
-                                    print(f"\033[92mcopy config file [ {filename} ] to {container_name} successful\033[0m")
-                                    name_changer = f"ssh -p {port} {user}@{ip} mv {inspect_value}/{base_name_changer} {inspect_value}/{filename} > /dev/null 2>&1" 
-                                    name_changer_process = subprocess.run(name_changer, shell=True)
-                                else:
-                                    print(f"\033[91mconfigs in {container_name} failed to sync\033[0m")
-                                    exit(1)
-                        elif diff_conf_result.stderr != "":
-                            print("")
-                            print(f"\033[91mWARNING: your config file naming is wrong [ {filename} ] or not exist inside {container_name}\033[0m")
-                            exit(1)
-                    if each_scp_successful: 
-                        all_scp_file_successful = True  
-        else:
-            print("")
-            print(f"\033[91mWARNING: there is a problem in your config file for SSH info inside \033[0m'\033[92m{container_name}\033[0m' \033[91msection so mrbench can't sync config and ring files !\033[0m") 
-            print("")
-            if inspect_result.stdout == '[]\n':
-                print(f"\033[91mWARNING: your container name \033[0m'\033[92m{container_name}\033[0m' \033[91mis wrong !\033[0m")
-        if all_scp_file_successful is True:
-            restart_cont_command = f"ssh -p {port} {user}@{ip} docker restart {container_name} > /dev/null 2>&1"
-            restart_cont_command_process = subprocess.run(restart_cont_command, shell=True)
-            if restart_cont_command_process.returncode == 0:
-                while True:
-                    check_container = f"ssh -p {port} {user}@{ip} 'sudo docker ps -f name={container_name}'"
-                    check_container_result = subprocess.run(check_container, shell=True, capture_output=True, text=True, check=True)
-                    if "Up" in check_container_result.stdout:
-                        check_services = f"ssh -p {port} {user}@{ip} 'sudo docker exec {container_name} service --status-all'"
-                        check_services_result = subprocess.run(check_services, shell=True, capture_output=True, text=True, check=True)
-                        if "[ + ]  swift-account\n" or "[ + ]  swift-container\n" or "[ + ]  swift-object\n" or "[ + ]  swift-proxy\n" in check_services_result:
-                            time.sleep(20)
-                            print("")
-                            print(f"\033[92mcontainer {container_name} successfully restart\033[0m")
-                            break
-            else:
-                print(f"\033[91mcontainer {container_name} failed to reatsrt\033[0m")
-    print(f"{YELLOW}========================================{RESET}")
-    return ring_dict 
     
+    futures = []
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        for key,value in data_loaded['swift'].items():
+            container_name = key
+            user = value['ssh_user']
+            ip = value['ip_swift']
+            port = value['ssh_port']
+            key_to_extract = "com.docker.compose.project.working_dir"
+            # run in multithread 
+            future = executor.submit(conf_ring_thread, swift_configs, port, user, ip, container_name, key_to_extract)
+            futures.append(future)
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                ring_dict = future.result()
+            except Exception as exc:
+                print(f"Task generated an exception: {exc}")
+    return ring_dict
+
 def submit(workload_config_path, output_path):
-    logging.info("Executing mrbench submit function")
+    logging.info("mrbench - Executing submit function")
     if not os.path.exists(output_path):
        os.makedirs(output_path) 
     run_pre_test_process = subprocess.run(f"bash {pre_test_script}", shell=True)
     cosbenchBin = shutil.which("cosbench")
     if not(cosbenchBin):
+        logging.info("mrbench - Command 'cosbench' not found")
         print("Command 'cosbench' not found, but can be add with:\n\n\t ln -s {cosbench-dir}/cli.sh /usr/bin/cosbench\n")
         return None, None, -1
     archive_path = os.readlink(cosbenchBin).split("cli.sh")[0]+"archive/"
@@ -161,9 +181,11 @@ def submit(workload_config_path, output_path):
         # Start workload
         cosbench_active_workload = subprocess.run(['cosbench', 'info'], capture_output=True, text=True)
         if "Total: 0 active workloads" in cosbench_active_workload.stdout:
+            logging.info(f"mrbench - this workload send to cosbench: {workload_config_path}")
             Cos_bench_command = subprocess.run(["cosbench", "submit", workload_config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
             if Cos_bench_command.returncode == 1:
-                print("\033[91mStarting workload failed.\033[0m")
+                logging.info(f"mrbench - Starting workload failed: {workload_config_path}")
+                print(f"Starting workload failed: \033[91m{workload_config_path}\033[0m")
                 return None, None, -1
             # Extract ID of workload
             output_lines = Cos_bench_command.stdout.splitlines()
@@ -171,9 +193,11 @@ def submit(workload_config_path, output_path):
             workload_name = workload_config_path.split('/')[-1].replace('.xml','')
             if workload_id_regex:
                 workload_id = workload_id_regex.group()
+                logging.info(f"mrbench - Workload Info - ID: {workload_id} Name: {workload_name}")
                 print(f"\033[1mWorkload Info:\033[0m ID: {workload_id} Name: {workload_name}")
             else:
-                print("\033[91mStarting workload failed.\033[0m")
+                logging.info(f"mrbench - Starting workload failed: {workload_config_path}")
+                print(f"Starting workload failed: \033[91m{workload_config_path}\033[0m")
                 return None, None, -1
             # Check every second if the workload has ended or not
             archive_file_path = f"{archive_path}{workload_id}-swift-sample"
@@ -183,20 +207,27 @@ def submit(workload_config_path, output_path):
                 if "Total: 0 active workloads" in active_workload_check.stdout:
                     time.sleep(5) 
                     break
-            if os.path.exists(archive_file_path):   
-                result_path = create_test_dir(output_path, workload_name)
-                archive_workload_dir_name = f"{workload_id}-swift-sample"
-                print(f"Result Path: {result_path}")
-                cosbench_info = f"cosbench info > {result_path}/cosbench.info"
-                cosbench_info_result = subprocess.run(cosbench_info, shell=True, capture_output=True, text=True)
-                # run other functions 
-                start_time, end_time = save_time(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv", result_path)
-                copy_bench_files(archive_path, archive_workload_dir_name, result_path)
-                return  start_time, end_time, result_path
+            if os.path.exists(archive_file_path):
+                archive_workload_dir_name = f"{workload_id}-swift-sample"  
+                start_time, end_time = save_time(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv")
+                if start_time and end_time:
+                    test_time_dir = f"{start_time}_{end_time}"
+                    result_path = os.path.join(output_path, test_time_dir.replace(" ","_"))
+                    if not os.path.exists(result_path):
+                        os.mkdir(result_path) 
+                    print(f"Result Path: {result_path}")
+                    time_file = open(f"{result_path}/time.txt", "w")
+                    time_file.write(f"{start_time},{end_time}")
+                    time_file.close()
+                    cosbench_info_result = subprocess.run(f"cosbench info > {result_path}/cosbench.info", shell=True, capture_output=True, text=True)
+                    copy_bench_files(archive_path, archive_workload_dir_name, result_path)
+                    return  start_time, end_time, result_path
             else:
+                logging.info(f"mrbench - Test: {workload_name} can't run correctly so archive path {archive_file_path} doesn't exists.")
                 print(f"\033[91mTest: {workload_name} can't run correctly so archive path {archive_file_path} doesn't exists.\033[0m")
                 return None, None, -1
         else:
+            logging.info(f"mrbench - You have actived workload so new workload can't run")
             print(f"\033[91mYou have actived workload so new workload can't run\033[0m")
             cosbench_check_workload = subprocess.run(['cosbench', 'info'], capture_output=True, text=True)
             info_output = cosbench_check_workload.stdout
@@ -219,26 +250,17 @@ def submit(workload_config_path, output_path):
                 if response == 'yes':
                     cosbench_cancel_workload = subprocess.run(["cosbench", "cancel", w_id], capture_output=True, text=True)
                     if cosbench_cancel_workload.returncode == 0:
+                        logging.info(f"mrbench - user cancel this workload manually: {w_id}")
                         print(f"Workload {w_id} canceled and new workload starting please wait ...")
                         time.sleep(10)
                         submit(workload_config_path, output_path)
             return None, None, -1
     else:
-        print(f"\033[91mWARNING: workload file doesn't exist !\033[0m")
+        logging.info(f"mrbench - WARNING: workload file doesn't exist: {workload_config_path}")
+        print(f"\033[91mWARNING: workload file doesn't exist: {workload_config_path}\033[0m")
 
-def create_test_dir(result_path, workload_name):
-    logging.info("Executing mrbench create_test_dir function")
-    result_file_path = os.path.join(result_path, workload_name)
-    if os.path.exists(result_file_path):
-        i = 1
-        while os.path.exists(result_file_path + f"_{i}"):
-            i += 1
-        result_file_path += f"_{i}"
-    os.mkdir(result_file_path)
-    return result_file_path
-
-def save_time(file, result_path):
-    logging.info("Executing mrbench save_time function")
+def save_time(file):
+    logging.info("mrbench - Executing save_time function")
     start_time = None
     end_time = None
     try:
@@ -250,29 +272,36 @@ def save_time(file, result_path):
             for row in reader:
                 if row and row[0].endswith('main'):
                     if first_main_launching_time is None:
-                        first_main_launching_time = row[21]
-                        last_main_completed_time = row[24]
-        if first_main_launching_time and last_main_completed_time:
-            start_time = first_main_launching_time.split('@')[1].strip()
-            end_time = last_main_completed_time.split('@')[1].strip()
-            time_file = open(f"{result_path}/time", "w")
-            start_end_time = f"{start_time},{end_time}"
-            time_file.write(start_end_time)
-            time_file.close()
-            #return start_time,end_time
-            print(f"Start Time: {start_time}")
-            print(f"End Time: {end_time}")     
-        return start_time, end_time        
+                        if len(row) > 24:
+                            first_main_launching_time = row[21]
+                            last_main_completed_time = row[24]
+                            if first_main_launching_time and last_main_completed_time:
+                                start_time = first_main_launching_time.split('@')[1].strip()
+                                end_time = last_main_completed_time.split('@')[1].strip()
+                                if start_time and end_time:
+                                    print(f"Start Time: {start_time}")
+                                    print(f"End Time: {end_time}") 
+                                    logging.info(f"mrbench - test time range: {start_time},{end_time}")  
+                                    return start_time, end_time
+                                else:
+                                    logging.info(f"mrbench - can't extrcat test time range from cosbench csv file!")
+                                    print("\033[91m mrbench can't extrcat test time range from cosbench csv file!\033[0m")
+                                    exit()
+                        else:
+                            logging.info(f"mrbench - your workload template is not correct so mrbench can't extrcat test time range from cosbench csv file: {file}")
+                            print("\033[91myour workload template is not correct so mrbench can't extrcat test time range from cosbench csv file!\033[0m")
+                            exit() 
     except Exception as e:
         print(f"\033[91mAn error occurred: {str(e)}\033[0m")
         return -1
 
 def copy_bench_files(archive_path, archive_workload_dir_name, result_path):
-    logging.info("Executing mrbench copy_bench_files function")
+    logging.info("mrbench - Executing copy_bench_files function")
     time.sleep(5)
     copylistfiles = ["/workload.log","/workload-config.xml",'/'+ archive_workload_dir_name + '.csv']
     print("Copying Cosbench source files ...")
     for fileName in copylistfiles:
+        logging.info(f"mrbench - copy cosbench result file: {fileName}")
         archive_file_path = archive_path + archive_workload_dir_name + fileName
         retry=3
         while retry>0:
@@ -291,9 +320,8 @@ def main(workload_config_path, output_path, swift_configs):
     log_level = load_config(config_file)['log'].get('level')
     if log_level is not None:
         log_level_upper = log_level.upper()
-        if log_level_upper == "DEBUG" or "INFO" or "WARNING" or "ERROR" or "CRITICAL":
-            log_dir = f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/"
-            log_dir_run = subprocess.run(log_dir, shell=True)
+        if log_level_upper == "DEBUG" or log_level_upper == "INFO" or log_level_upper == "WARNING" or log_level_upper == "ERROR" or log_level_upper == "CRITICAL":
+            os.makedirs('/var/log/kara/', exist_ok=True)
             logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
         else:
             print(f"\033[91mInvalid log level:{log_level}\033[0m")  

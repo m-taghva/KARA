@@ -10,14 +10,14 @@ conf_number = 0 # define global variable
 
 # cleanup output dir for new template
 def cleanup_output_config_gen(output_directory):
-    logging.info("Executing config_gen cleanup_output_config_gen function")
+    logging.info("config_gen - Executing cleanup_output_config_gen function")
     for filename in os.listdir(output_directory):
         if "#" in filename:
             file_path = os.path.join(output_directory, filename)
             os.remove(file_path)
 
 def replace_vars(input_text, conf_name, output_directory):
-    logging.info("Executing config_gen replace_vars function")
+    logging.info("config_gen - Executing replace_vars function")
     currentVar = re.search("\?\d+L\d+[sd]", input_text)
     if currentVar:
         if currentVar.group()[-1] == 's':
@@ -29,7 +29,7 @@ def replace_vars(input_text, conf_name, output_directory):
             outfile.write(input_text)
 
 def replace_tags(input_text, conf_name, output_directory):
-    logging.info("Executing config_gen replace_tags function")
+    logging.info("config_gen - Executing replace_tags function")
     global conf_number
     currentTag = re.search("#\d+{", input_text)
     if currentTag:

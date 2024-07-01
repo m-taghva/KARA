@@ -7,12 +7,13 @@ import argparse
 import yaml
 import logging
 import pytz
+
+config_file = "/etc/KARA/status.conf"
+
 # For font style
 BOLD = "\033[1m"
 RESET = "\033[0m"
 YELLOW = "\033[1;33m"
-
-config_file = "/etc/KARA/status.conf"
 
 def load_config(config_file):
     with open(config_file, "r") as stream:
@@ -66,7 +67,7 @@ def main(metric_file, path_dir, time_range, img=False):
     log_level = load_config(config_file)['log'].get('level')
     if log_level is not None:
         log_level_upper = log_level.upper()
-        if log_level_upper == "DEBUG" or "INFO" or "WARNING" or "ERROR" or "CRITICAL":
+        if log_level_upper == "DEBUG" or log_level_upper == "INFO" or log_level_upper == "WARNING" or log_level_upper == "ERROR" or log_level_upper == "CRITICAL":
             log_dir = f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/"
             log_dir_run = subprocess.run(log_dir, shell=True)
             logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -106,8 +107,8 @@ def main(metric_file, path_dir, time_range, img=False):
         start_time_name = start_timestamp_csv.replace(" ", "-") ; end_time_name = end_timestamp_csv.replace(" ", "-")
         output_csv = os.path.join(output_parent_dir, f"{start_time_name}_{end_time_name}.csv")
     else:
-        start_time_csv = start_time.replace(" ", "-")
-        end_time_csv = end_time.replace(" ", "-")
+        start_time_csv = start_time.replace(" ", "_")
+        end_time_csv = end_time.replace(" ", "_")
         output_csv = os.path.join(output_parent_dir, f"{start_time_csv}_{end_time_csv}.csv")
     if os.path.exists(output_csv):
         os.remove(output_csv)
@@ -140,78 +141,83 @@ def main(metric_file, path_dir, time_range, img=False):
                 logging.info(f"status_reporter - start time of query in utc format: {start_time_utc}") ; logging.info(f"status_reporter - end time of query in utc format: {end_time_utc}")
                 output_csv_str.append(alias)  # value inside the first column of csv
                 csvi += 1
-                for metric_file, metric_operation in metric_operation_mapping.items():
-                    if os.path.isfile(metric_file):
-                        metrics = get_metrics_from_file(metric_file)
-                        for metric_name in metrics:
-                            metric_name = metric_name.strip()
-                            if csvi == 1:
-                                metric_name = metric_name.replace(" ", "")
-                                output_csv_str[0] += f",{metric_operation}_{metric_name.replace('netdata.', '')}"
-                            # Construct the curl command for query 1
-                            query1_curl_command = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "db={db_name}" --data-urlencode "q=SELECT {metric_operation}(\\"value\\") FROM \\"{metric_name}\\" WHERE (\\"host\\" =~ /^{host_name}$/) AND time >= \'{start_time_utc}\' AND time <= \'{end_time_utc}\' fill(none)"'
-                            query_result = subprocess.getoutput(query1_curl_command)
-                            if query_result:
-                                values = json.loads(query_result).get('results', [{}])[0].get('series', [{}])[0].get('values', [])
-                                values = [str(v[1]) for v in values]
-                                output_csv_str[csvi] += "," + ",".join(values)
-                                if values:
-                                    print(f"{BOLD}Add this metric to CSV: {metric_name}{RESET}")
-                                    # Construct the curl command for query 2
-                                    if img:
-                                        logging.info(f"status_reporter - user need image and graph")
-                                        query2_curl_command = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "db={db_name}" --data-urlencode "q=SELECT {metric_operation}(\\"value\\") FROM /{metric_name}/ WHERE (\\"host\\" =~ /^{host_name}$/) AND time >= \'{start_time_utc}\' AND time <= \'{end_time_utc}\' GROUP BY time({TIME_GROUP}s) fill(none)"'
-                                        query2_output = subprocess.getoutput(query2_curl_command)
-                                        os.system(f"python3 ./../status_reporter/image_renderer.py '{query2_output}' '{host_name}' '{path_dir}'")
-                                else:
-                                    # check database name
-                                    check_database_name = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "q=SHOW DATABASES"'
-                                    check_database_name_result = subprocess.getoutput(check_database_name)
-                                    db_json_data = json.loads(check_database_name_result)
-                                    databases = [db[0] for db in db_json_data["results"][0]["series"][0]["values"]]
-                                    if db_name in databases:
-                                        logging.info(f"status_reporter - The database {db_name} is exist in {ip}")
-                                        print(f"The database {db_name} is exist in {ip}")
-                                        # check metric name
-                                        check_metric_name = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "q=SHOW MEASUREMENTS ON {db_name} WITH MEASUREMENT =~ /{metric_name}/"'
-                                        check_metric_name_result = subprocess.getoutput(check_metric_name)
-                                        metric_json_data = json.loads(check_metric_name_result)
-                                        if "series" in metric_json_data["results"][0]:
-                                            logging.info(f"status_reporter - metric {metric_name} is exist in {db_name}")
-                                            print(f"metric {metric_name} is exist in {db_name}")
-                                            # check host name
-                                            check_host_name = f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "q=SHOW TAG VALUES ON {db_name} FROM \\"{metric_name}\\" WITH KEY = \\"host\\""'
-                                            check_host_name_result = subprocess.getoutput(check_host_name)
-                                            host_json_data = json.loads(check_host_name_result)
-                                            if "series" in host_json_data["results"][0]:
-                                                host_names = [item[1] for item in host_json_data["results"][0]["series"][0]["values"]]
-                                                if host_name in host_names:
-                                                     # check time range
-                                                    logging.error(f"status_reporter - database name: {db_name}, metric name: {metric_name}, host name: {host_name} are correct but your TIME RANGE doesn't have any value")
-                                                    print(f"database name: {db_name}, metric name: {metric_name}, host name: {host_name} are correct but \033[91myour TIME RANGE doesn't have any value !\033[0m")
-                                                else:
-                                                    logging.error(f"status_reporter - The host {host_name} name is wrong")
-                                                    print(f"\033[91mThe host {host_name} name is wrong\033[0m")
-                                            else:
-                                                    logging.error(f"status_reporter - metric: {metric_name} doesn't have host: {host_name} so value is null !")
-                                                    print(f"\033[91mmetric: {metric_name} doesn't have host: {host_name} so value is null !\033[0m")
-                                        else:
-                                            logging.error(f"status_reporter - metric {metric_name} doesn't exist in {db_name}")
-                                            print(f"\033[91mmetric {metric_name} doesn't exist in {db_name}\033[0m")
+                retry = 2
+                null_result = 1
+                while retry:
+                    for metric_file, metric_operation in metric_operation_mapping.items():
+                        if os.path.isfile(metric_file):
+                            metrics = get_metrics_from_file(metric_file)
+                            for metric_name in metrics:
+                                metric_name = metric_name.strip()
+                                if csvi == 1:
+                                    metric_name = metric_name.replace(" ", "")
+                                    output_csv_str[0] += f",{metric_operation}_{metric_name.replace('netdata.', '')}"
+                                # Construct the curl command for query 1
+                                csv_query = subprocess.getoutput(f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "db={db_name}" --data-urlencode "q=SELECT {metric_operation}(\\"value\\") FROM \\"{metric_name}\\" WHERE (\\"host\\" =~ /^{host_name}$/) AND time >= \'{start_time_utc}\' AND time <= \'{end_time_utc}\' fill(none)"')
+                                if csv_query:
+                                    values = json.loads(csv_query).get('results', [{}])[0].get('series', [{}])[0].get('values', [])
+                                    values = [str(v[1]) for v in values]
+                                    output_csv_str[csvi] += "," + ",".join(values)
+                                    if values:
+                                        print(f"{BOLD}Add this metric to CSV: {metric_name}{RESET}")
+                                        null_result = 0
+                                        # Construct the curl command for query 2
+                                        if img:
+                                            logging.info(f"status_reporter - user need image and graph")
+                                            img_query = subprocess.getoutput(f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "db={db_name}" --data-urlencode "q=SELECT {metric_operation}(\\"value\\") FROM /{metric_name}/ WHERE (\\"host\\" =~ /^{host_name}$/) AND time >= \'{start_time_utc}\' AND time <= \'{end_time_utc}\' GROUP BY time({TIME_GROUP}s) fill(none)"')
+                                            os.system(f"python3 ./../status_reporter/image_renderer.py '{img_query}' '{host_name}' '{path_dir}'")
                                     else:
-                                        logging.error(f"status_reporter - The database {db_name} doesn't exist in {ip}")
-                                        print(f"\033[91mThe database {db_name} doesn't exist in {ip}\033[0m")
-                                        exit()
-                            else:
-                                ping_process = subprocess.Popen(["ping", "-c", "1", ip], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                                ping_output, ping_error = ping_process.communicate()
-                                if ping_process.returncode == 0:
-                                    logging.info(f"status_reporter - Server {ip} port {influx_port} is wrong")
-                                    print(f"\033[91mServer {ip} is reachable but port {influx_port} is wrong\033[0m")
-                                elif ping_process.returncode == 1:
-                                    logging.critical(f"status_reporter - Server {ip} is unreachable")
-                                    print(f"\033[91mServer {ip} is unreachable so your IP is wrong\033[0m")
-                                exit()
+                                        # check database name
+                                        check_database_name_result = subprocess.getoutput(f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "q=SHOW DATABASES"')
+                                        db_json_data = json.loads(check_database_name_result)
+                                        databases = [db[0] for db in db_json_data["results"][0]["series"][0]["values"]]
+                                        if db_name in databases:
+                                            logging.info(f"status_reporter - The database {db_name} is exist in {ip}")
+                                            print(f"The database {db_name} is exist in {ip}")
+                                            # check metric name
+                                            check_metric_name_result = subprocess.getoutput(f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "q=SHOW MEASUREMENTS ON {db_name} WITH MEASUREMENT =~ /{metric_name}/"')
+                                            metric_json_data = json.loads(check_metric_name_result)
+                                            if "series" in metric_json_data["results"][0]:
+                                                logging.info(f"status_reporter - metric {metric_name} is exist in {db_name}")
+                                                print(f"metric {metric_name} is exist in {db_name}")
+                                                # check host name
+                                                check_host_name_result = subprocess.getoutput(f'curl -sG "http://{ip}:{influx_port}/query" --data-urlencode "q=SHOW TAG VALUES ON {db_name} FROM \\"{metric_name}\\" WITH KEY = \\"host\\""')
+                                                host_json_data = json.loads(check_host_name_result)
+                                                if "series" in host_json_data["results"][0]:
+                                                    host_names = [item[1] for item in host_json_data["results"][0]["series"][0]["values"]]
+                                                    if host_name in host_names:
+                                                        # check time range
+                                                        logging.error(f"status_reporter - database name: {db_name}, metric name: {metric_name}, host name: {host_name} are correct but your TIME RANGE doesn't have any value")
+                                                        print(f"database name: {db_name}, metric name: {metric_name}, host name: {host_name} are correct but \033[91myour TIME RANGE doesn't have any value !\033[0m")
+                                                    else:
+                                                        logging.error(f"status_reporter - The host {host_name} name is wrong")
+                                                        print(f"\033[91mThe host {host_name} name is wrong\033[0m")
+                                                else:
+                                                        logging.error(f"status_reporter - metric: {metric_name} doesn't have host: {host_name} so value is null !")
+                                                        print(f"\033[91mmetric: {metric_name} doesn't have host: {host_name} so value is null !\033[0m")
+                                            else:
+                                                logging.error(f"status_reporter - metric {metric_name} doesn't exist in {db_name}")
+                                                print(f"\033[91mmetric {metric_name} doesn't exist in {db_name}\033[0m")
+                                        else:
+                                            logging.error(f"status_reporter - The database {db_name} doesn't exist in {ip}")
+                                            print(f"\033[91mThe database {db_name} doesn't exist in {ip}\033[0m")
+                                            exit()
+                                else:
+                                    ping_process = subprocess.Popen(["ping", "-c", "1", ip], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                    ping_output, ping_error = ping_process.communicate()
+                                    if ping_process.returncode == 0:
+                                        logging.info(f"status_reporter - Server {ip} port {influx_port} is wrong")
+                                        print(f"\033[91mServer {ip} is reachable but port {influx_port} is wrong\033[0m")
+                                    elif ping_process.returncode == 1:
+                                        logging.critical(f"status_reporter - Server {ip} is unreachable")
+                                        print(f"\033[91mServer {ip} is unreachable so your IP is wrong\033[0m")
+                                    exit()
+                    if null_result:
+                        retry -=1
+                        if retry == 0:
+                            print(f"\033[91mMaximum retries reached. database name: {db_name} in host name: {host_name} have not any value for all metrics\033[0m")
+                    else:
+                        retry = 0
     # Write the CSV file for each time range
     with open(output_csv, 'a') as csv_file:
         for line in output_csv_str:
