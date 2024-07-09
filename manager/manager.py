@@ -385,40 +385,14 @@ def main(config_file):
         print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
 
     logging.info("****** Manager_main function start ******")
-    # State file to track the last executed function
-    STATE_FILE = 'last_agent_state.json'
-    # Load the last state
-    state = {}
-    if os.path.exists(STATE_FILE):
-        with open(STATE_FILE, 'r') as file:
-            state = json.load(file)
-    last_function = state.get('last_agent', None)
-    # Ask the user whether to start from the beginning or continue
-    print("Start from the beginning (b) or continue from last agent (l)? (b/l): ", end='', flush=True)
-    inputs, _, _ = select.select([sys.stdin], [], [], 10)
-    if inputs:
-        user_input = sys.stdin.readline().strip().lower()
-    else:
-        user_input = 'b'  # Default to 'b' if no input is provided within 10 seconds
-    if user_input not in ('b', 'l'):
-        user_input = 'b'  # Default to 'b' if the input is invalid
-    start_from_beginning = user_input == 'b'
-    if start_from_beginning:
-        last_function = None
-        with open(STATE_FILE, 'w') as file:
-            json.dump({'last_agent': None}, file)
     data_loaded = load_config(config_file)
-    config_output = None
-    first_start_time = None
-    last_end_time = None
-    backup_to_report = None
-    result_dir = None
     if 'scenario' in data_loaded:
+        config_output = None
+        first_start_time = None
+        last_end_time = None
+        backup_to_report = None
+        result_dir = None
         for task in data_loaded['scenario']:
-            function_name = next(iter(task))
-            # Skip functions already executed if resuming
-            if last_function and function_name <= last_function:
-                continue
             try:
                 if 'Config_gen' in task:
                     config_params = task['Config_gen']
@@ -446,13 +420,8 @@ def main(config_file):
                     report_recorder_agent(config_params, backup_to_report, result_dir)
                 else:
                     print(f"Unknown task: {task}")
-                # Update state file after successful execution
-                state['last_agent'] = function_name
-                with open(STATE_FILE, 'w') as file:
-                    json.dump(state, file)
             except Exception as e:
                 print(f"Error executing task: {task}. Error: {str(e)}")
-                break
     else:
         print(f"\033[91mNo scenario found in the configuration file.\033[0m")
     logging.info("****** Manager_main function end ******")

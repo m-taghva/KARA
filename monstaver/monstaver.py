@@ -326,6 +326,36 @@ def info_collector(port, user, ip, backup_dir, time_dir_name, container_name, ba
             logging.error(f"monstaver - lsof failed on {container_name}")
             print(f"\033[91mlsof failed on {container_name}\033[0m")
 
+        proc_mount = subprocess.run(f"ssh -p {port} {user}@{ip} sudo cat /proc/mounts > {backup_dir}/{time_dir_name}/configs/{container_name}/software/system/proc_mounts.txt", shell=True)
+        if proc_mount.returncode == 0:
+            logging.info(f"monstaver - proc_mount collect successful on {container_name}")
+            time.sleep(1)
+        else:
+            logging.error(f"monstaver - proc_mount collect failed on {container_name}")
+            print(f"\033[91m proc_mount collect failed on {container_name}\033[0m")
+
+        lsblk = subprocess.run(f"ssh -p {port} {user}@{ip} sudo lsblk -o NAME,SCHED,FSTYPE > {backup_dir}/{time_dir_name}/configs/{container_name}/software/system/lsblk.txt", shell=True)
+        if lsblk.returncode == 0:
+            logging.info(f"monstaver - lsblk successful on {container_name}")
+            time.sleep(1)
+        elif "command not found" in lsblk.stderr:
+            logging.info(f"monstaver - lsblk is not installed. Please install it on {container_name}")
+            print("\033[91m lsblk is not installed. Please install it.\033[0m")
+        else:
+            logging.error(f"monstaver - lsblk failed on {container_name}")
+            print(f"\033[91m lsblk failed on {container_name}\033[0m")
+
+        xfs_info = subprocess.run(f"ssh -p {port} {user}@{ip} sudo lsblk -o name,fstype | grep -oP '\\w+.*(?=\\s+xfs)' | sed 's/\\(.*\\)-/mapper\\/\\1-/' | xargs -I {{}} bash -c 'echo --------------------; sudo xfs_info /dev/{{}};' > {backup_dir}/{time_dir_name}/configs/{container_name}/software/system/xfs_info.txt", shell=True)
+        if xfs_info.returncode == 0:                              
+            logging.info(f"monstaver - lsblk_xfs_info successful on {container_name}")
+            time.sleep(1)
+        elif "command not found" in xfs_info.stderr:
+            logging.info(f"monstaver - lsblk/sed/xargs is not installed. Please install it on {container_name}")
+            print("\033[91m lsblk/sed/xargs is not installed. Please install it.\033[0m")
+        else:
+            logging.error(f"monstaver - lsblk_xfs_info failed on {container_name}")
+            print(f"\033[91m lsblk failed on {container_name}\033[0m")
+
     # remove /influxdb-backup/time_dir from container and host
     rm_cont_host_dir_process = subprocess.run(f"ssh -p {port} {user}@{ip} sudo rm -rf {backup_dir}-tmp/* ; ssh -p {port} {user}@{ip} sudo docker exec {container_name} rm -rf {backup_dir}-tmp/* ", shell=True)
     if rm_cont_host_dir_process.returncode == 0:

@@ -1,13 +1,13 @@
 import argparse
 import re
 import os
-from bs4 import BeautifulSoup
+import yaml
 import logging
 import csv
-from collections import Counter
 import subprocess
 import sys
 import pandas as pd
+from bs4 import BeautifulSoup
 pywiki_path = os.path.abspath("./../report_recorder/pywikibot/")
 if pywiki_path not in sys.path:
     sys.path.append(pywiki_path)
@@ -16,269 +16,21 @@ classification_path = os.path.abspath("./../report_recorder/")
 if classification_path not in sys.path:
     sys.path.append(classification_path)
 import classification
+import analyzer
 
-# read backup dir
-configs_dir = ""
-listOfServers = []
-def load(directory):
-    with open(configs_dir + directory, 'r') as f:
-        content = f.readlines()
-    return content
+config_file = "/etc/KARA/report_recorder.conf"
 
-#### HARDWARE info ####
-# dmidecode -t 1
-def generate_brand_model(serverName):
-    manufacturer = ""
-    productName = ""
-    for line in load(f'/configs/{serverName}'+"/hardware/server-manufacturer/dmidecode.txt"):
-        if "Manufacturer" in line:
-            manufacturer = line.split(":")[1].replace("\n" , "")
-        if "Product Name" in line:
-            productName = line.split(":")[1].replace("\n" , "")
-    return manufacturer + productName
-
-# lscpu
-def generate_cpu_model(serverName):
-    coresPerSocket = ""
-    socket = ""
-    threads = ""
-    model = ""
-    for line in load(f'/configs/{serverName}' + "/hardware/cpu/lscpu.txt"):
-        line = line.replace("\n","").split(":")
-        if "Core(s) per socket" in line[0]:
-            coresPerSocket=line[1].strip()
-            #print ("("+  coresPerSocket+ ")")
-        if "Socket(s)" in line[0]:
-            socket=line[1].strip()
-        if "Thread(s) per core" in line[0]:
-            threads = line[1].strip()
-        if "Model name" in line[0]:
-            model = line[1].strip()
-    return coresPerSocket + "xcores x " + socket + "xsockets x " + threads + "xthreads " + model
-
-# lshw -short -C memory
-def generate_memory_model(serverName):
-    rams=[]
-    for line in load(f'/configs/{serverName}'+"/hardware/memory/lshw-brief.txt"):
-        line = line.replace("  ", "")
-        if "DIMM" in line:
-            if "empty" not in line:
-                model = line.split("memory ")[1]
-                rams.append(model)
-    counts = Counter(rams)
-    ram = ""
-    for item , count in counts.items():
-        ram+= str(count) + "x" + item
-    return ram
-
-# lshw -json -C net
-def generate_net_model(serverName):
-    Flag = False
-    nets=[]
-    capacities = []
-    for line in load(f'/configs/{serverName}'+"/hardware/net/lshw-json.txt"):
-        line = line.replace(",\n" , "")
-        if "id" in line:
-            Flag = True
-        if Flag is True:
-            if "product" in line:
-                nets.append( line.split(":")[1].replace("" , ""))
-            if "capacity" in line:
-                capacities.append(line.split(":")[1].replace("000000000" , "")+"Gbit/s")
-                Flag = False
-    netModel=[]
-    for i in range(len(nets)):
-        if i < len(capacities):
-            netModel.append(capacities[i] + " " + nets[i])
-        else:
-            netModel.append(nets[i])
-    counts = Counter(netModel)
-    net = ""
-    for item, count in counts.items():
-        net += str(count) + "x" + item + "\n"
-    return net
-
-# dmidecode -t 2
-def generate_motherboard_model(serverName):
-    manufacturer = ""
-    productName = ""
-    for line in load(f'/configs/{serverName}'+"/hardware/motherboard/dmidecode.txt"):
-        if "Manufacturer" in line:
-            manufacturer = line.split(":")[1].replace("\n", "")
-        if "Product Name" in line:
-            productName = line.split(":")[1].replace("\n", "")
-    return manufacturer + productName
-
-# lshw -C disk
-def generate_disk_model(serverName):
-    disks= []
-    with open(f'{configs_dir}/configs/{serverName}'+"/hardware/disk/lshw.txt",'r') as f:
-        diskList = f.read().split("*-")
-    for i in range (1,len(diskList)):
-        if not("size:" in diskList[i]):
-            continue 
-        diskname=""
-        for x in diskList[i].splitlines():
-            if "description:" in x or "product:" in x:
-                diskname+=x.split(":")[1].strip() + " "
-            elif "size:" in x:
-                diskname+=x.split("(")[1].split(")")[0] + " "
-        disks.append(diskname)
-    counts = Counter(disks)
-    disksNames =""
-    for item, count in counts.items():
-        disksNames += str(count) + "x" + item + "\n"
-    return disksNames
-
-def generate_model(server, part, spec):
-    if part == "hardware":
-        if spec == "cpu":
-            return generate_cpu_model(server)
-        elif spec == "memory":
-            return generate_memory_model(server)
-        elif spec == "net":
-            return generate_net_model(server)
-        elif spec == "motherboard":
-            return generate_motherboard_model(server)
-        elif spec == "brand":
-            return generate_brand_model(server)
-        elif spec == "disk":
-            return generate_disk_model(server)
-    elif part == "software":
-        return "software not configed"
-    
-def compare(part, spec):
-    listOfServers = get_list_of_servers()
-    dict = {}
-    for server in listOfServers:
-        model= generate_model(server ,part ,spec)
-        if model in dict:
-            if dict[model] is None:
-                dict[model] = []
-        else: dict[model]= []
-        dict[model].append(server)
-    return dict
-
-#### SOFTWARE info ####
-def get_list_of_servers():
-    cmd = ["ls", f'{configs_dir}/configs/']
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, text=True)
-    global listOfServers
-    listOfServers = result.stdout.split("\n")
-    listOfServers.pop()
-    return listOfServers
-
-def compare_confs(confsOfServers):
-    commonConf = confsOfServers[listOfServers[0]]
-    allConfs = {}
-    for server in listOfServers:
-        commonConf = set(commonConf) & set(confsOfServers[server])
-    for server in listOfServers:
-        uncommonconfs = set(confsOfServers[server]) - commonConf
-        if len(uncommonconfs) != 0:
-            allConfs[server] = uncommonconfs
-    if len(commonConf) != 0:
-        allConfs["All(common confs)"] = commonConf
-    return allConfs  #### dict of list of strings
-
-def generate_swift_status(servername):
-    listOfDowns = []
-    for line in load(f"/configs/{servername}/software/swift/services/{servername}-swift-status.txt"):
-        if "No" in line:
-            listOfDowns.append(line.split("No ")[1].replace("\n" , "").split(" running")[0])
-    return listOfDowns
-
-def generate_all_swift_status(services):
-    listOfServices = []
-    if services == "main":
-        listOfServices= ["proxy-server" , "object-server" , "account-server" , "container-server"]
-    if services == "object":
-        listOfServices = ["object-auditor" , "object-reconstructor" , "object-replicator" , "object-updater" , "object-expirer"]
-    if services == "account":
-        listOfServices = ["account-replicator" , "account-auditor"  , "account-reaper"]
-    if services == "container":
-        listOfServices = ["container-updater" , "container-auditor" , "container-replicator" , "container-sharder" , "container-sync"]
-    returndict={}
-    returndict ["servers"] = listOfServices
-    for server in listOfServers:
-        returndict[server] = []
-        listOfDownServices = generate_swift_status(server)
-        for service in listOfServices:
-            if service in listOfDownServices:
-                returndict[server].append( "Down" ) ##### returndict[server].append([service , "Down"])
-            else:
-                returndict[server].append( "UP" ) #### returndict[server].append([service , "UP"])
-    return returndict  #### dict of list of stirng
-
-def generate_ring(servername):
-    x = {}
-    for i in ["object", "account", "container"]:
-        with open(configs_dir+"/configs/"+servername+"/software/swift/rings/"+servername+"-" +i+"-ring.txt", "r") as file:
-            x[i] = file.read()
-    ring_item_dic = {}
-    ring_item = []
-    for key, value in x.items():
-        ring_item_dic["Ring." + key + ".nodes"] = len(set([v.split()[3] for v in value.splitlines()[6:]]))
-        ring_item_dic.update({"Ring." + key + "." + item.split(" ")[1]:int(float(item.split(" ")[0])) for item in value.splitlines()[1].split(", ")[:5]})
-    for rkey , rvalue in ring_item_dic.items():
-        ring_item.append(rkey + " = " + str(rvalue))
-    return ring_item
-
-def get_conf(server, confType, serverType = None):
-    conf = []
-    if confType == "server_confs":
-        conf = [i for i in load("/configs/"+ server + "/software/swift/server-confs/" + server + "-" + serverType + "-server.conf" ) if "#" not in i]
-    if confType == "software_version":
-        conf= [i.replace("\n", "") for i in load("/configs/"+ server + "/software/system/images-version.txt")]
-    if confType == "sysctl":
-        conf = [i.replace("\n" , "") for i in load ("/configs/"+ server + "/software/system/sysctl.txt")]
-    if confType == "systemctl":
-        conf = [" ".join(i.replace("  " , "").split(" ")[:3]) for i in load ("configs/"+ server + "/software/system/systemctl.txt")]
-    if confType == "lsof":
-        conf = [i.replace("\n" , "") for i in load ("/configs/"+ server + "/software/system/lsof.txt")]
-    if confType == "lsmod":
-        conf = [i.replace("  ", " ").replace("\n", "") for i in load("/configs/"+ server + "/software/system/lsmod.txt")]
-    if confType == "rings":
-        conf = generate_ring(server)
-    return conf
-
-def generate_confs(confType, serverType = None):
-    confOfServers = {}
-    for server in listOfServers:
-        confOfServers[server] = get_conf(server, confType , serverType)
-    compared_dict = compare_confs(confOfServers)
-    compared_dict ["servers"] = confType
-    return compared_dict
-
-def dict_to_html_table(data):
-    logging.info("report_recorder - Executing dict_to_html_table function")
-    html = "<table border='1' class='wikitable'>\n"
-    #generate first row
-    html += "<tr>\n"
-    html += f"<td>servers</td>\n"
-    if isinstance(data["servers"] , list):
-        for item in data["servers"]:
-            html += f"<td>{item}</td>\n"
-    else:
-        str = data["servers"]
-        html += f"<td>{str}</td>\n"
-    html += "</tr>\n"
-    for key, value in data.items():
-        if key != "servers":
-            html += "<tr>\n"
-            html += f"<td>{key}</td>\n"
-            if isinstance(value, set):
-                str = "<br>".join(value)
-                html += f"<td>{str}</td>\n"
-            else:
-                for i in range(len(value)):
-                    html += f"<td>{value[i]}</td>\n"
-            html += "</tr>\n"
-    html += "</table>"
-    return html
+def load_config(config_file):
+    with open(config_file, "r") as stream:
+        try:
+            data_loaded = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(f"Error loading the configuration: {exc}")
+            sys.exit(1)
+    return data_loaded
 
 #### make test HTML template ####
-def test_page_maker(merged_file, merged_info_file, all_test_dir, cluster_name, scenario_name):
+def test_page_maker(merged_file, merged_info_file, all_test_dir, cluster_name, scenario_name, data_loaded):
     logging.info("report_recorder - Executing test_page_maker function")
     htmls_dict={}
     mergedInfo = pd.read_csv(merged_info_file)
@@ -323,13 +75,40 @@ def test_page_maker(merged_file, merged_info_file, all_test_dir, cluster_name, s
         ###### create subgroups within each original group  ######
         sorted_unique_file_1 = classification.csv_to_sorted_yaml(mergedInfo2)
         array_of_groups_1 = classification.group_generator(sorted_unique_file_1,threshold=4)
-        sub_html_result = classification.create_tests_details(mergedInfo2,merged2,testGroup,array_of_groups_1,all_test_dir)
-        htmls_dict.update({f"{cluster_name}--{scenario_name}--{format_tg}":sub_html_result+"[[رده:تست]]\n[[رده:کارایی]]\n[[رده:هیولا]]"})
-    htmls_dict.update({cluster_name+'--'+scenario_name:html_result.replace("**var**",str(number_of_groups))+"[[رده:تست]]\n[[رده:کارایی]]\n[[رده:هیولا]]"})
+        sub_html_result = classification.create_tests_details(mergedInfo2,merged2,testGroup,array_of_groups_1,all_test_dir,data_loaded)
+        htmls_dict.update({f"{cluster_name}--{scenario_name}--{format_tg}":sub_html_result+data_loaded['naming_tag'].get('tags')})
+    htmls_dict.update({cluster_name+'--'+scenario_name:html_result.replace("**var**",str(number_of_groups))+data_loaded['naming_tag'].get('tags')})
     return htmls_dict
 
 #### make HTML template ####
-def dict_to_html(dict):
+def dict_html_software(data):
+    logging.info("report_recorder - Executing dict_to_html_table function")
+    html = "<table border='1' class='wikitable'>\n"
+    #generate first row
+    html += "<tr>\n"
+    html += f"<td>servers</td>\n"
+    if isinstance(data["servers"] , list):
+        for item in data["servers"]:
+            html += f"<td>{item}</td>\n"
+    else:
+        str = data["servers"]
+        html += f"<td>{str}</td>\n"
+    html += "</tr>\n"
+    for key, value in data.items():
+        if key != "servers":
+            html += "<tr>\n"
+            html += f"<td>{key}</td>\n"
+            if isinstance(value, set):
+                str = "<br>".join(value)
+                html += f"<td>{str}</td>\n"
+            else:
+                for i in range(len(value)):
+                    html += f"<td>{value[i]}</td>\n"
+            html += "</tr>\n"
+    html += "</table>"
+    return html
+
+def dict_html_hardware(dict):
     logging.info("report_recorder - Executing dict_to_html function")
     html_dict = "<table border='1' class='wikitable'>\n"
     html_dict += "<tr><th> نام سرور </th><th> مشخصات </th></tr>\n"
@@ -355,7 +134,7 @@ def csv_to_html(csv_file):
     html_csv += "</table>"
     return html_csv
 
-def create_sw_hw_htmls(template_content, html_output, page_title): #HW_page_title = cluster_name #SW_page_title = cluster_name + scenario_name
+def create_sw_hw_htmls(template_content, html_output, page_title, data_loaded): #HW_page_title = cluster_name #SW_page_title = cluster_name + scenario_name
     logging.info("report_recorder - Executing create_sw_hw_htmls function")
     htmls_dict={}
     hw_info_dict = {}
@@ -379,20 +158,22 @@ def create_sw_hw_htmls(template_content, html_output, page_title): #HW_page_titl
     for hconfig_info in re.finditer(r'{hw_config}:(.+)', template_content):
         hconfig_placeholder = hconfig_info.group(0)
         part,spec = hconfig_info.group(1).split(',')
-        dict = compare(part.strip(), spec.strip())
+        dict = analyzer.compare(part.strip(), spec.strip())
         hw_info_dict.update({spec.strip():dict})
-        html_of_dict = dict_to_html(dict)
+        html_of_dict = dict_html_hardware(dict)
         html_data = html_data.replace(hconfig_placeholder, html_of_dict)
     for sconfig_info in re.finditer(r'{sw_config}:(.+)', template_content):
         sconfig_placeholder = sconfig_info.group(0)
         sconfigs = sconfig_info.group(1).split(',')
         if sconfigs[0] == "swift_status":
-            software_html = dict_to_html_table(generate_all_swift_status(sconfigs[1]))
+            software_html = dict_html_software(analyzer.generate_all_swift_status(sconfigs[1]))
         else:
-            software_html = dict_to_html_table(generate_confs(sconfigs[0],None if len(sconfigs)== 1 else sconfigs[1]))
+            software_html = dict_html_software(analyzer.generate_confs(sconfigs[0],None if len(sconfigs)== 1 else sconfigs[1]))
         html_data = html_data.replace(sconfig_placeholder, software_html)
+    html_data += "<p> </p>"
+    html_data += data_loaded['naming_tag'].get('tags')
     htmls_dict.update({page_title:html_data})
-    htmls_dict.update(sub_pages_maker(html_data,page_title,hw_info_dict))
+    htmls_dict.update(sub_pages_maker(html_data,page_title,hw_info_dict,data_loaded))
     for html_key,html_value in htmls_dict.items():
         with open(os.path.join(html_output+"/"+html_key+".html"), 'w') as html_file:
             html_file.write(html_value)
@@ -400,9 +181,9 @@ def create_sw_hw_htmls(template_content, html_output, page_title): #HW_page_titl
             logging.info(f"report_recorder - HTML template saved to: {html_output+'/'+html_key+'.html'}")
     return htmls_dict
 
-def create_test_htmls(template_content, html_output, cluster_name, scenario_name, merged_file, merged_info_file, all_test_dir): #page_title = cluster_name + scenario_name
+def create_test_htmls(template_content, html_output, cluster_name, scenario_name, merged_file, merged_info_file, all_test_dir, data_loaded): #page_title = cluster_name + scenario_name
     logging.info("report_recorder - Executing create_test_htmls function")
-    htmls_dict = test_page_maker(merged_file, merged_info_file, all_test_dir, cluster_name, scenario_name)
+    htmls_dict = test_page_maker(merged_file, merged_info_file, all_test_dir, cluster_name, scenario_name, data_loaded)
     for html_key,html_value in htmls_dict.items():
         with open(os.path.join(html_output+"/"+html_key+".html"), 'w') as html_file:
             html_file.write(html_value)
@@ -423,26 +204,26 @@ def convert_html_to_wiki(html_content):
             img_tag.replace_with(f"[[File:{os.path.basename(img_tag['src'])}|border|center|800px|{os.path.basename(img_tag['src']).split('_')[0]}]]")
     return str(soup)
 
-def sub_pages_maker(template_content , page_title ,hw_info_dict):
+def sub_pages_maker(template_content , page_title ,hw_info_dict,data_loaded):
     logging.info("report_recorder - Executing sub_pages_maker function")
     global configs_dir
     htmls_list={}
-    s1 = configs_dir
-    sub_dir_path = os.path.join(s1,'configs/{serverName}/hardware/')
+    c_dir = configs_dir
+    sub_dir_path = os.path.join(c_dir,'configs/{serverName}/hardware/')
     if page_title + "--CPU" in template_content:
-        htmls_list.update({page_title + "--CPU":one_sub_page_maker(sub_dir_path+'cpu/',hw_info_dict['cpu'])})
+        htmls_list.update({page_title + "--CPU":one_sub_page_maker(sub_dir_path+'cpu/',hw_info_dict['cpu'],data_loaded)})
     if page_title + "--Memory" in template_content:
-        htmls_list.update({page_title + "--Memory":one_sub_page_maker(sub_dir_path+'memory/',hw_info_dict['memory'])})
+        htmls_list.update({page_title + "--Memory":one_sub_page_maker(sub_dir_path+'memory/',hw_info_dict['memory'],data_loaded)})
     if page_title + "--Network" in template_content:
-        htmls_list.update({page_title + "--Network":one_sub_page_maker(sub_dir_path+'net/',hw_info_dict['net'])})
+        htmls_list.update({page_title + "--Network":one_sub_page_maker(sub_dir_path+'net/',hw_info_dict['net'],data_loaded)})
     if page_title + "--Disk" in template_content:
-        htmls_list.update({page_title + "--Disk":one_sub_page_maker(sub_dir_path+'disk/',hw_info_dict['disk'])})
+        htmls_list.update({page_title + "--Disk":one_sub_page_maker(sub_dir_path+'disk/',hw_info_dict['disk'],data_loaded)})
     if page_title + "--PCI" in template_content:
-        #htmls_list.update({page_title + "--PCI":sub_page_maker(sub_dir_path+'pci/',hw_info_dict['pci'])})
-        htmls_list.update({page_title + "--PCI":one_sub_page_maker(sub_dir_path+'pci/',hw_info_dict['cpu'])})
+        #htmls_list.update({page_title + "--PCI":sub_page_maker(sub_dir_path+'pci/',hw_info_dict['pci'],data_loaded)})
+        htmls_list.update({page_title + "--PCI":one_sub_page_maker(sub_dir_path+'pci/',hw_info_dict['cpu'],data_loaded)})
     return htmls_list
 
-def one_sub_page_maker(path_to_files,spec_dict):
+def one_sub_page_maker(path_to_files,spec_dict,data_loaded):
     logging.info("report_recorder - Executing one_sub_page_maker function")
     html_content = ""
     for i in os.listdir(path_to_files.replace("{serverName}",next(iter(spec_dict.values()))[0])):
@@ -458,7 +239,7 @@ def one_sub_page_maker(path_to_files,spec_dict):
             else:
                 html_content += "<p> فایل مربوطه یافت نشد </p>"
     html_content += "<p> </p>"
-    html_content += "[[رده:تست]]\n[[رده:کارایی]]\n[[رده:هیولا]]"
+    html_content += data_loaded['naming_tag'].get('tags')
     return html_content
 
 def upload_data(site, page_title, wiki_content):
@@ -502,25 +283,42 @@ def upload_images(site, html_content):
 def main(input_template, htmls_path, cluster_name, scenario_name, configs_directory, upload_operation, create_html_operation, merged_file, merged_info_file, all_test_dir):
     global configs_dir
     htmls_dict = {}
+
     log_maker = subprocess.run(f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/", shell=True)
     logging.basicConfig(filename= '/var/log/kara/all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
     logging.info("\033[92m****** report_recorder main function start ******\033[0m")
+
+    data_loaded = load_config(config_file)
+    if cluster_name is None:
+        cluster_name = data_loaded['naming_tag'].get('cluster_name')
+    if scenario_name is None:
+        scenario_name = data_loaded['naming_tag'].get('scenario_name')
+    if htmls_path is None:
+        htmls_path = data_loaded['output_path']
+    if merged_file is None:
+        merged_file = data_loaded['tests_info'].get('merged')
+    if merged_info_file is None:
+        merged_info_file = data_loaded['tests_info'].get('merged_info')
+    if all_test_dir is None:
+        all_test_dir = data_loaded['tests_info'].get('tests_dir')
+    if configs_directory is None:
+        configs_directory = data_loaded['configs_dir']
     if create_html_operation:
         if configs_directory is not None:
             if os.path.exists(configs_directory):
                 configs_dir = configs_directory
-                get_list_of_servers()
+                analyzer.conf_dir(configs_dir)
+                analyzer.get_list_of_servers()
             else:
                 print(f"\033[91minput backup File not found\033[0m")
         if input_template:
             with open(input_template, 'r') as template_content:
                 if 'hardware' in os.path.basename(input_template):
-                    htmls_dict = create_sw_hw_htmls(template_content.read(), htmls_path, cluster_name+'--HW') 
+                    htmls_dict = create_sw_hw_htmls(template_content.read(), htmls_path, cluster_name+'--HW', data_loaded) 
                 if 'software' in os.path.basename(input_template):
-                    htmls_dict = create_sw_hw_htmls(template_content.read(), htmls_path, cluster_name+'--'+scenario_name+'--SW')
-        if merged_file and merged_info_file and  all_test_dir:
-            htmls_dict.update(create_test_htmls("",htmls_path, cluster_name, scenario_name, merged_file, merged_info_file, all_test_dir)) 
+                    htmls_dict = create_sw_hw_htmls(template_content.read(), htmls_path, cluster_name+'--'+scenario_name+'--SW', data_loaded)
+        if merged_file and merged_info_file and all_test_dir:
+            htmls_dict.update(create_test_htmls("",htmls_path, cluster_name, scenario_name, merged_file, merged_info_file, all_test_dir, data_loaded)) 
     elif upload_operation:
         for html_file in os.listdir(htmls_path):
             with open(os.path.join(htmls_path,html_file), 'r', encoding='utf-8') as file:
@@ -535,6 +333,7 @@ def main(input_template, htmls_path, cluster_name, scenario_name, configs_direct
             upload_data(site, title, wiki_content)
             # Upload images to the wiki
             upload_images(site, content)
+
     logging.info("\033[92m****** report_recorder main function end ******\033[0m")
 
 if __name__ == "__main__":
@@ -551,16 +350,13 @@ if __name__ == "__main__":
     parser.add_argument("-td", "--all_test_dir", help="directory of all tests")
     args = parser.parse_args()
     input_template = args.input_template 
-    htmls_path = args.htmls_path
-    cluster_name = args.cluster_name
-    scenario_name = args.scenario_name 
-    merged_file = args.merged_file
-    merged_info_file = args.merged_info_file
-    all_test_dir = args.all_test_dir
-    if args.configs_directory:
-       configs_directory = args.configs_directory 
-    else:
-        configs_directory = None
+    htmls_path = args.htmls_path if args.htmls_path else None
+    cluster_name = args.cluster_name if args.cluster_name else None
+    scenario_name = args.scenario_name if args.scenario_name else None
+    merged_file = args.merged_file if args.merged_file else None
+    merged_info_file = args.merged_info_file if args.merged_info_file else None
+    all_test_dir = args.all_test_dir if args.all_test_dir else None
+    configs_directory = args.configs_directory if args.configs_directory else None
     upload_operation = args.upload_operation
     create_html_operation = args.create_html_operation
     main(input_template, htmls_path, cluster_name, scenario_name, configs_directory, upload_operation, create_html_operation, merged_file, merged_info_file, all_test_dir)
