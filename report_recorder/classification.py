@@ -1,12 +1,12 @@
-import yaml
 import itertools
-import csv
 import pandas as pd
 import os
 
 ################# CSV to sorted yaml descending-based ##############################################################
-def create_tests_details(mergedTestsInfo,mergedTests,test_group,array_of_parameters,tests_dir):
-    img_metrics = ['netdata-disk-sdb-writes-mean','netdata-statsd-timer-swift-object-server-put-timing-events-mean']
+def create_tests_details(mergedTestsInfo,mergedTests,test_group,array_of_parameters,tests_dir,data_loaded):
+    img_metrics = []
+    for img_metric in data_loaded['tests_info'].get('metrics', []):
+        img_metrics.append(img_metric)
     html_result =  f"<p> در این سند جزئیات مربوط به تست های گروه {test_group} آمده است</p>"
     serverList = unique_values = mergedTests['Host_alias'].unique().tolist()
     for testInfo in array_of_parameters:

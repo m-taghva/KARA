@@ -5,10 +5,248 @@ import argparse
 from glob import glob
 import pandas as pd
 import matplotlib.pyplot as plt
+from collections import Counter
 
 BOLD = "\033[1m"
 RESET = "\033[0m"
 YELLOW = "\033[1;33m"
+
+def conf_dir(config_dir):
+    global configs_dir
+    configs_dir = config_dir
+    return configs_dir
+
+# read backup dir
+listOfServers = []
+def load(directory):
+    with open(configs_dir + directory, 'r') as f:
+        content = f.readlines()
+    return content
+
+#### HARDWARE info ####
+# dmidecode -t 1
+def generate_brand_model(serverName):
+    manufacturer = ""
+    productName = ""
+    for line in load(f'/configs/{serverName}'+"/hardware/server-manufacturer/dmidecode.txt"):
+        if "Manufacturer" in line:
+            manufacturer = line.split(":")[1].replace("\n" , "")
+        if "Product Name" in line:
+            productName = line.split(":")[1].replace("\n" , "")
+    return manufacturer + productName
+
+# lscpu
+def generate_cpu_model(serverName):
+    coresPerSocket = ""
+    socket = ""
+    threads = ""
+    model = ""
+    for line in load(f'/configs/{serverName}' + "/hardware/cpu/lscpu.txt"):
+        line = line.replace("\n","").split(":")
+        if "Core(s) per socket" in line[0]:
+            coresPerSocket=line[1].strip()
+            #print ("("+  coresPerSocket+ ")")
+        if "Socket(s)" in line[0]:
+            socket=line[1].strip()
+        if "Thread(s) per core" in line[0]:
+            threads = line[1].strip()
+        if "Model name" in line[0]:
+            model = line[1].strip()
+    return coresPerSocket + "xcores x " + socket + "xsockets x " + threads + "xthreads " + model
+
+# lshw -short -C memory
+def generate_memory_model(serverName):
+    rams=[]
+    for line in load(f'/configs/{serverName}'+"/hardware/memory/lshw-brief.txt"):
+        line = line.replace("  ", "")
+        if "DIMM" in line:
+            if "empty" not in line:
+                model = line.split("memory ")[1]
+                rams.append(model)
+    counts = Counter(rams)
+    ram = ""
+    for item , count in counts.items():
+        ram+= str(count) + "x" + item
+    return ram
+
+# lshw -json -C net
+def generate_net_model(serverName):
+    Flag = False
+    nets=[]
+    capacities = []
+    for line in load(f'/configs/{serverName}'+"/hardware/net/lshw-json.txt"):
+        line = line.replace(",\n" , "")
+        if "id" in line:
+            Flag = True
+        if Flag is True:
+            if "product" in line:
+                nets.append( line.split(":")[1].replace("" , ""))
+            if "capacity" in line:
+                capacities.append(line.split(":")[1].replace("000000000" , "")+"Gbit/s")
+                Flag = False
+    netModel=[]
+    for i in range(len(nets)):
+        if i < len(capacities):
+            netModel.append(capacities[i] + " " + nets[i])
+        else:
+            netModel.append(nets[i])
+    counts = Counter(netModel)
+    net = ""
+    for item, count in counts.items():
+        net += str(count) + "x" + item + "\n"
+    return net
+
+# dmidecode -t 2
+def generate_motherboard_model(serverName):
+    manufacturer = ""
+    productName = ""
+    for line in load(f'/configs/{serverName}'+"/hardware/motherboard/dmidecode.txt"):
+        if "Manufacturer" in line:
+            manufacturer = line.split(":")[1].replace("\n", "")
+        if "Product Name" in line:
+            productName = line.split(":")[1].replace("\n", "")
+    return manufacturer + productName
+
+# lshw -C disk
+def generate_disk_model(serverName):
+    disks= []
+    with open(f'{configs_dir}/configs/{serverName}'+"/hardware/disk/lshw.txt",'r') as f:
+        diskList = f.read().split("*-")
+    for i in range (1,len(diskList)):
+        if not("size:" in diskList[i]):
+            continue 
+        diskname=""
+        for x in diskList[i].splitlines():
+            if "description:" in x or "product:" in x:
+                diskname+=x.split(":")[1].strip() + " "
+            elif "size:" in x:
+                diskname+=x.split("(")[1].split(")")[0] + " "
+        disks.append(diskname)
+    counts = Counter(disks)
+    disksNames =""
+    for item, count in counts.items():
+        disksNames += str(count) + "x" + item + "\n"
+    return disksNames
+
+def generate_model(server, part, spec):
+    if part == "hardware":
+        if spec == "cpu":
+            return generate_cpu_model(server)
+        elif spec == "memory":
+            return generate_memory_model(server)
+        elif spec == "net":
+            return generate_net_model(server)
+        elif spec == "motherboard":
+            return generate_motherboard_model(server)
+        elif spec == "brand":
+            return generate_brand_model(server)
+        elif spec == "disk":
+            return generate_disk_model(server)
+    elif part == "software":
+        return "software not configed"
+    
+def compare(part, spec):
+    listOfServers = get_list_of_servers()
+    dict = {}
+    for server in listOfServers:
+        model= generate_model(server ,part ,spec)
+        if model in dict:
+            if dict[model] is None:
+                dict[model] = []
+        else: dict[model]= []
+        dict[model].append(server)
+    return dict
+
+#### SOFTWARE info ####
+def get_list_of_servers():
+    cmd = ["ls", f'{configs_dir}/configs/']
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, text=True)
+    global listOfServers
+    listOfServers = result.stdout.split("\n")
+    listOfServers.pop()
+    return listOfServers
+
+def compare_confs(confsOfServers):
+    commonConf = confsOfServers[listOfServers[0]]
+    allConfs = {}
+    for server in listOfServers:
+        commonConf = set(commonConf) & set(confsOfServers[server])
+    for server in listOfServers:
+        uncommonconfs = set(confsOfServers[server]) - commonConf
+        if len(uncommonconfs) != 0:
+            allConfs[server] = uncommonconfs
+    if len(commonConf) != 0:
+        allConfs["All(common confs)"] = commonConf
+    return allConfs  #### dict of list of strings
+
+def generate_swift_status(servername):
+    listOfDowns = []
+    for line in load(f"/configs/{servername}/software/swift/services/{servername}-swift-status.txt"):
+        if "No" in line:
+            listOfDowns.append(line.split("No ")[1].replace("\n" , "").split(" running")[0])
+    return listOfDowns
+
+def generate_all_swift_status(services):
+    listOfServices = []
+    if services == "main":
+        listOfServices= ["proxy-server" , "object-server" , "account-server" , "container-server"]
+    if services == "object":
+        listOfServices = ["object-auditor" , "object-reconstructor" , "object-replicator" , "object-updater" , "object-expirer"]
+    if services == "account":
+        listOfServices = ["account-replicator" , "account-auditor"  , "account-reaper"]
+    if services == "container":
+        listOfServices = ["container-updater" , "container-auditor" , "container-replicator" , "container-sharder" , "container-sync"]
+    returndict={}
+    returndict ["servers"] = listOfServices
+    for server in listOfServers:
+        returndict[server] = []
+        listOfDownServices = generate_swift_status(server)
+        for service in listOfServices:
+            if service in listOfDownServices:
+                returndict[server].append( "Down" ) ##### returndict[server].append([service , "Down"])
+            else:
+                returndict[server].append( "UP" ) #### returndict[server].append([service , "UP"])
+    return returndict  #### dict of list of stirng
+
+def generate_ring(servername):
+    x = {}
+    for i in ["object", "account", "container"]:
+        with open(configs_dir+"/configs/"+servername+"/software/swift/rings/"+servername+"-" +i+"-ring.txt", "r") as file:
+            x[i] = file.read()
+    ring_item_dic = {}
+    ring_item = []
+    for key, value in x.items():
+        ring_item_dic["Ring." + key + ".nodes"] = len(set([v.split()[3] for v in value.splitlines()[6:]]))
+        ring_item_dic.update({"Ring." + key + "." + item.split(" ")[1]:int(float(item.split(" ")[0])) for item in value.splitlines()[1].split(", ")[:5]})
+    for rkey , rvalue in ring_item_dic.items():
+        ring_item.append(rkey + " = " + str(rvalue))
+    return ring_item
+
+def get_conf(server, confType, serverType = None):
+    conf = []
+    if confType == "server_confs":
+        conf = [i for i in load("/configs/"+ server + "/software/swift/server-confs/" + server + "-" + serverType + "-server.conf" ) if "#" not in i]
+    if confType == "software_version":
+        conf= [i.replace("\n", "") for i in load("/configs/"+ server + "/software/system/images-version.txt")]
+    if confType == "sysctl":
+        conf = [i.replace("\n" , "") for i in load ("/configs/"+ server + "/software/system/sysctl.txt")]
+    if confType == "systemctl":
+        conf = [" ".join(i.replace("  " , "").split(" ")[:3]) for i in load ("configs/"+ server + "/software/system/systemctl.txt")]
+    if confType == "lsof":
+        conf = [i.replace("\n" , "") for i in load ("/configs/"+ server + "/software/system/lsof.txt")]
+    if confType == "lsmod":
+        conf = [i.replace("  ", " ").replace("\n", "") for i in load("/configs/"+ server + "/software/system/lsmod.txt")]
+    if confType == "rings":
+        conf = generate_ring(server)
+    return conf
+
+def generate_confs(confType, serverType = None):
+    confOfServers = {}
+    for server in listOfServers:
+        confOfServers[server] = get_conf(server, confType , serverType)
+    compared_dict = compare_confs(confOfServers)
+    compared_dict ["servers"] = confType
+    return compared_dict
 
 ####### MERGER #######
 def merge_csv(csv_file, output_directory, pairs_dict):
@@ -164,4 +402,5 @@ if __name__ == "__main__":
             selected_csv = None
             print(f'\033[91mplease select correct csv file your file is wrong: {args.selected_csv}\033[0m')
             exit(1)
+            
     main(merge, analyze, graph, csv_original, transformation_directory, output_directory, selected_csv, x_column, y_column)

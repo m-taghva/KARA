@@ -284,12 +284,12 @@ def save_time(file):
                                     logging.info(f"mrbench - test time range: {start_time},{end_time}")  
                                     return start_time, end_time
                                 else:
-                                    logging.info(f"mrbench - can't extrcat test time range from cosbench csv file!")
-                                    print("\033[91m mrbench can't extrcat test time range from cosbench csv file!\033[0m")
+                                    logging.info(f"mrbench - can't extract test time range from cosbench csv file!")
+                                    print("\033[91m mrbench can't extract test time range from cosbench csv file!\033[0m")
                                     exit()
                         else:
-                            logging.info(f"mrbench - your workload template is not correct so mrbench can't extrcat test time range from cosbench csv file: {file}")
-                            print("\033[91myour workload template is not correct so mrbench can't extrcat test time range from cosbench csv file!\033[0m")
+                            logging.info(f"mrbench - your workload template is not correct so mrbench can't extract test time range from cosbench csv file: {file}")
+                            print("\033[91myour workload template is not correct so mrbench can't extract test time range from cosbench csv file!\033[0m")
                             exit() 
     except Exception as e:
         print(f"\033[91mAn error occurred: {str(e)}\033[0m")
