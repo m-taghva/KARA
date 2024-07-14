@@ -255,14 +255,14 @@ def merge_csv(csv_file, output_directory, pairs_dict):
         csv_data = pd.read_csv(csv_file)
         if pairs_dict:  
             if os.path.exists(f'{output_directory}/merged_info.csv'):
-                merged_info = pd.concat([pd.read_csv(f'{output_directory}/merged_info.csv'), pd.DataFrame(pairs_dict, index=[0])], ignore_index=True)
+                merged_info = pd.concat([pd.read_csv(f'{output_directory}/merged_info.csv'), pd.DataFrame(pairs_dict, index=[0])], ignore_index=True).drop_duplicates()
             else:
                 merged_info = pd.DataFrame(pairs_dict, index=[0])
             merged_info.to_csv(f'{output_directory}/merged_info.csv', index=False, mode='w')
             for key, value in pairs_dict.items():
                 csv_data.insert(0, key, value) 
         if os.path.exists(f'{output_directory}/merged.csv'):
-            merged = pd.concat([pd.read_csv(f'{output_directory}/merged.csv'), csv_data], ignore_index=True)
+            merged = pd.concat([pd.read_csv(f'{output_directory}/merged.csv'), csv_data], ignore_index=True).drop_duplicates()
         else:
             merged = csv_data
         merged.to_csv(f'{output_directory}/merged.csv', index=False, mode='w')
