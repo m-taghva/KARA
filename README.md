@@ -1,5 +1,5 @@
 ‪<h2>Monster Performance Kit</h2>
-<h3>open stack swift performance and monitoring tools (KARA)</h3>
+<h3>open stack swift performance and monitoring tools (Kara)</h3>
 <img src="kara_tools.png" width="983" height="581"/>
 <img src="kara.png" width="983" height="581"/>
 
@@ -15,6 +15,7 @@
         
             2.1 - Installing Tool Prerequisites:
                 pip install pytz datetime matplotlib pandas alive_progress BeautifulSoup4
+                apt install xfsprogs
                 
             2.2 - Cloning the Latest Version of the Program from GitHub:
                 git clone https://github.com/m-taghva/KARA

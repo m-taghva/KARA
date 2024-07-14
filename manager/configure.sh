@@ -4,15 +4,16 @@
 BOLD="\e[1m"
 RESET="\e[0m"
 YELLOW="\033[1;33m"
+RED="\033[91m"
 
 #### make soft link for tools
 # Find the Python directory under /usr/local/lib/
 PYTHON_DIR=$(find /usr/local/lib/ -maxdepth 1 -type d -name "python*" -exec basename {} \; | sort -V | tail -n 1)
 if [ -z "$PYTHON_DIR" ]; then
-    echo "Error: Python directory not found under /usr/local/lib/"
+    echo -e "${RED}Error: Python directory not found under /usr/local/lib/${RESET}"
     exit 1
 fi
-echo -e "${BOLD}Python directory found: ${RESET}${YELLOW}$PYTHON_DIR${RESET}"
+echo -e "${BOLD}Python directory found: ${RESET}${YELLOW}/usr/local/lib/$PYTHON_DIR${RESET}"
 # Find the "KARA" directory starting from the current directory
 KARA_DIR=$(dirname "$(pwd)")
 while [ "$KARA_DIR" != "/" ]; do
@@ -34,7 +35,7 @@ for ((i=0; i<${#SCRIPTS[@]}; i++)); do
     SCRIPT_DIR="${SCRIPTS[i]}"
     FULL_SCRIPT_PATH="$KARA_DIR/KARA/$SCRIPT_DIR/$SCRIPT.py"
     if [ ! -f "$FULL_SCRIPT_PATH" ]; then
-        echo "Error: Script $SCRIPT not found in directory $SCRIPT_DIR"
+        echo -e "${RED}Error: Script $SCRIPT not found in directory $SCRIPT_DIR${RESET}"
         continue
     fi   
     ln_result=$(ln -s "$FULL_SCRIPT_PATH" "/usr/local/lib/$PYTHON_DIR/dist-packages/$SCRIPT.py" 2>&1)
@@ -43,7 +44,7 @@ for ((i=0; i<${#SCRIPTS[@]}; i++)); do
     elif [[ $ln_result == *"File exists"* ]]; then
         echo -e "${BOLD}Symbolic link for $SCRIPT already exists${RESET}"
     else
-        echo -e "${BOLD}Failed to create symbolic link for $SCRIPT: $ln_result${RESET}"
+        echo -e "${RED}Failed to create symbolic link for $SCRIPT: $ln_result${RESET}"
     fi
 done
 
@@ -58,7 +59,7 @@ mv "$source_dir"/* "$destination_dir"/
 if [ $? -eq 0 ]; then
     echo -e "${YELLOW}Config files moved successfully to $destination_dir${RESET}"
 else
-    echo -e "${BOLD}Failed to move config files${RESET}"
+    echo -e "${RED}Failed to move config files${RESET}"
 fi
 
 #### unzip pywikibot
@@ -66,12 +67,12 @@ zip_file="$KARA_DIR/KARA/report_recorder/report_recorder_bot.zip"
 zip_destination="$KARA_DIR/KARA/report_recorder/"
 if unzip "$zip_file" -d "$zip_destination"; then
   if mv "$KARA_DIR/KARA/report_recorder/report_recorder_bot"/* "$zip_destination" > /dev/null 2>&1; then
-    echo "${YELLOW}Unzip and move report_recoder_bot to /resport_recorder dir successful${RESET}"
+    echo -e "${YELLOW}Unzip and move report_recoder_bot to /resport_recorder dir successful${RESET}"
   else
-    echo "{BOLD}Unzip successful but move failed for report_recoder_bot${RESET}"
+    echo -e "${YELLOW}Unzip successful${RESET} ${RED}but move failed for report_recoder_bot${RESET}"
   fi
 else
-  echo "{BOLD}report_recoder_bot unzip failed${RESET}"
+  echo -e "${RED}report_recoder_bot unzip failed${RESET}"
 fi
  
 #### copy user-config.py to manager dir
@@ -83,5 +84,17 @@ elif [ -f "$KARA_DIR/KARA/manager/user-config.py" ]; then
         sudo cp -r $KARA_DIR/KARA/report_recorder/user-config.py $KARA_DIR/KARA/manager/
     fi
 else
-    echo -e "\033[91muser-config.py is required for run report_recorder\033[0m"
+    echo -e "${RED}user-config.py is required for run report_recorder${RESET}"
+fi
+
+#### install dependency
+sudo apt update
+sudo apt install -y xfsprogs
+# Install Python libraries using pip
+sudo apt install -y pip
+pip install pytz datetime matplotlib pandas alive_progress BeautifulSoup4
+if [ $? -eq 0 ]; then
+  echo -e "${YELLOW}All installations were successful${RESET}"
+else
+  echo -e "${RED}There was an error during the installations${RESET}"
 fi
