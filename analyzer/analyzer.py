@@ -254,16 +254,18 @@ def merge_csv(csv_file, output_directory, pairs_dict):
     try:
         csv_data = pd.read_csv(csv_file)
         if pairs_dict:  
-            if not os.path.exists(f'{output_directory}/merged_info.csv'):
-                pd.DataFrame(pairs_dict, index=[0]).to_csv(f'{output_directory}/merged_info.csv', index=False, mode='w', header=True)
+            if os.path.exists(f'{output_directory}/merged_info.csv'):
+                merged_info = pd.concat([pd.read_csv(f'{output_directory}/merged_info.csv'), pd.DataFrame(pairs_dict, index=[0])], ignore_index=True)
             else:
-                pd.DataFrame(pairs_dict, index=[0]).to_csv(f'{output_directory}/merged_info.csv', index=False, mode='a', header=False)
+                merged_info = pd.DataFrame(pairs_dict, index=[0])
+            merged_info.to_csv(f'{output_directory}/merged_info.csv', index=False, mode='w')
             for key, value in pairs_dict.items():
                 csv_data.insert(0, key, value) 
-        if os.path.exists(f'{output_directory}/merged.csv'):      
-            csv_data.to_csv(f'{output_directory}/merged.csv', index=False, mode='a', header=False)
-        elif not os.path.exists(f'{output_directory}/merged.csv'):
-            csv_data.to_csv(f'{output_directory}/merged.csv', index=False, mode='w', header=True)
+        if os.path.exists(f'{output_directory}/merged.csv'):
+            merged = pd.concat([pd.read_csv(f'{output_directory}/merged.csv'), csv_data], ignore_index=True)
+        else:
+            merged = csv_data
+        merged.to_csv(f'{output_directory}/merged.csv', index=False, mode='w')
         print(f"Data from '{csv_file}' appended successfully to {YELLOW}'{output_directory}/merged.csv'{RESET}") 
         logging.info(f"status_analyzer - Data from '{csv_file}' appended successfully to '{output_directory}/merged.csv'") 
     except FileNotFoundError:
@@ -272,8 +274,6 @@ def merge_csv(csv_file, output_directory, pairs_dict):
 
 def merge_process(output_directory, selected_csv):
     logging.info("status_analyzer - Executing merge_process function")
-    if os.path.exists(f'{output_directory}/merged.csv'):
-        remove_csv = subprocess.run(f"rm {output_directory}/merged.csv", shell=True)
     if '*' in selected_csv:    
         selected_csv = glob(selected_csv)
         for file in selected_csv:
