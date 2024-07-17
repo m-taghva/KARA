@@ -18,7 +18,7 @@ if classification_path not in sys.path:
 import classification
 import analyzer
 
-config_file = "/etc/KARA/report_recorder.conf"
+config_file = "/etc/kara/report_recorder.conf"
 
 def load_config(config_file):
     with open(config_file, "r") as stream:

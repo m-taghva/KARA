@@ -8,7 +8,7 @@ import yaml
 import logging
 import pytz
 
-config_file = "/etc/KARA/status_reporter.conf"
+config_file = "/etc/kara/status_reporter.conf"
 
 # For font style
 BOLD = "\033[1m"

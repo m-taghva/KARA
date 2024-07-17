@@ -2,21 +2,21 @@ scenario:
       
       - Config_gen:
             conf_templates: 
-                        - /root/monster/KARA/config_gen/workloads.xml__1
-                        - /root/monster/KARA/config_gen/configs.conf
-                        - /root/monster/KARA/config_gen/workloads.xml__2
-                        #- /root/monster/KARA/config_gen/object_swift.conf
-            output_path: /root/monster/KARA/config_gen/out/
+                        - /root/monster/kara/config_gen/workloads.xml__1
+                        - /root/monster/kara/config_gen/configs.conf
+                        - /root/monster/kara/config_gen/workloads.xml__2
+                        #- /root/monster/kara/config_gen/object_swift.conf
+            output_path: /root/monster/kara/config_gen/out/
 
       - Mrbench:
-            output_path: /root/monster/KARA/results/
+            output_path: /root/monster/kara/results/
             Status_Reporter: csv # values = none - csv - csv,img
             monstaver: none # values = none , backup,info - backup - info
-            #conf_dir: /root/monster/KARA/config_gen/out/
+            #conf_dir: /root/monster/kara/config_gen/out/
             ring_dirs: 
-                  - /root/monster/KARA/mrbench/ring/r1/
-                  - /root/monster/KARA/mrbench/ring/r2/
-            #      - /root/monster/KARA/mrbench/ring/r3/
+                  - /root/monster/kara/mrbench/ring/r1/
+                  - /root/monster/kara/mrbench/ring/r2/
+            #      - /root/monster/kara/mrbench/ring/r3/
 
       #- Status-Reporter: 
       #      times: ./times.txt
@@ -30,17 +30,17 @@ scenario:
       #      operation: backup # values = restore , backup,info - backup - info
       
       #- Status_Analyzer:
-      #      output_path: /root/monster/KARA/results/analyzed/
+      #      output_path: /root/monster/kara/results/analyzed/
       #      merge: True
       #      merge_csv: "./../result/*"  # list of csv file --> '/path/csv1,/path/csv3,/path/csv3,' or /path/*
       #      analyze: True
-      #      analyze_csv: "/root/monster/KARA/results/analyzed/merged.csv"
-      #      transform: /root/monster/KARA/analyzer/transform_dir/transformation-cpu
+      #      analyze_csv: "/root/monster/kara/results/analyzed/merged.csv"
+      #      transform: /root/monster/kara/analyzer/transform_dir/transformation-cpu
 
       #- Report_Recorder:
       #     create_html: True
-      #     html_templates_path: /root/monster/KARA/report_recorder/report_template/html_temps_dir/
-      #     output_path: /root/monster/KARA/report_recorder/report_template/
+      #     html_templates_path: /root/monster/kara/report_recorder/report_template/html_temps_dir/
+      #     output_path: /root/monster/kara/report_recorder/report_template/
       #     configs_dir: /tmp/influxdb-backup/240415T100000_240415T100500/
       #     upload_to_kateb: True
       #     cluster_name: SADA
