@@ -12,7 +12,7 @@ import select
 import logging
 import concurrent.futures
 
-config_file = "/etc/KARA/mrbench.conf"
+config_file = "/etc/kara/mrbench.conf"
 pre_test_script = "./../mrbench/pre_test_script.sh"
 
 # For font style
