@@ -280,7 +280,7 @@ def upload_images(site, html_content):
             print(f"Image'\033[91m{image_filename}\033[0m'already exists on the wiki.")
             logging.warning(f"report_recorder - Image '{image_filename}' already exists on the wiki.")
 
-def main(input_template, htmls_path, cluster_name, scenario_name, configs_directory, upload_operation, create_html_operation, merged_file, merged_info_file, all_test_dir):
+def main(input_template, htmls_path, cluster_name, scenario_name, configs_directory, upload_operation, create_html_operation, merged_file, merged_info_file, all_test_dir, create_hardware_page, create_software_page, create_mtest_page):
     global configs_dir
     htmls_dict = {}
 
@@ -288,6 +288,9 @@ def main(input_template, htmls_path, cluster_name, scenario_name, configs_direct
     logging.basicConfig(filename= '/var/log/kara/all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info("\033[92m****** report_recorder main function start ******\033[0m")
 
+    if create_hardware_page is None and create_software_page is None and create_mtest_page is None:
+        print(f"\033[91m report_recorder need hardware(-HW),software(-SW),monster_test(-MT) operation to work please select one of them ! \033[0m")
+        exit()
     data_loaded = load_config(config_file)
     if cluster_name is None:
         cluster_name = data_loaded['naming_tag'].get('cluster_name')
@@ -313,11 +316,11 @@ def main(input_template, htmls_path, cluster_name, scenario_name, configs_direct
                 print(f"\033[91minput backup File not found\033[0m")
         if input_template:
             with open(input_template, 'r') as template_content:
-                if 'hardware' in os.path.basename(input_template):
+                if create_hardware_page:
                     htmls_dict = create_sw_hw_htmls(template_content.read(), htmls_path, cluster_name+'--HW', data_loaded) 
-                if 'software' in os.path.basename(input_template):
+                if create_software_page:
                     htmls_dict = create_sw_hw_htmls(template_content.read(), htmls_path, cluster_name+'--'+scenario_name+'--SW', data_loaded)
-        if merged_file and merged_info_file and all_test_dir:
+        if create_mtest_page:
             htmls_dict.update(create_test_htmls("",htmls_path, cluster_name, scenario_name, merged_file, merged_info_file, all_test_dir, data_loaded)) 
     elif upload_operation:
         for html_file in os.listdir(htmls_path):
@@ -338,12 +341,15 @@ def main(input_template, htmls_path, cluster_name, scenario_name, configs_direct
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate report for kateb")
-    parser.add_argument("-i", "--input_template", help="Template HTML file path")
-    parser.add_argument("-o", "--htmls_path", help="Output HTML file name")
+    parser.add_argument("-i", "--input_template", help="input template HTML file path")
+    parser.add_argument("-o", "--htmls_path", help="output HTML files path")
     parser.add_argument("-cn", "--cluster_name", help="cluster_name set for title of Kateb HW page.")
     parser.add_argument("-sn", "--scenario_name", help="set for title of Kateb test page.")
     parser.add_argument("-U", "--upload_operation", action='store_true', help="upload page to kateb")
     parser.add_argument("-H", "--create_html_operation", action='store_true', help="create HTML page template")
+    parser.add_argument("-HW", "--create_hardware_page", action='store_true', help="create hardware HTML page")
+    parser.add_argument("-SW", "--create_software_page", action='store_true', help="create software HTML page")
+    parser.add_argument("-MT", "--create_mtest_page", action='store_true', help="create monster test HTML page")
     parser.add_argument("-cd", "--configs_directory", help="directory of backup include test configs")
     parser.add_argument("-m", "--merged_file", help="path to merged.csv file")
     parser.add_argument("-mi", "--merged_info_file", help="path to merged_info.csv file")
@@ -359,4 +365,7 @@ if __name__ == "__main__":
     configs_directory = args.configs_directory if args.configs_directory else None
     upload_operation = args.upload_operation
     create_html_operation = args.create_html_operation
-    main(input_template, htmls_path, cluster_name, scenario_name, configs_directory, upload_operation, create_html_operation, merged_file, merged_info_file, all_test_dir)
+    create_hardware_page = args.create_hardware_page
+    create_software_page = args.create_software_page
+    create_mtest_page = args.create_mtest_page
+    main(input_template, htmls_path, cluster_name, scenario_name, configs_directory, upload_operation, create_html_operation, merged_file, merged_info_file, all_test_dir, create_hardware_page, create_software_page, create_mtest_page)

@@ -7,7 +7,6 @@ import yaml
 import shutil
 import argparse
 import logging
-import json
 from datetime import datetime
 from glob import glob
 import mrbench
@@ -288,7 +287,7 @@ def mrbench_agent(config_params, config_file, config_output):
     first_start_time = all_start_times[0] ; last_end_time = all_end_times[-1]
     logging.debug(f"manager - mrbench_agent: first_start_time,last_end_time: {first_start_time},{last_end_time}")
     logging.debug(f"manager - mrbench_agent: backup_to_report: {backup_to_report}")
-    return first_start_time, last_end_time, backup_to_report, result_dir
+    return first_start_time, last_end_time, backup_to_report
 
 def status_reporter_agent(config_params):
     result_dir = config_params.get('output_path')
@@ -302,7 +301,6 @@ def status_reporter_agent(config_params):
                 start_time, end_time = time_range.strip().split(',')
                 output_csv = status_reporter.main(path_dir=result_dir, time_range=f"{start_time},{end_time}", img=image_generate)
     logging.debug(f"manager - status_reporter_agent: result dir: {result_dir}")
-    return result_dir
 
 def monstaver_agent(config_params, config_file, first_start_time, last_end_time):
     operation = config_params.get('operation')
@@ -335,7 +333,7 @@ def monstaver_agent(config_params, config_file, first_start_time, last_end_time)
         monstaver.main(time_range=None, inputs=None, delete=None, backup_restore=True, hardware_info=False, software_info=False, swift_info=False, influx_backup=False)
     if backup_to_report is not None:
        logging.debug(f"manager - monstaver_agent: backup_to_report: {backup_to_report}")
-       return backup_to_report, input_path
+       return backup_to_report
 
 def status_analyzer_agent(config_params):
     result_dir = config_params.get('input_path')
@@ -350,26 +348,31 @@ def status_analyzer_agent(config_params):
     if analyze:
         analyzer.main(merge=False, analyze=True, graph=False, csv_original=analyze_csv, transformation_directory=transform_dir, output_directory=None, selected_csv=None, x_column=None, y_column=None)
 
-def report_recorder_agent(config_params, backup_to_report, result_dir):
+def report_recorder_agent(config_params, backup_to_report):
     if not os.path.exists(f"./user-config.py"):
         print(f"\033[91muser-config.py is required for run report_recorder\033[0m")
         exit(1)
     create_html = config_params.get('create_html', True)
-    html_templates_path = config_params.get('html_templates_path')
     output_path = config_params.get('output_path')
     upload_to_kateb = config_params.get('upload_to_kateb', True)
     cluster_name = config_params.get('cluster_name')
     scenario_name = config_params.get('scenario_name')
     if backup_to_report is None:
         backup_to_report = config_params.get('configs_dir')
-    if result_dir is None:
-        result_dir = "./../results"
     # for HW report
-    report_recorder.main(input_template=f"{html_templates_path}/hardware.html", htmls_path=output_path, cluster_name=cluster_name, scenario_name=scenario_name, configs_directory=backup_to_report, upload_operation=upload_to_kateb, create_html_operation=create_html, merged_file=None, merged_info_file=None, all_test_dir=None)
+    if config_params.get('hardware').get('report') is True:
+        hw_template = config_params.get('hardware').get('template')
+        report_recorder.main(input_template=hw_template, htmls_path=output_path, cluster_name=cluster_name, scenario_name=scenario_name, configs_directory=backup_to_report, upload_operation=upload_to_kateb, create_html_operation=create_html, merged_file=None, merged_info_file=None, all_test_dir=None, create_hardware_page=True, create_software_page=None, create_mtest_page=None)
     # for SW report
-    report_recorder.main(input_template=f"{html_templates_path}/software.html", htmls_path=output_path, cluster_name=cluster_name, scenario_name=scenario_name, configs_directory=backup_to_report, upload_operation=upload_to_kateb, create_html_operation=create_html, merged_file=None, merged_info_file=None, all_test_dir=None) 
+    if config_params.get('software').get('report') is True:
+        sw_template = config_params.get('software').get('template')
+        report_recorder.main(input_template=sw_template, htmls_path=output_path, cluster_name=cluster_name, scenario_name=scenario_name, configs_directory=backup_to_report, upload_operation=upload_to_kateb, create_html_operation=create_html, merged_file=None, merged_info_file=None, all_test_dir=None, create_hardware_page=None, create_software_page=True, create_mtest_page=None) 
     # for test report
-    report_recorder.main(input_template=None, htmls_path=output_path, cluster_name=cluster_name, scenario_name=scenario_name, configs_directory=None, upload_operation=upload_to_kateb, create_html_operation=create_html, merged_file=f"{result_dir}/analyzed/merged.csv", merged_info_file=f"{result_dir}/analyzed/merged_info.csv", all_test_dir=result_dir)
+    if config_params.get('monster_test').get('report') is True:
+        merged = config_params.get('monster_test').get('merged')
+        merged_info = config_params.get('monster_test').get('merged_info')
+        tests_dir = config_params.get('monster_test').get('tests_dir')
+        report_recorder.main(input_template=None, htmls_path=output_path, cluster_name=cluster_name, scenario_name=scenario_name, configs_directory=None, upload_operation=upload_to_kateb, create_html_operation=create_html, merged_file=merged, merged_info_file=merged_info, all_test_dir=tests_dir, create_hardware_page=None, create_software_page=None, create_mtest_page=True)
    
 def main(config_file):
     log_level = load_config(config_file)['log'].get('level')
@@ -391,7 +394,6 @@ def main(config_file):
         first_start_time = None
         last_end_time = None
         backup_to_report = None
-        result_dir = None
         for task in data_loaded['scenario']:
             try:
                 if 'Config_gen' in task:
@@ -401,15 +403,15 @@ def main(config_file):
                 elif 'Mrbench' in task:
                     config_params = task['Mrbench']
                     logging.info("**manager - main: Executing mrbench_agent function**")
-                    first_start_time, last_end_time, backup_to_report, result_dir = mrbench_agent(config_params, config_file, config_output)
+                    first_start_time, last_end_time, backup_to_report = mrbench_agent(config_params, config_file, config_output)
                 elif 'Status-Reporter' in task:
                     config_params = task['Status-Reporter']
                     logging.info("**manager - main: Executing status_reporter_agent function**")
-                    result_dir = status_reporter_agent(config_params)
+                    status_reporter_agent(config_params)
                 elif 'Monstaver' in task:
                     config_params = task['Monstaver']
                     logging.info("**manager - main: Executing monstaver_agent function**")
-                    backup_to_report, input_path = monstaver_agent(config_params, config_file, first_start_time, last_end_time)
+                    backup_to_report = monstaver_agent(config_params, config_file, first_start_time, last_end_time)
                 elif 'Status_Analyzer' in task:
                     config_params = task['Status_Analyzer']
                     logging.info("**manager - main: Executing status_analyzer_agent function**")
@@ -417,7 +419,7 @@ def main(config_file):
                 elif 'Report_Recorder' in task:
                     config_params = task['Report_Recorder']
                     logging.info("**manager - main: Executing report_recorder_agent function**")
-                    report_recorder_agent(config_params, backup_to_report, result_dir)
+                    report_recorder_agent(config_params, backup_to_report)
                 else:
                     print(f"Unknown task: {task}")
             except Exception as e:

@@ -38,13 +38,24 @@ scenario:
       #      transform: /root/monster/kara/analyzer/transform_dir/transformation-cpu
 
       #- Report_Recorder:
-      #     create_html: True
-      #     html_templates_path: /root/monster/kara/report_recorder/report_template/html_temps_dir/
-      #     output_path: /root/monster/kara/report_recorder/report_template/
-      #     configs_dir: /tmp/influxdb-backup/240415T100000_240415T100500/
-      #     upload_to_kateb: True
-      #     cluster_name: SADA
-      #     scenario_name: performance
+      #      create_html: True
+      #      hardware:
+      #            report: True
+      #            template: /root/monster/kara/report_recorder/report_template/input_templates/hardware.html
+      #      software:
+      #            report: True
+      #            template: /root/monster/kara/report_recorder/report_template/input_templates/software.html   
+      #      monster_test:
+      #            report: True
+      #            merged: /home/kara/results/analyzed/merged.csv 
+      #            merged_info: /home/kara/results/analyzed/merged_info.csv
+      #            tests_dir: /home/kara/results/    
+
+      #      output_path: /root/monster/kara/report_recorder/output_htmls/
+      #      configs_dir: /tmp/influxdb-backup/240415T100000_240415T100500/
+      #      upload_to_kateb: True
+      #      cluster_name: SADA
+      #      scenario_name: performance
 
 log: 
    level: info  # values = debug - info - warning - error - critical
