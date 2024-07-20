@@ -15,10 +15,10 @@
         
             2.1 - Installing Tool Prerequisites:
                 pip install pytz datetime matplotlib pandas alive_progress BeautifulSoup4
-                apt install xfsprogs
+                apt install xfsprogs # install this tool in monster servers for xfs file system data collection.
                 
             2.2 - Cloning the Latest Version of the Program from GitHub:
-                git clone https://github.com/m-taghva/KARA
+                git clone https://github.com/m-taghva/kara
                 
             2.3 - Project Directory Description:
                 The existing and required directories in the project: 
@@ -36,6 +36,7 @@
                 Edit the sudoers file and give permission to the user running KARA to execute sudo commands without a password:
         
                 # visudo
+                    > %sudo ALL=(ALL:ALL) ALL
                     > user ALL=(ALL) NOPASSWD: ALL
                 Create an SSH key for the desired user on all monster and MC servers, as well as the server running KARA, so that no password is needed for SSH login:
         
@@ -244,12 +245,29 @@
 
 
             3-6- report_recorder tool:
-                This tool is responsible for generating documentation from received reports for Hyola tests and saving them in HTML format. Subsequently, it uploads them to the Kataeb system. The workflow of this tool is as follows: it takes as input an HTML template for the hardware specifications of Hyola servers and another template for the software specifications of Hyola. Within these templates, it places server information in specified locations using predefined placeholders. It generates multiple types of templates as output.
+                This tool is responsible for generating documentation from received reports for Hyola tests and saving them in HTML format. Subsequently, it uploads them to the Kateb system. The workflow of this tool is as follows: it takes as input an HTML template for the hardware specifications of Hyola servers and another template for the software specifications of monster. Within these templates, it places server information in specified locations using predefined placeholders. It generates multiple types of templates as output.
                 For test information, it also receives a merged CSV file and an output directory of tests. It creates HTML documents for the specifications and configurations of the tests, along with graphs for each test. Subsequently, it uploads them.
                 The initial and main templates for hardware and software are located in the all-htmls-dir directory.
                 Usage of the Tool:
-                    Before running the software, you need to enter your Katib user information in the user-config.py file located in the report-recorder or manager directory. After opening this file, enter your username under the user name section. During the first upload to Katib, you will also need to enter your password.
-                    
+                    Before running the software, you need to enter your Katib user information in the user-config.py file located in the report-recorder or manager directory. After opening this file, enter your username under the user name section. During the first upload to Kateb, you will also need to enter your password.
+                    config file of this tool:
+                        naming_tag:
+                            cluster_name: kara
+                            scenario_name: pre_test
+                            # tags of mediawiki 
+                            tags: "[[رده:تست]]\n[[رده:کارایی]]\n[[رده:هیولا]]"
+                        
+                        tests_info:
+                            merged: /home/kara/results/analyzed/merged.csv 
+                            merged_info: /home/kara/results/analyzed/merged_info.csv
+                            tests_dir: /home/kara/results/ # dir of all tests result
+                            metrics: # metrics name for making report withe their images
+                                - netdata-disk-sdb-writes-mean
+                                - netdata-statsd-timer-swift-object-server-put-timing-events-mean
+                        
+                        output_path: /home/kara/report_recorder/all-htmls-dir/
+                        configs_dir: /tmp/influxdb-backup/240624T092914_240624T093015/ # backup dir path
+                                            
                     This software operates in three different modes, described below:
                         For Software and Hardware Sections:
                             To specify the uncompressed backup directory from which information will be extracted and placed into templates:
@@ -257,13 +275,13 @@
                             Specify the paths to the consolidated CSV files (m, -mi) from which test information will be extracted. Provide the parent directory of all test results (-td) for uploading test graphs.
                             
                         Creating and Uploading Software Information:
-                        # python3 report_recorder.py -H -i <path to/software.html> -o <output path> -cn <cluster name> -sn <scenario name> -cd <path to/monstaver backup dir> -U
+                        # python3 report_recorder.py -H -SW -i <path to/software.html> -o <output path> -cn <cluster name> -sn <scenario name> -cd <path to/monstaver backup dir> -U
                         
                         Creating and Uploading Hardware Information:
-                        # python3 report_recorder.py -H -i <path to/hardware.html> -o <output path> -cn <cluster name> -cd <path to/monstaver backup dir> -U
+                        # python3 report_recorder.py -H -HW -i <path to/hardware.html> -o <output path> -cn <cluster name> -cd <path to/monstaver backup dir> -U
                         
                         Creating and Uploading Test Information:
-                        # python3 report_recorder.py -H -o <output path> -cn <cluster name> -sn <scenario name> -m <path to/merged.csv> -mi <path to/merged_info.csv> -td <path to/all test result dir> -U
+                        # python3 report_recorder.py -H -MT -o <output path> -cn <cluster name> -sn <scenario name> -m <path to/merged.csv> -mi <path to/merged_info.csv> -td <path to/all test result dir> -U
                         
                         These commands will generate HTML documents and upload them to the Katib system, incorporating the specified software, hardware, or test information as needed.
                     

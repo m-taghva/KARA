@@ -40,7 +40,8 @@ def replace_tags(input_text, conf_name, output_directory):
             for similarTag in re.findall(TagRegex, input_text):
                 similarTagList = similarTag.split('{')[1].split('}')[0].split(',')
                 newInput = re.sub(TagRegex, similarTagList[i], newInput, 1)
-                tagName += ("#" + re.search("(?<=})[^#]*(?=#)", similarTag).group() + ":" + str(similarTagList[i]))
+                tn=re.search("(?<=})[^#]*(?=#)", similarTag).group()
+                tagName += tn and ("#" + tn +":"+ str(similarTagList[i]))
             replace_tags(newInput, conf_name + tagName, output_directory)
     else:
         replace_vars(input_text, "{:04}".format(conf_number) + conf_name, output_directory)
