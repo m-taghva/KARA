@@ -1,9 +1,9 @@
 ‪<h2>Monster Performance Kit</h2>
 <h3>open stack swift performance and monitoring tools (Kara)</h3>
-<img src="kara_chart.gif" width="862" height="565"/>
-<img src="kara_tools.png" width="862" height="565"/>
+<img src="kara_chart.gif" width="800" height="500"/>
+    <img src="kara_tools.gif" width="800" height="500"/>
 
-    # Attention ! after clone repository, please remove (.placeholder) files inside ./result/ 
+    ## Attention ! after clone repository, please remove (.placeholder) files inside ./results/ ##
     
         1 - Installing the COSBench Benchmarking Software
             In the first step, the COSBench tool needs to be installed. For installation guidance, refer to the Cloud Object Storage Benchmark page.
@@ -12,7 +12,6 @@
             sudo ln -s /home/user/cosbench/0.4.2.c4/cli.sh /usr/bin/cosbench
         
         2 - Installing the KARA Toolset
-        
             2.1 - Installing Tool Prerequisites:
                 pip install pytz datetime matplotlib pandas alive_progress BeautifulSoup4
                 apt install xfsprogs # install this tool in monster servers for xfs file system data collection.
@@ -34,25 +33,23 @@
                 
             2.4 - Operating System and SSH Settings:
                 Edit the sudoers file and give permission to the user running KARA to execute sudo commands without a password:
-        
                 # visudo
                     > %sudo ALL=(ALL:ALL) ALL
                     > user ALL=(ALL) NOPASSWD: ALL
+                    
                 Create an SSH key for the desired user on all monster and MC servers, as well as the server running KARA, so that no password is needed for SSH login:
-        
                 # adduser
                 # ssh-keygen (make sure the new key is just for the new user and his .ssh directory)
                 # ssh-copy-id -p <port> user@ip
                 
             2.5 - Running the configure tool:
                 After installing the prerequisites and cloning the repository, the configure.sh tool in the manager directory needs to be run to execute some prerequisite processes and install KARA.
-        
                 # bash configure.sh
+                
             2.6 - Tool Logs:
                 The path and log file for all tools are the same and equal to var/log/kara/all.log/. In more advanced tools with a configuration file, it is possible to change the log display level between debug - info - warning - error -    critical. For simpler tools without a configuration file, the log display level is debug.
 
         3- Execution Description of Tools
-
             **Note: All tool configuration files are in the standard YAML format, allowing sections that are not needed to be commented out.
             
             3.1 - config-gen Tool:
@@ -63,7 +60,6 @@
                 
             3.2 - mrbench Tool:
                 This tool is responsible for executing the test configurations created by the previous tool and sending them to COSBench. It creates a unique directory for each test based on the test's time interval within a parent directory, such as result, and stores the results and information obtained from COSBench in it. This tool also has the capability to modify Swift and Ring configuration files, and it can receive files in .gz, .builder, and .conf formats from a directory that contains all the files for this purpose. The tool has a configuration file named mrbench.conf located in the /etc/KARA/ directory, which includes the information of monster servers and containers. It uses these configurations to connect via SSH and modify Swift and Ring files, and finally, restart the monster containers. This program is located in the mrbench directory.
-
                 config file of mrbench:
 
                                 swift:
@@ -76,7 +72,6 @@
                                          ssh_user: root #ssh user
                                          ip_swift: 192.168.143.155 # ip server
                                          ssh_port: 22 # ssh port
-                                
                                     log:
                                        level: info  # values = debug - info - warning - error - critical
 
@@ -88,7 +83,6 @@
 
                 3.3.1 - Configuration File Description:
                         The configuration file consists of three main sections and a log section, each explained below:
-                        
                         - Database Information Section:
                                 You can repeat this part of the configuration for other MC servers or lists of databases and related Hiola servers, allowing you to include multiple servers and databases for reporting in one configuration file.
                                 
@@ -103,7 +97,7 @@
                                              
                         - Metric Files Information Section:
                                 The second part of the configuration is related to the measurement or metric files. In this section, the mathematical operations for each file and their paths are mentioned. These can be modified using the input switches or program arguments. Each file contains a list of metrics sent by netdata and stored in influxdb, with the ability to comment out unnecessary metrics. The naming format for metrics in the existing files should be as follows: netdata.n.n.n.
-                                
+                            
                                 metrics:
                                   sum:
                                     path: ./../status_reporter/metrics/sum_metric_list.txt
@@ -113,11 +107,10 @@
                                     path: ./../status_reporter/metrics/max_metric_list.txt
                                   min:
                                     path: ./../status_reporter/metrics/min_metric_list.txt
+                                    
                         - Time Information Section:
                                 In this section, you can define time margins from the beginning and end of the report interval to ensure more accurate output, measured in seconds.
-                                
                                 When sending queries to generate graphs, you can also group time intervals to improve the readability and accuracy of the output graph, measured in seconds.
-                                
                                 The final part includes the report time range, specifying the start and end times in Tehran timestamp format. If there is no specific time range for the report, you can set it to report from the current time to a previous interval, formatted like this: now-2h (from now to 2 hours ago). This can be modified using the program's input switches.
                                 
                                 time:
@@ -125,9 +118,9 @@
                                   end_time_subtract: 10  # decrease your report end time
                                   time_group: 10  # time group for image query 
                                   time_range: 2024-04-23 10:55:00,2024-04-23 10:59:00  # or now-2h,now-1h
+                                  
                         - Usage Method:
                                 If you need images and graphs for each execution and report, use the --img switch at the end of the following command:
-                                
                                 # python3 status_reporter.py -m <path to metric file 1>,<path to metric file 2>,<path to metric file n> -t ‘start time,end time’ -o <output dir or result dir>
                                 The results will be saved in the given directory under query_result as graphs for each Hiola server and a CSV file for all of them, named after the report's time range.
                             
@@ -146,13 +139,12 @@
                     Backup Restoration:
                         Provides functionality to restore backups taken from InfluxDB when needed.
                     Cluster Upload:
-                        Uploads the final compressed backup file to the monster cluster, such as zdrive.
+                        Uploads the final compressed backup file to the monster cluster, such as zdrive.                        
                     Configuration File:
                         The configuration file for Monstaver is located at etc/KARA/monstaver.conf.
 
                 3.4.1 - Configuration File Description for Monstaver
                         The configuration file for Monstaver is structured into two main sections and a logging section, each serving specific purposes related to backup and restoration tasks.
-                        
                         Backup Section (default):
                             This section includes fundamental information for the backup process, categorized into three parts as explained:
                             
@@ -162,14 +154,12 @@
                                 input_paths:
                                   - /home/KARA/results  # some dir inside local server
                                 backup_output: /tmp/influxdb-backup  # output of all parts in local server
-                                
                                 # Monster storage info for uploading backup
                                 token_url: https://api.zdrive.ir/auth/v1.0
                                 public_url: https://api.zdrive.ir/v1/AUTH_user
                                 username: "user:user"
                                 password: **********
                                 cont_name: a name
-                                
                                 # Make backup from hardware/software/swift
                                 hardware_backup: True
                                 software_backup: True
@@ -197,7 +187,6 @@
                               ip: 192.168.143.150 # InfluxDB server IP
                               ssh_port: 22 # SSH port
                               ssh_user: root # SSH user
-                              
                               container_name: influxdb # InfluxDB container name
                               influx_volume: /var/lib/influxdb/KARA_BACKUP # Mount point of InfluxDB container to host
                               databases:
@@ -211,10 +200,8 @@
                                   ip: 192.168.143.150 # MC server IP or new server of InfluxDB
                                   ssh_port: 22 # SSH port
                                   ssh_user: root # SSH user
-                                  
                                   container_name: influxdb # Container name
                                   influx_volume: /var/lib/influxdb/KARA_RESTORE # Mount point with restore directory
-                                  
                                   databases:
                                     - prefix: "rst1_" # New database prefix name
                                       location: /tmp/influxdb-backup/231107T000743_231107T030012/dbs/influxdb.tar.gz # Backup file in local server
@@ -243,7 +230,6 @@
                     # python3 status-analyzer.py -M -o<output> -sc <csv1,csv2,csvn> -A -c <csv for analyze> -t <transformation dir>
                     # python3 status-analyzer.py -M -o<output> -sc <csv_dir/*> -A -c <csv for analyze> -t <transformation dir>
 
-
             3-6- report_recorder tool:
                 This tool is responsible for generating documentation from received reports for Hyola tests and saving them in HTML format. Subsequently, it uploads them to the Kateb system. The workflow of this tool is as follows: it takes as input an HTML template for the hardware specifications of Hyola servers and another template for the software specifications of monster. Within these templates, it places server information in specified locations using predefined placeholders. It generates multiple types of templates as output.
                 For test information, it also receives a merged CSV file and an output directory of tests. It creates HTML documents for the specifications and configurations of the tests, along with graphs for each test. Subsequently, it uploads them.
@@ -251,6 +237,7 @@
                 Usage of the Tool:
                     Before running the software, you need to enter your Katib user information in the user-config.py file located in the report-recorder or manager directory. After opening this file, enter your username under the user name section. During the first upload to Kateb, you will also need to enter your password.
                     config file of this tool:
+                    
                         naming_tag:
                             cluster_name: kara
                             scenario_name: pre_test
@@ -270,10 +257,9 @@
                                             
                     This software operates in three different modes, described below:
                         For Software and Hardware Sections:
-                            To specify the uncompressed backup directory from which information will be extracted and placed into templates:
+                            To specify the uncompressed backup directory from which information will be extracted and placed into templates.                            
                         For the Testing Section:
-                            Specify the paths to the consolidated CSV files (m, -mi) from which test information will be extracted. Provide the parent directory of all test results (-td) for uploading test graphs.
-                            
+                            Specify the paths to the consolidated CSV files (m, -mi) from which test information will be extracted. Provide the parent directory of all test results (-td) for uploading test graphs.                        
                         Creating and Uploading Software Information:
                         # python3 report_recorder.py -H -SW -i <path to/software.html> -o <output path> -cn <cluster name> -sn <scenario name> -cd <path to/monstaver backup dir> -U
                         
@@ -285,16 +271,16 @@
                         
                         These commands will generate HTML documents and upload them to the Katib system, incorporating the specified software, hardware, or test information as needed.
                     
-            3-7- Manager Tool:
+            3-7- Manager Tool:            
                 This tool operates as a central control hub for system monitoring, executing all created tools in pipeline fashion and various scenarios, providing them with necessary inputs. For smoother and faster user experience, it is advisable to use this tool to automatically execute other tools and software, thereby reducing the likelihood of human error.
                 To use this tool, simply provide it with a scenario file customized according to the user's needs.
                 A detailed explanation of this file follows:
                     The default scenario file is located in /manager/scenario_dir/ directory, which can be edited and customized to create several different types as needed.
                     This tool operates as a central control hub for system monitoring, executing all created tools in a specified pipeline and various scenarios, providing them with necessary inputs. For a smoother and faster user experience, it is recommended to use this tool to automatically execute other tools and software, thereby reducing the likelihood of human error.
-                    
                     The scenario file determines the execution order of tools and is customizable. Each tool section defines its required inputs and outputs, as detailed below:
                         config_gen:
                           # This section receives a list of input templates. It can include multiple workload test templates with specific numbering, or config files like swift configs. Output type for the program is also specified in the next section.
+                          
                         Mrbench:
                           # This section defines the output directory path and the execution mode of status-reporter and monstaver concurrently with each test run. Output type options are specified as csv output, images, database backups, or just hardware and software information in backups. Swift and ring config directories are specified.
                         
@@ -304,36 +290,10 @@
                           # If this tool needs to work independently, use its specific section. Here, inputs can include a file containing a list of required test intervals, and specify whether graph images are needed, along with the final output path.
                         monstaver:
                           # If this tool needs to work independently, use its specific section. Here, you can specify a file containing a list of required time intervals for backup, and the desired directory alongside backups. Additionally, batch_mode can be enabled to perform backup operations for a batch of tests after all tests have been executed. Next section can also specify the type of operation, whether it's backup with restore.
+                          
                         status_analyzer:
                           # In this tool's section, aggregation and analysis operations can be specified, along with required inputs for each section.
+                          
                         report_recorder:
                           # In this tool's section, specify the html templates to be created and uploaded to Katib, along with the parent directory path of input templates and the storage path for output templates, and the page names in Katib are specified.
                         This scenario file is in YAML format and can be commented out as needed.
-
-
-
-
-
-
-
-            
-
-                
-
-                        
-                                                
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-       
