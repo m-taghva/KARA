@@ -209,19 +209,22 @@ def submit(workload_config_path, output_path):
                     break
             if os.path.exists(archive_file_path):
                 archive_workload_dir_name = f"{workload_id}-swift-sample"  
-                start_time, end_time = save_time(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv")
+                start_time, end_time, throughput, bandwidth, avg_restime = save_cosinfo(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv")
                 if start_time and end_time:
                     test_time_dir = f"{start_time}_{end_time}"
                     result_path = os.path.join(output_path, test_time_dir.replace(" ","_"))
                     if not os.path.exists(result_path):
                         os.mkdir(result_path) 
                     print(f"Result Path: {result_path}")
-                    time_file = open(f"{result_path}/time.txt", "w")
-                    time_file.write(f"{start_time},{end_time}")
-                    time_file.close()
+                    test_brf_info = open(f"{result_path}/test_info.txt", "w")
+                    test_brf_info.write(f"time_range: {start_time},{end_time}\n")
+                    test_brf_info.write(f"throughput: {throughput}\n")
+                    test_brf_info.write(f"bandwidth: {bandwidth}\n")
+                    test_brf_info.write(f"avg_res_time: {avg_restime}\n")
+                    test_brf_info.close()
                     cosbench_info_result = subprocess.run(f"cosbench info > {result_path}/cosbench.info", shell=True, capture_output=True, text=True)
                     copy_bench_files(archive_path, archive_workload_dir_name, result_path)
-                    return  start_time, end_time, result_path
+                    return  start_time, end_time, throughput, bandwidth, avg_restime, result_path
             else:
                 logging.info(f"mrbench - Test: {workload_name} can't run correctly so archive path {archive_file_path} doesn't exists.")
                 print(f"\033[91mTest: {workload_name} can't run correctly so archive path {archive_file_path} doesn't exists.\033[0m")
@@ -259,10 +262,13 @@ def submit(workload_config_path, output_path):
         logging.info(f"mrbench - WARNING: workload file doesn't exist: {workload_config_path}")
         print(f"\033[91mWARNING: workload file doesn't exist: {workload_config_path}\033[0m")
 
-def save_time(file):
+def save_cosinfo(file):
     logging.info("mrbench - Executing save_time function")
     start_time = None
     end_time = None
+    throughput = None
+    bandwidth = None
+    avg_restime = None
     try:
         # Find start of first main and end of last main
         with open(file, 'r') as csv_file:
@@ -275,14 +281,16 @@ def save_time(file):
                         if len(row) > 24:
                             first_main_launching_time = row[21]
                             last_main_completed_time = row[24]
+                            throughput = row[13]
+                            bandwidth = row[14]
+                            avg_restime = row[5]
                             if first_main_launching_time and last_main_completed_time:
                                 start_time = first_main_launching_time.split('@')[1].strip()
                                 end_time = last_main_completed_time.split('@')[1].strip()
                                 if start_time and end_time:
-                                    print(f"Start Time: {start_time}")
-                                    print(f"End Time: {end_time}") 
+                                    print(f"Start & End Time: {start_time},{end_time}")
                                     logging.info(f"mrbench - test time range: {start_time},{end_time}")  
-                                    return start_time, end_time
+                                    return start_time, end_time, throughput, bandwidth, avg_restime
                                 else:
                                     logging.info(f"mrbench - can't extract test time range from cosbench csv file!")
                                     print("\033[91m mrbench can't extract test time range from cosbench csv file!\033[0m")
@@ -333,8 +341,8 @@ def main(workload_config_path, output_path, swift_configs):
     if workload_config_path is not None:
         if os.path.exists(workload_config_path):
             if output_path is not None:
-                start_time, end_time, result_file_path = submit(workload_config_path, output_path)
-                return start_time, end_time, result_file_path  
+                start_time, end_time, throughput, bandwidth, avg_restime, result_path = submit(workload_config_path, output_path)
+                return start_time, end_time, throughput, bandwidth, avg_restime, result_path
             else:
                 print(f"\033[91mWARNING: output dir doesn't define !\033[0m")
         else:
