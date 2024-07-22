@@ -13,7 +13,7 @@
         
         2 - Installing the KARA Toolset
             2.1 - Installing Tool Prerequisites:
-                pip install pytz datetime matplotlib pandas alive_progress BeautifulSoup4
+                pip install pytz datetime matplotlib pandas alive_progress BeautifulSoup4 wikitextparser
                 apt install xfsprogs # install this tool in monster servers for xfs file system data collection.
                 
             2.2 - Cloning the Latest Version of the Program from GitHub:

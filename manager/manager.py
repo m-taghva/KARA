@@ -205,15 +205,18 @@ def mrbench_agent(config_params, config_file, config_output):
             for test_config in sorted(os.listdir(conf_dict["workloads.xml"])):
                 test_config_path = os.path.join(conf_dict["workloads.xml"], test_config)
                 logging.info(f"manager - mrbench_agent: test config path in mrbench_agent submit function is : {test_config_path}")
-                start_time, end_time, result_path = mrbench.submit(test_config_path, result_dir)
+                start_time, end_time, throughput, bandwidth, avg_restime, result_path = mrbench.submit(test_config_path, result_dir)
                 logging.info(f"manager - mrbench_agent: result_path of mrbench_agent submit function is: {result_path}")
                 logging.info(f"manager - mrbench_agent: start time and end time of test in mrbench_agent submit function is: {start_time},{end_time}")
                 subprocess.run(f"sudo cp -r {test_config_path} {result_path}", shell=True)
                 if '#' in test_config or ':' in test_config:
                     logging.info(f"manager - mrbench_agent: making info.yaml file")
-                    data_time = {'Time': f"{start_time.replace(' ','_')}_{end_time.replace(' ','_')}"}
+                    cosinfo = {'Time': f"{start_time.replace(' ','_')}_{end_time.replace(' ','_')}"}
                     with open(os.path.join(result_path, 'info.yaml'), 'w') as yaml_file:
-                        yaml.dump(data_time, yaml_file, default_flow_style=False)
+                        yaml.dump(cosinfo, yaml_file, default_flow_style=False)
+                    cosinfo['Throughput'] = f"{throughput}"
+                    cosinfo['Bandwidth'] = f"{bandwidth}"
+                    cosinfo['Avg_res_time'] = f"{avg_restime}"
                     data_swift = {}
                     if conf_exist:
                         subprocess.run(f"sudo cp -r {swift_configs[key]} {result_path}", shell=True)
@@ -243,7 +246,7 @@ def mrbench_agent(config_params, config_file, config_output):
                     with open(os.path.join(result_path, 'info.yaml'), 'a') as yaml_file:
                         yaml.dump(data_workload, yaml_file, default_flow_style=False)
                     logging.debug(f"manager - mrbench_agent: data_workload {data_workload}")
-                    data = {**data_time, **data_swift, **data_workload}
+                    data = {**cosinfo, **data_swift, **data_workload}
                 if ring_exist:
                     data_ring = {'ring': ring_dict}
                     subprocess.run(f"sudo cp -r {swift_rings[filename]} {result_path}", shell=True)
@@ -257,7 +260,7 @@ def mrbench_agent(config_params, config_file, config_output):
                     with open(os.path.join(result_path, 'info.yaml'), 'a') as yaml_file:
                         yaml.dump(ring_formated, yaml_file, default_flow_style=False)
                     logging.debug(f"manager - mrbench_agent: ring_item {ring_item}")
-                    data = {**data_time, **data_swift, **data_workload, **ring_item}
+                    data = {**cosinfo, **data_swift, **data_workload, **ring_item}
                 all_start_times.append(start_time) ; all_end_times.append(end_time)
                 if run_status_reporter != 'none':
                     if run_status_reporter == 'csv':

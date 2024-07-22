@@ -65,7 +65,7 @@ fi
 #### unzip pywikibot
 zip_file="$KARA_DIR/kara/report_recorder/report_recorder_bot.zip"
 zip_destination="$KARA_DIR/kara/report_recorder/"
-if unzip "$zip_file" -d "$zip_destination"; then
+if unzip "$zip_file" -d "$zip_destination"  > /dev/null 2>&1; then
   if mv "$KARA_DIR/kara/report_recorder/report_recorder_bot"/* "$zip_destination" > /dev/null 2>&1; then
     echo -e "${YELLOW}Unzip and move report_recoder_bot to /resport_recorder dir successful${RESET}"
   else
@@ -92,9 +92,12 @@ sudo apt update
 sudo apt install -y xfsprogs
 # Install Python libraries using pip
 sudo apt install -y pip
-pip install pytz datetime matplotlib pandas alive_progress BeautifulSoup4
+pip install pytz datetime matplotlib pandas alive_progress BeautifulSoup4 wikitextparser
 if [ $? -eq 0 ]; then
   echo -e "${YELLOW}All installations were successful${RESET}"
 else
   echo -e "${RED}There was an error during the installations${RESET}"
 fi
+
+#### run shard script
+python3 ./db_shard_config.py
