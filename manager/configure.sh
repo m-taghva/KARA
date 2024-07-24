@@ -99,5 +99,6 @@ else
   echo -e "${RED}There was an error during the installations${RESET}"
 fi
 
-#### run shard script
+#### run shard & ssh script
+python3 ./ssh_gen.py
 python3 ./db_shard_config.py

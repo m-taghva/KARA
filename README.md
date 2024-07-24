@@ -6,7 +6,7 @@
     ## Attention ! after clone repository, please remove (.placeholder) files inside ./results/ ##
     
         1 - Installing the COSBench Benchmarking Software
-            In the first step, the COSBench tool needs to be installed. For installation guidance, refer to the Cloud Object Storage Benchmark page.
+            In the first step, the COSBench tool needs to be installed. For installation guidance, refer to the https://github.com/intel-cloud/cosbench/blob/master/COSBenchUserGuide.pdf
             After installation, go to the main directory and use the following commands to make the cli.sh script executable and create a soft link in the /usr/bin path.
             sudo chmod +x /home/user/cosbench/0.4.2.c4/cli.sh
             sudo ln -s /home/user/cosbench/0.4.2.c4/cli.sh /usr/bin/cosbench
@@ -31,26 +31,57 @@
                 results: Location for storing test results and reports
                 configure: Auxiliary tools
                 
-            2.4 - Operating System and SSH Settings:
-                Edit the sudoers file and give permission to the user running KARA to execute sudo commands without a password:
+            2.4 - Operating System settings:
+
+                Creating a special user in mc and all monster servers or in special cases using existing users with sudo access:
+                # adduser kara
+                
+                Edit the sudoers file and give permission to the user running kara to execute sudo commands without a password:
                 # visudo
                     > %sudo ALL=(ALL:ALL) ALL
                     > user ALL=(ALL) NOPASSWD: ALL
-                    
-                Create an SSH key for the desired user on all monster and MC servers, as well as the server running KARA, so that no password is needed for SSH login:
-                # adduser
-                # ssh-keygen (make sure the new key is just for the new user and his .ssh directory)
-                # ssh-copy-id -p <port> user@ip
                 
             2.5 - Running the configure tool:
+                after creating the desired user and changing the sudoers file on all the monster and mc servers, change the configure tool configuration file in the manager directory and the information of all servers for ssh and create ssh_key for each and database information Enter the prerequisites to make changes on them:
+                    ssh_info: # this part of the config is for make ssh_key in all servers (mc & monster)
+    
+                         master_user: kara # same user in all servers
+                        
+                         r1z1s1:
+                              ip_swift: 10.65.0.209
+                              ssh_port: 22
+                    
+                         r1z1s2:
+                              ip_swift: 10.65.0.71
+                              ssh_port: 22
+                    
+                         mc:
+                              ip_swift: 10.65.0.37
+                              ssh_port: 22
+                    
+                    database_info: # this part of the config is for change shard hour in databases
+                    
+                         mc:
+                              ip: 10.65.0.37
+                              ssh_port: 22
+                              ssh_user: kara
+                              container_name: influxdb
+                              databases: # list of databases
+                                   - opentsdb
+                                   
                 After installing the prerequisites and cloning the repository, the configure.sh tool in the manager directory needs to be run to execute some prerequisite processes and install KARA.
                 # bash configure.sh
+
+                ** Note: Run the following commands only if you use different users on each server or if the above tool fails to create and copy the ssh key for some reason.
+                    Create ssh-key for the desired user on all Monster and MC servers and even Kara's running server so that there is no need to enter a password during ssh:
+                        # ssh-keygen (make sure the new key is just for the new user and his .ssh directory)
+                        # ssh-copy-id -p <port> kara@ip
                 
             2.6 - Tool Logs:
                 The path and log file for all tools are the same and equal to var/log/kara/all.log/. In more advanced tools with a configuration file, it is possible to change the log display level between debug - info - warning - error -    critical. For simpler tools without a configuration file, the log display level is debug.
 
         3- Execution Description of Tools
-            **Note: All tool configuration files are in the standard YAML format, allowing sections that are not needed to be commented out.
+            ** Note: All tool configuration files are in the standard YAML format, allowing sections that are not needed to be commented out.
             
             3.1 - config-gen Tool:
                 This tool is responsible for creating workload configurations and various tests for COSBench. The program is located in the config_gen directory, and its input is an input.txt file in that directory. Based on the content of this input file, the tool can generate multiple configuration files with different values to facilitate and speed up the process of creating different scenarios.
@@ -64,12 +95,12 @@
 
                                 swift:
                                     m-r1z1s1: # container name
-                                         ssh_user: root # ssh user
+                                         ssh_user: kara # ssh user
                                          ip_swift: 192.168.143.158 # ip server
                                          ssh_port: 22 # ssh port
                                 
                                     m-r2z2s2: # container name
-                                         ssh_user: root #ssh user
+                                         ssh_user: kara #ssh user
                                          ip_swift: 192.168.143.155 # ip server
                                          ssh_port: 22 # ssh port
                                     log:
@@ -155,8 +186,8 @@
                                   - /home/KARA/results  # some dir inside local server
                                 backup_output: /tmp/influxdb-backup  # output of all parts in local server
                                 # Monster storage info for uploading backup
-                                token_url: https://api.zdrive.ir/auth/v1.0
-                                public_url: https://api.zdrive.ir/v1/AUTH_user
+                                token_url: https://api.drive.ir/****
+                                public_url: https://api.drive.ir/****
                                 username: "user:user"
                                 password: **********
                                 cont_name: a name
@@ -170,12 +201,12 @@
                             
                             swift:
                                 m-r1z1s1: # container name
-                                  ssh_user: root # SSH user
+                                  ssh_user: kara # SSH user
                                   ip_swift: 192.168.143.158 # Server IP
                                   ssh_port: 22 # SSH port
                                 
                                 m-r2z2s2: # container name
-                                  ssh_user: root # SSH user
+                                  ssh_user: kara # SSH user
                                   ip_swift: 192.168.143.155 # Server IP
                                   ssh_port: 22 # SSH port
                                   
@@ -186,7 +217,7 @@
                             MC:
                               ip: 192.168.143.150 # InfluxDB server IP
                               ssh_port: 22 # SSH port
-                              ssh_user: root # SSH user
+                              ssh_user: kara # SSH user
                               container_name: influxdb # InfluxDB container name
                               influx_volume: /var/lib/influxdb/KARA_BACKUP # Mount point of InfluxDB container to host
                               databases:
@@ -199,7 +230,7 @@
                                 MyPC:
                                   ip: 192.168.143.150 # MC server IP or new server of InfluxDB
                                   ssh_port: 22 # SSH port
-                                  ssh_user: root # SSH user
+                                  ssh_user: kara # SSH user
                                   container_name: influxdb # Container name
                                   influx_volume: /var/lib/influxdb/KARA_RESTORE # Mount point with restore directory
                                   databases:
