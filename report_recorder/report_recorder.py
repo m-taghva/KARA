@@ -18,7 +18,10 @@ if classification_path not in sys.path:
 import classification
 import analyzer
 
+# variables
 config_file = "/etc/kara/report_recorder.conf"
+kateb_url = "https://kateb.burna.ir/wiki/"
+log_path = "/var/log/kara/"
 
 def load_config(config_file):
     with open(config_file, "r") as stream:
@@ -43,8 +46,8 @@ def test_page_maker(merged_file, merged_info_file, all_test_dir, cluster_name, s
     number_of_groups = 0
     sorted_unique = classification.csv_to_sorted_yaml(mergedInfo)
     array_of_groups = classification.group_generator(sorted_unique,threshold=8)
-    html_result = f"<p> برای اطلاعات بیشتر مشخصات سخت افزاری به سند  <a href=https://kateb.burna.ir/wiki/{cluster_name}--HW>{cluster_name}--HW</a> مراجعه کنید.</p>"
-    html_result += f"<p> برای اطلاعات بیشتر مشخصات نرم افزاری به سند <a href=https://kateb.burna.ir/wiki/{cluster_name}--{scenario_name}--SW>{cluster_name}--{scenario_name}--SW</a> مراجعه کنید.</p>"
+    html_result = f"<p> برای اطلاعات بیشتر مشخصات سخت افزاری به سند  <a href={kateb_url}{cluster_name}--HW>{cluster_name}--HW</a> مراجعه کنید.</p>"
+    html_result += f"<p> برای اطلاعات بیشتر مشخصات نرم افزاری به سند <a href={kateb_url}{cluster_name}--{scenario_name}--SW>{cluster_name}--{scenario_name}--SW</a> مراجعه کنید.</p>"
     html_result += "<h2> نتایج تست های کارایی </h2>"
     html_result += f"<p> بر روی این کلاستر {num_lines} تعداد تست انجام شده که در **var** دسته تست طبقه بندی شده است. </p>"
     for sharedInfo in array_of_groups:
@@ -71,7 +74,7 @@ def test_page_maker(merged_file, merged_info_file, all_test_dir, cluster_name, s
             html_result += "</tr>\n"
         html_result += "</table>"
         format_tg = testGroup.strip().replace(' ','').replace('=','-').replace(',','-')
-        html_result += f"<a href=https://kateb.burna.ir/wiki/{cluster_name}--{scenario_name}--{format_tg}> نمایش جزئیات </a>"
+        html_result += f"<a href={kateb_url}{cluster_name}--{scenario_name}--{format_tg}> نمایش جزئیات </a>"
         ###### create subgroups within each original group  ######
         sorted_unique_file_1 = classification.csv_to_sorted_yaml(mergedInfo2)
         array_of_groups_1 = classification.group_generator(sorted_unique_file_1,threshold=4)
@@ -201,7 +204,7 @@ def convert_html_to_wiki(html_content):
     # Convert <img> tags to wiki images
     for img_tag in soup.find_all('img'):
         if 'src' in img_tag.attrs:
-            img_tag.replace_with(f"[[File:{os.path.basename(img_tag['src'])}|border|center|800px|{os.path.basename(img_tag['src']).split('_')[0]}]]")
+            img_tag.replace_with(f"[[File:{os.path.basename(img_tag['src'])}|border|center|800px|{os.path.basename(img_tag['src'])}]]")
     return str(soup)
 
 def sub_pages_maker(template_content , page_title ,hw_info_dict,data_loaded):
@@ -269,7 +272,7 @@ def upload_images(site, html_content):
             file_page = pywikibot.FilePage(site, page.title())
             if file_page.exists():
                 raise ValueError("File already exists!")
-            success = file_page.upload(image_path, comment=f"Uploaded image '{image_filename}' using KARA")
+            success = file_page.upload(image_path, comment=f"Uploaded image '{image_filename}' by KARA")
             if success:
                 print(f"File uploaded successfully! File page: {file_page.full_url()}")
                 logging.info(f"report_recorder - Image '{image_filename}' uploaded successfully.")
@@ -284,8 +287,8 @@ def main(input_template, htmls_path, cluster_name, scenario_name, configs_direct
     global configs_dir
     htmls_dict = {}
 
-    log_maker = subprocess.run(f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/", shell=True)
-    logging.basicConfig(filename= '/var/log/kara/all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    log_maker = subprocess.run(f"sudo mkdir {log_path} > /dev/null 2>&1 && sudo chmod -R 777 {log_path}", shell=True)
+    logging.basicConfig(filename= f'{log_path}all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info("\033[92m****** report_recorder main function start ******\033[0m")
 
     if create_hardware_page is None and create_software_page is None and create_mtest_page is None:
@@ -312,8 +315,8 @@ def main(input_template, htmls_path, cluster_name, scenario_name, configs_direct
                 configs_dir = configs_directory
                 analyzer.conf_dir(configs_dir)
                 analyzer.get_list_of_servers()
-            else:
-                print(f"\033[91minput backup File not found\033[0m")
+            elif create_hardware_page or create_software_page:
+                print(f"\033[91minput backup File not found for make hardware or software pages\033[0m")
         if input_template:
             with open(input_template, 'r') as template_content:
                 if create_hardware_page:

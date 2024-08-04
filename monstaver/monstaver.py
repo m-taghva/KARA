@@ -12,7 +12,9 @@ import requests
 import concurrent.futures
 from alive_progress import alive_bar
 
+# variables
 config_file = "/etc/kara/monstaver.conf"
+log_path = "/var/log/kara/"
 
 def load_config(config_file):
     with open(config_file, "r") as stream:
@@ -749,19 +751,20 @@ def backup(time_range, inputs, delete, data_loaded, hardware_info, software_info
     return backup_to_report
 
 def main(time_range, inputs, delete, backup_restore, hardware_info, software_info, swift_info, influx_backup):
-    log_level = load_config(config_file)['log'].get('level')
+    data_loaded = load_config(config_file)
+    log_level = data_loaded['log'].get('level')
     if log_level is not None:
         log_level_upper = log_level.upper()
-        if log_level_upper == "DEBUG" or log_level_upper == "INFO" or log_level_upper == "WARNING" or log_level_upper == "ERROR" or log_level_upper == "CRITICAL":
-            os.makedirs('/var/log/kara/', exist_ok=True)
-            logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
+        valid_log_levels = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+        if log_level_upper in valid_log_levels:
+            log_maker = subprocess.run(f"sudo mkdir {log_path} > /dev/null 2>&1 && sudo chmod -R 777 {log_path}", shell=True)
+            logging.basicConfig(filename= f'{log_path}all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
         else:
             print(f"\033[91mInvalid log level:{log_level}\033[0m")  
     else:
         print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
 
     logging.info("****** Monstaver main function start ******")
-    data_loaded = load_config(config_file)
     if backup_restore: 
         restore(data_loaded)
         return None

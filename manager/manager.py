@@ -22,12 +22,14 @@ pywiki_path = os.path.abspath("./../report_recorder/pywikibot/")
 if pywiki_path not in sys.path:
     sys.path.append(pywiki_path)
 
+# variables
+kara_config_files = "/etc/kara/"
+log_path = "/var/log/kara/"
+
 # For font style
 BOLD = "\033[1m"
 RESET = "\033[0m"
 YELLOW = "\033[1;33m"
-
-kara_config_files = "/etc/kara/"
 
 def load_config(config_file):
     with open(config_file, "r") as stream:
@@ -205,18 +207,20 @@ def mrbench_agent(config_params, config_file, config_output):
             for test_config in sorted(os.listdir(conf_dict["workloads.xml"])):
                 test_config_path = os.path.join(conf_dict["workloads.xml"], test_config)
                 logging.info(f"manager - mrbench_agent: test config path in mrbench_agent submit function is : {test_config_path}")
-                start_time, end_time, throughput, bandwidth, avg_restime, result_path = mrbench.submit(test_config_path, result_dir)
+                cosbench_data, result_path = mrbench.submit(test_config_path, result_dir)
                 logging.info(f"manager - mrbench_agent: result_path of mrbench_agent submit function is: {result_path}")
-                logging.info(f"manager - mrbench_agent: start time and end time of test in mrbench_agent submit function is: {start_time},{end_time}")
+                logging.info(f"manager - mrbench_agent: start time and end time of test in mrbench_agent submit function is: {cosbench_data['start_time']},{cosbench_data['end_time']}")
                 subprocess.run(f"sudo cp -r {test_config_path} {result_path}", shell=True)
                 if '#' in test_config or ':' in test_config:
-                    logging.info(f"manager - mrbench_agent: making info.yaml file")
-                    cosinfo = {'Time': f"{start_time.replace(' ','_')}_{end_time.replace(' ','_')}"}
-                    with open(os.path.join(result_path, 'info.yaml'), 'w') as yaml_file:
-                        yaml.dump(cosinfo, yaml_file, default_flow_style=False)
-                    cosinfo['Throughput'] = f"{throughput}"
-                    cosinfo['Bandwidth'] = f"{bandwidth}"
-                    cosinfo['Avg_res_time'] = f"{avg_restime}"
+                    cosinfo = {}
+                    cosinfo['run_time'] = f"{cosbench_data['start_time'].replace(' ','_')}_{cosbench_data['end_time'].replace(' ','_')}"
+                    cosinfo['throughput'] = f"{cosbench_data['throughput']}"
+                    cosinfo['bandwidth'] = f"{cosbench_data['bandwidth']}"
+                    cosinfo['avg_res_time'] = f"{cosbench_data['avg_restime']}"
+                    cosinfo_data = {'cosbench': cosinfo}
+                    logging.info(f"mrbench - main: making info.yaml file")
+                    with open(os.path.join(result_path, 'info.yaml'), 'a') as yaml_file:
+                        yaml.dump(cosinfo_data, yaml_file, default_flow_style=False)
                     data_swift = {}
                     if conf_exist:
                         subprocess.run(f"sudo cp -r {swift_configs[key]} {result_path}", shell=True)
@@ -246,7 +250,7 @@ def mrbench_agent(config_params, config_file, config_output):
                     with open(os.path.join(result_path, 'info.yaml'), 'a') as yaml_file:
                         yaml.dump(data_workload, yaml_file, default_flow_style=False)
                     logging.debug(f"manager - mrbench_agent: data_workload {data_workload}")
-                    data = {**cosinfo, **data_swift, **data_workload}
+                    data = {**cosinfo_data, **data_swift, **data_workload}
                 if ring_exist:
                     data_ring = {'ring': ring_dict}
                     subprocess.run(f"sudo cp -r {swift_rings[filename]} {result_path}", shell=True)
@@ -260,30 +264,39 @@ def mrbench_agent(config_params, config_file, config_output):
                     with open(os.path.join(result_path, 'info.yaml'), 'a') as yaml_file:
                         yaml.dump(ring_formated, yaml_file, default_flow_style=False)
                     logging.debug(f"manager - mrbench_agent: ring_item {ring_item}")
-                    data = {**cosinfo, **data_swift, **data_workload, **ring_item}
-                all_start_times.append(start_time) ; all_end_times.append(end_time)
+                    data = {**cosinfo_data, **data_swift, **data_workload, **ring_item}
+                all_start_times.append(cosbench_data['start_time']) ; all_end_times.append(cosbench_data['end_time'])
                 if run_status_reporter != 'none':
                     if run_status_reporter == 'csv':
-                        output_csv  = status_reporter.main(metric_file=None, path_dir=result_path, time_range=f"{start_time},{end_time}", img=False)
+                        output_csv  = status_reporter.main(metric_file=None, path_dir=result_path, time_range=f"{cosbench_data['start_time']},{cosbench_data['end_time']}", img=False)
                     if run_status_reporter == 'csv,img':
-                        output_csv = status_reporter.main(metric_file=None, path_dir=result_path, time_range=f"{start_time},{end_time}", img=True)
+                        output_csv = status_reporter.main(metric_file=None, path_dir=result_path, time_range=f"{cosbench_data['start_time']},{cosbench_data['end_time']}", img=True)
                     if os.path.exists(output_csv): 
-                        formatted_data = {}
+                        mergedinfo_data = {}
+                        merged_data = {}
+                        run_time = {}
                         for section_name, section_data in data.items():
                             if isinstance(section_data, dict):
                                 for name, val in section_data.items():
-                                    formatted_data[f"{section_name}.{name}"] = val
+                                    if section_name != 'cosbench':
+                                        mergedinfo_data[f"{section_name}.{name}"] = val
+                                    elif section_name == 'cosbench':
+                                        if name == 'run_time':
+                                            run_time[f"{section_name}.{name}"] = val  
+                                        else:
+                                            merged_data[f"{section_name}.{name}"] = val                    
                             else:
-                                formatted_data[section_name] = section_data
-                        logging.debug(f"manager - mrbench_agent: formatted_data for merged csv {formatted_data}")
-                        analyzer.merge_csv(csv_file=output_csv, output_directory=f"{result_dir}/analyzed", pairs_dict=formatted_data)
+                                mergedinfo_data[section_name] = section_data
+                                merged_data[section_name] = section_data
+                        logging.debug(f"manager - mrbench_agent: formatted_data for merged csv {mergedinfo_data}")
+                        analyzer.merge_csv(csv_file=output_csv, output_directory=f"{result_dir}/analyzed", mergedinfo_dict={**mergedinfo_data,**run_time}, merged_dict={**run_time,**merged_data,**mergedinfo_data})
                 if run_monstaver != 'none':
                     if run_monstaver == 'backup,info':
-                        backup_to_report = monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_path,config_file,kara_config_files], delete=False, backup_restore=None, hardware_info=None, software_info=None, swift_info=None, influx_backup=True)
+                        backup_to_report = monstaver.main(time_range=f"{cosbench_data['start_time']},{cosbench_data['end_time']}", inputs=[result_path,config_file,kara_config_files], delete=False, backup_restore=None, hardware_info=None, software_info=None, swift_info=None, influx_backup=True)
                     if run_monstaver == 'backup':
-                        monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=False, software_info=False, swift_info=False, influx_backup=None)
+                        monstaver.main(time_range=f"{cosbench_data['start_time']},{cosbench_data['end_time']}", inputs=[result_path,config_file,kara_config_files], delete=True, backup_restore=None, hardware_info=False, software_info=False, swift_info=False, influx_backup=None)
                     if run_monstaver == 'info':
-                        backup_to_report = monstaver.main(time_range=f"{start_time},{end_time}", inputs=[result_path,config_file,kara_config_files], delete=False, backup_restore=None, hardware_info=None, software_info=None, swift_info=None, influx_backup=False)
+                        backup_to_report = monstaver.main(time_range=f"{cosbench_data['start_time']},{cosbench_data['end_time']}", inputs=[result_path,config_file,kara_config_files], delete=False, backup_restore=None, hardware_info=None, software_info=None, swift_info=None, influx_backup=False)
                 else:
                     backup_to_report = None
     # Extract first start time and last end time
@@ -381,10 +394,10 @@ def main(config_file):
     log_level = load_config(config_file)['log'].get('level')
     if log_level is not None:
         log_level_upper = log_level.upper()
-        if log_level_upper == "DEBUG" or log_level_upper == "INFO" or log_level_upper == "WARNING" or log_level_upper == "ERROR" or log_level_upper == "CRITICAL":
-            log_dir = f"sudo mkdir /var/log/kara/ > /dev/null 2>&1 && sudo chmod -R 777 /var/log/kara/"
-            log_dir_run = subprocess.run(log_dir, shell=True)
-            logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
+        valid_log_levels = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+        if log_level_upper in valid_log_levels:
+            log_dir_run = subprocess.run(f"sudo mkdir {log_path} > /dev/null 2>&1 && sudo chmod -R 777 {log_path}", shell=True)
+            logging.basicConfig(filename= f'{log_path}all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
         else:
             print(f"\033[91mInvalid log level:{log_level}\033[0m")
     else:

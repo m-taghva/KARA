@@ -1,8 +1,12 @@
 import itertools
 import pandas as pd
 import os
+from PIL import Image
 
-################# CSV to sorted yaml descending-based ##############################################################
+# variables
+result_dir = "query_results"
+
+################# CSV to HTML descending-based ##############################################################
 def create_tests_details(mergedTestsInfo,mergedTests,test_group,array_of_parameters,tests_dir,data_loaded):
     img_metrics = []
     for img_metric in data_loaded['tests_info'].get('metrics', []):
@@ -32,9 +36,10 @@ def create_tests_details(mergedTestsInfo,mergedTests,test_group,array_of_paramet
             html_result+=f"<p> در این گروه {num_of_tests_within_groups} تست انجام شده است که نتایج آن در ادامه قرار داده شده است.  </p>"
             html_result+= f"<h3> نتایج سرور: {serverName} </h3>"
             for test in test_rows:
+                image_paths = []
                 trow = test.iloc[0]
                 row_dict = trow.to_dict()
-                selected_merged = mergedTests2.loc[mergedTests2['Time'] == row_dict['Time']]
+                selected_merged = mergedTests2.loc[mergedTests2['cosbench.run_time'] == row_dict['cosbench.run_time']]
                 html_result+= f"<h4> نتایج تست : {row_dict} </h4>"
                 html_result+= "<table border='1' class='wikitable'>\n"
                 for i, row in enumerate(selected_merged.to_csv().split("\n")):
@@ -46,15 +51,19 @@ def create_tests_details(mergedTestsInfo,mergedTests,test_group,array_of_paramet
                     html_result += "</tr>\n"
                 html_result += "</table>"
                 html_result += "<h4>تصاویر \n</h4> <p> </p>"
-                directory_path = os.path.join(tests_dir,f"{row_dict['Time']}/query_results/{serverName}-images")
-                for img in img_metrics:
+                directory_path = os.path.join(tests_dir,f"{row_dict['cosbench.run_time']}/{result_dir}/{serverName}-images")
+                output_path = None
+                for metric in img_metrics:
                     if os.path.exists(directory_path):
                         for filename in os.listdir(directory_path):
-                            if img in filename:
-                                img_addr = os.path.join(directory_path,filename)
-                                html_result += f"<img src={img_addr}>"   
+                            img_formating = metric.replace(".", "-")
+                            if img_formating in filename:
+                                image_paths.append(os.path.join(directory_path, filename))
+                                output_path = dashboard_maker(image_paths, os.path.join(directory_path, f"{serverName}-{row_dict['cosbench.run_time'].replace(':','-')}-dashboard.png")) 
                     else:
                         print(f"Directory {directory_path} does not exist for inserting images into kateb.")
+                if output_path:
+                    html_result += f"<img src={output_path}>"  
             html_result +=  f"<h3> خلاصه و جمع بندی</h3>" 
             html_result+= "<table border='1' class='wikitable'>\n"
             for i, row in enumerate(mergedTests2.to_csv().split("\n")):
@@ -121,3 +130,30 @@ def group_generator (yaml_data,threshold):
         result_dict1=dict(zip(new_yaml_data.keys(), combination1))
         array_of_groups.append(result_dict1)
     return array_of_groups
+
+############################################################################################################
+def dashboard_maker(image_paths, output_path):
+    # Gather all image file paths from the directory
+    if not image_paths:
+        print("No images found to make dashboard")
+        return
+    # Open images and calculate the size for the combined image
+    images = [Image.open(image_path) for image_path in image_paths]
+    # Determine the number of images per row and rows needed
+    images_per_row = 2
+    rows = (len(images) + images_per_row - 1) // images_per_row
+    # Calculate the width and height of the combined image
+    max_width = max(image.width for image in images)
+    max_height = max(image.height for image in images)
+    combined_width = max_width * images_per_row
+    combined_height = max_height * rows
+    # Create a new blank image to hold the combined output
+    combined_image = Image.new('RGB', (combined_width, combined_height))
+    # Paste images into the combined image
+    for index, image in enumerate(images):
+        x_offset = (index % images_per_row) * max_width
+        y_offset = (index // images_per_row) * max_height
+        combined_image.paste(image, (x_offset, y_offset))
+    # Save the combined image
+    combined_image.save(output_path)
+    return output_path

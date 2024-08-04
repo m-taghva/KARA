@@ -12,8 +12,10 @@ import select
 import logging
 import concurrent.futures
 
+# variables
 config_file = "/etc/kara/mrbench.conf"
 pre_test_script = "./../mrbench/pre_test_script.sh"
+log_path = "/var/log/kara/"
 
 # For font style
 BOLD = "\033[1m"
@@ -168,6 +170,7 @@ def submit(workload_config_path, output_path):
     logging.info("mrbench - Executing submit function")
     if not os.path.exists(output_path):
        os.makedirs(output_path) 
+    print("")
     run_pre_test_process = subprocess.run(f"bash {pre_test_script}", shell=True)
     cosbenchBin = shutil.which("cosbench")
     if not(cosbenchBin):
@@ -178,66 +181,15 @@ def submit(workload_config_path, output_path):
     if os.path.exists(workload_config_path):
         print(f"{YELLOW}========================================{RESET}")
         print("Sending workload ...")
-        # Start workload
-        cosbench_active_workload = subprocess.run(['cosbench', 'info'], capture_output=True, text=True)
-        if "Total: 0 active workloads" in cosbench_active_workload.stdout:
-            logging.info(f"mrbench - this workload send to cosbench: {workload_config_path}")
-            Cos_bench_command = subprocess.run(["cosbench", "submit", workload_config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-            if Cos_bench_command.returncode == 1:
-                logging.info(f"mrbench - Starting workload failed: {workload_config_path}")
-                print(f"Starting workload failed: \033[91m{workload_config_path}\033[0m")
-                return None, None, -1
-            # Extract ID of workload
-            output_lines = Cos_bench_command.stdout.splitlines()
-            workload_id_regex = re.search('(?<=ID:\s)(w\d+)', output_lines[0])
-            workload_name = workload_config_path.split('/')[-1].replace('.xml','')
-            if workload_id_regex:
-                workload_id = workload_id_regex.group()
-                logging.info(f"mrbench - Workload Info - ID: {workload_id} Name: {workload_name}")
-                print(f"\033[1mWorkload Info:\033[0m ID: {workload_id} Name: {workload_name}")
-            else:
-                logging.info(f"mrbench - Starting workload failed: {workload_config_path}")
-                print(f"Starting workload failed: \033[91m{workload_config_path}\033[0m")
-                return None, None, -1
-            # Check every second if the workload has ended or not
-            archive_file_path = f"{archive_path}{workload_id}-swift-sample"
-            time.sleep(5)
-            while True:
-                active_workload_check = subprocess.run(['cosbench', 'info'], capture_output=True, text=True)
-                if "Total: 0 active workloads" in active_workload_check.stdout:
-                    time.sleep(5) 
-                    break
-            if os.path.exists(archive_file_path):
-                archive_workload_dir_name = f"{workload_id}-swift-sample"  
-                start_time, end_time, throughput, bandwidth, avg_restime = save_cosinfo(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv")
-                if start_time and end_time:
-                    test_time_dir = f"{start_time}_{end_time}"
-                    result_path = os.path.join(output_path, test_time_dir.replace(" ","_"))
-                    if not os.path.exists(result_path):
-                        os.mkdir(result_path) 
-                    print(f"Result Path: {result_path}")
-                    test_brf_info = open(f"{result_path}/test_info.txt", "w")
-                    test_brf_info.write(f"time_range: {start_time},{end_time}\n")
-                    test_brf_info.write(f"throughput: {throughput}\n")
-                    test_brf_info.write(f"bandwidth: {bandwidth}\n")
-                    test_brf_info.write(f"avg_res_time: {avg_restime}\n")
-                    test_brf_info.close()
-                    cosbench_info_result = subprocess.run(f"cosbench info > {result_path}/cosbench.info", shell=True, capture_output=True, text=True)
-                    copy_bench_files(archive_path, archive_workload_dir_name, result_path)
-                    return  start_time, end_time, throughput, bandwidth, avg_restime, result_path
-            else:
-                logging.info(f"mrbench - Test: {workload_name} can't run correctly so archive path {archive_file_path} doesn't exists.")
-                print(f"\033[91mTest: {workload_name} can't run correctly so archive path {archive_file_path} doesn't exists.\033[0m")
-                return None, None, -1
-        else:
-            logging.info(f"mrbench - You have actived workload so new workload can't run")
-            print(f"\033[91mYou have actived workload so new workload can't run\033[0m")
-            cosbench_check_workload = subprocess.run(['cosbench', 'info'], capture_output=True, text=True)
-            info_output = cosbench_check_workload.stdout
-            # Extract workload ID
+        active_workload = 1
+        while active_workload:
+            cosbench_check_workload = subprocess.run(['cosbench', 'info'], capture_output=True, text=True).stdout
             pattern = r'(w\d+)\s+.*'
-            match = re.search(pattern, info_output)
+            match = re.search(pattern, cosbench_check_workload)
             if match:
+                logging.info(f"mrbench - You have actived workload so new workload can't run")
+                print(f"\033[91mYou have actived workload so new workload can't run\033[0m")
+                print("")                      
                 w_id = match.group(1)
                 print(f"Do you want to cancel the current {w_id} workload? (yes/no): ", end='', flush=True)
                 # Set up a timer for 20 seconds
@@ -257,6 +209,51 @@ def submit(workload_config_path, output_path):
                         print(f"Workload {w_id} canceled and new workload starting please wait ...")
                         time.sleep(10)
                         submit(workload_config_path, output_path)
+                return None, None, -1
+            else:
+                active_workload = 0
+        # Start workload
+        logging.info(f"mrbench - this workload send to cosbench: {workload_config_path}")
+        Cos_bench_command = subprocess.run(["cosbench", "submit", workload_config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        if Cos_bench_command.returncode == 1:
+            logging.info(f"mrbench - Starting workload failed: {workload_config_path}")
+            print(f"Starting workload failed: \033[91m{workload_config_path}\033[0m")
+            return None, None, -1
+        # Extract ID of workload
+        output_lines = Cos_bench_command.stdout.splitlines()
+        workload_id_regex = re.search('(?<=ID:\s)(w\d+)', output_lines[0])
+        workload_name = workload_config_path.split('/')[-1].replace('.xml','')
+        if workload_id_regex:
+            workload_id = workload_id_regex.group()
+            logging.info(f"mrbench - Workload Info - ID: {workload_id} Name: {workload_name}")
+            print(f"\033[1mWorkload Info:\033[0m ID: {workload_id} Name: {workload_name}")
+        else:
+            logging.info(f"mrbench - Starting workload failed: {workload_config_path}")
+            print(f"Starting workload failed: \033[91m{workload_config_path}\033[0m")
+            return None, None, -1
+        # Check every second if the workload has ended or not
+        archive_file_path = f"{archive_path}{workload_id}-swift-sample"
+        time.sleep(5)
+        while True:
+            active_workload_check = subprocess.run(['cosbench', 'info'], capture_output=True, text=True)
+            if "Total: 0 active workloads" in active_workload_check.stdout:
+                time.sleep(5) 
+                break
+        if os.path.exists(archive_file_path):
+            archive_workload_dir_name = f"{workload_id}-swift-sample"  
+            cosbench_data = save_cosinfo(f"{archive_path}{archive_workload_dir_name}/{archive_workload_dir_name}.csv")
+            if cosbench_data and cosbench_data['start_time'] and cosbench_data['end_time']:
+                test_time_dir = f"{cosbench_data['start_time']}_{cosbench_data['end_time']}"
+                result_path = os.path.join(output_path, test_time_dir.replace(" ","_"))
+                if not os.path.exists(result_path):
+                    os.mkdir(result_path) 
+                print(f"Result Path: {result_path}")
+                cosbench_info_result = subprocess.run(f"cosbench info > {result_path}/cosbench.info", shell=True, capture_output=True, text=True)
+                copy_bench_files(archive_path, archive_workload_dir_name, result_path)
+                return  cosbench_data, result_path
+        else:
+            logging.info(f"mrbench - Test: {workload_name} can't run correctly so archive path {archive_file_path} doesn't exists.")
+            print(f"\033[91mTest: {workload_name} can't run correctly so archive path {archive_file_path} doesn't exists.\033[0m")
             return None, None, -1
     else:
         logging.info(f"mrbench - WARNING: workload file doesn't exist: {workload_config_path}")
@@ -264,11 +261,7 @@ def submit(workload_config_path, output_path):
 
 def save_cosinfo(file):
     logging.info("mrbench - Executing save_time function")
-    start_time = None
-    end_time = None
-    throughput = None
-    bandwidth = None
-    avg_restime = None
+    cosbench_data = {'start_time': None,'end_time': None,'throughput': None,'bandwidth': None,'avg_restime': None}
     try:
         # Find start of first main and end of last main
         with open(file, 'r') as csv_file:
@@ -281,16 +274,16 @@ def save_cosinfo(file):
                         if len(row) > 24:
                             first_main_launching_time = row[21]
                             last_main_completed_time = row[24]
-                            throughput = row[13]
-                            bandwidth = row[14]
-                            avg_restime = row[5]
+                            cosbench_data['throughput'] = row[13]
+                            cosbench_data['bandwidth'] = row[14]
+                            cosbench_data['avg_restime'] = row[5]
                             if first_main_launching_time and last_main_completed_time:
-                                start_time = first_main_launching_time.split('@')[1].strip()
-                                end_time = last_main_completed_time.split('@')[1].strip()
-                                if start_time and end_time:
-                                    print(f"Start & End Time: {start_time},{end_time}")
-                                    logging.info(f"mrbench - test time range: {start_time},{end_time}")  
-                                    return start_time, end_time, throughput, bandwidth, avg_restime
+                                cosbench_data['start_time'] = first_main_launching_time.split('@')[1].strip()
+                                cosbench_data['end_time'] = last_main_completed_time.split('@')[1].strip()
+                                if cosbench_data['start_time'] and cosbench_data['end_time']:
+                                    print(f"Start & End Time: {cosbench_data['start_time']},{cosbench_data['end_time']}")
+                                    logging.info(f"mrbench - test time range: {cosbench_data['start_time']},{cosbench_data['end_time']}")
+                                    return cosbench_data
                                 else:
                                     logging.info(f"mrbench - can't extract test time range from cosbench csv file!")
                                     print("\033[91m mrbench can't extract test time range from cosbench csv file!\033[0m")
@@ -298,7 +291,7 @@ def save_cosinfo(file):
                         else:
                             logging.info(f"mrbench - your workload template is not correct so mrbench can't extract test time range from cosbench csv file: {file}")
                             print("\033[91myour workload template is not correct so mrbench can't extract test time range from cosbench csv file!\033[0m")
-                            exit() 
+                            exit()
     except Exception as e:
         print(f"\033[91mAn error occurred: {str(e)}\033[0m")
         return -1
@@ -328,21 +321,41 @@ def main(workload_config_path, output_path, swift_configs):
     log_level = load_config(config_file)['log'].get('level')
     if log_level is not None:
         log_level_upper = log_level.upper()
-        if log_level_upper == "DEBUG" or log_level_upper == "INFO" or log_level_upper == "WARNING" or log_level_upper == "ERROR" or log_level_upper == "CRITICAL":
-            os.makedirs('/var/log/kara/', exist_ok=True)
-            logging.basicConfig(filename= '/var/log/kara/all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
+        valid_log_levels = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+        if log_level_upper in valid_log_levels:
+            log_dir = f"sudo mkdir {log_path} > /dev/null 2>&1 && sudo chmod -R 777 {log_path}"
+            logging.basicConfig(filename= f'{log_path}all.log', level=log_level_upper, format='%(asctime)s - %(levelname)s - %(message)s')
         else:
             print(f"\033[91mInvalid log level:{log_level}\033[0m")  
     else:
         print(f"\033[91mPlease enter log_level in the configuration file.\033[0m")
     logging.info("\033[92m****** mrbench main function start ******\033[0m")
+    ring_dict = {}
+    cosbench_data = {}
     if swift_configs:
-       copy_swift_conf(swift_configs)
+        ring_dict = copy_swift_conf(swift_configs)
     if workload_config_path is not None:
         if os.path.exists(workload_config_path):
             if output_path is not None:
-                start_time, end_time, throughput, bandwidth, avg_restime, result_path = submit(workload_config_path, output_path)
-                return start_time, end_time, throughput, bandwidth, avg_restime, result_path
+                cosbench_data, result_path = submit(workload_config_path, output_path)
+                if ring_dict or cosbench_data and not os.path.exists(f"{result_path}/info.yaml"):
+                    cosinfo = {}
+                    cosinfo['run_time'] = f"{cosbench_data['start_time'].replace(' ','_')}_{cosbench_data['end_time'].replace(' ','_')}"
+                    cosinfo['throughput'] = f"{cosbench_data['throughput']}"
+                    cosinfo['bandwidth'] = f"{cosbench_data['bandwidth']}"
+                    cosinfo['avg_res_time'] = f"{cosbench_data['avg_restime']}"
+                    cosinfo_data = {'cosbench': cosinfo}
+                    logging.info(f"mrbench - main: making info.yaml file")
+                    with open(os.path.join(result_path, 'info.yaml'), 'w') as yaml_file:
+                        yaml.dump(cosinfo_data, yaml_file, default_flow_style=False)
+                    ring_item = {}
+                    for rkey,rvalue in ring_dict.items(): 
+                        ring_item[rkey+"_nodes"]=len(set([v.split()[3] for v in rvalue.splitlines()[6:]]))
+                        ring_item.update({"Ring."+rkey+"."+item.split(" ")[1]:int(float(item.split(" ")[0])) for item in rvalue.splitlines()[1].split(", ")[:5]})
+                    ring_formated = {'ring': ring_item}
+                    with open(os.path.join(result_path, 'info.yaml'), 'a') as yaml_file:
+                        yaml.dump(ring_formated, yaml_file, default_flow_style=False)
+                return cosbench_data, result_path
             else:
                 print(f"\033[91mWARNING: output dir doesn't define !\033[0m")
         else:
