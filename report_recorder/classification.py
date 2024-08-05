@@ -12,14 +12,14 @@ def create_tests_details(mergedTestsInfo,mergedTests,test_group,array_of_paramet
     for img_metric in data_loaded['tests_info'].get('metrics', []):
         img_metrics.append(img_metric)
     html_result =  f"<p> در این سند جزئیات مربوط به تست های گروه {test_group} آمده است</p>"
-    serverList = unique_values = mergedTests['Host_alias'].unique().tolist()
+    serverList = unique_values = mergedTests['Host_name'].unique().tolist()
     for testInfo in array_of_parameters:
         testGroup = ' , '.join(f'{key} = {value}' for key, value in testInfo.items())
         h2checker = 1
         for serverName in serverList:
             mergedTestsInfo2 = mergedTestsInfo
             mergedTests2 = mergedTests 
-            mergedTests2 = mergedTests2[mergedTests2['Host_alias'] == serverName ]
+            mergedTests2 = mergedTests2[mergedTests2['Host_name'] == serverName ]
             for key, value in testInfo.items():
                 mergedTestsInfo2 = mergedTestsInfo2[mergedTestsInfo2[key] == int(value) ]
                 mergedTestsInfo2 = mergedTestsInfo2.drop(columns=key)

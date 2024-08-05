@@ -44,7 +44,7 @@ def generate_cpu_model(serverName):
     socket = ""
     threads = ""
     model = ""
-    for line in load(f'/configs/{serverName}' + "/hardware/cpu/lscpu.txt"):
+    for line in load(f'/configs/{serverName}'+"/hardware/cpu/lscpu.txt"):
         line = line.replace("\n","").split(":")
         if "Core(s) per socket" in line[0]:
             coresPerSocket=line[1].strip()
@@ -311,18 +311,21 @@ def process_csv_file(csv_data, operation, new_column_name, selected_columns):
         csv_data[new_column_name] = csv_data[selected_columns].mean(axis=1)
     return csv_data
 
-def analyze_and_save_csv(csv_original, transformation_directory):
+def analyze_and_save_csv(csv_original, transformation_directory, keep_column):
     logging.info("status_analyzer - Executing analyze_and_save_csv function")
-    csv_intermediate = pd.read_csv(csv_original)
+    source_csv = pd.read_csv(csv_original)
     selected_column_names = set()
     for txt_file in os.listdir(transformation_directory):
         if txt_file.startswith('t') and txt_file.endswith('.txt'):
             txt_file_path = os.path.join(transformation_directory, txt_file)
             operation, new_column_name, selected_columns = read_txt_file(txt_file_path)
-            csv_intermediate = process_csv_file(csv_intermediate, operation, new_column_name, selected_columns)
+            source_csv = process_csv_file(source_csv, operation, new_column_name, selected_columns)
             selected_column_names.update(selected_columns)
-    keep_columns = [col for col in csv_intermediate.columns if col not in selected_column_names]
-    csv_final = csv_intermediate[keep_columns]
+    if keep_column:
+        csv_final = source_csv
+    else:
+        keep_columns = [col for col in source_csv.columns if col not in selected_column_names]
+        csv_final = source_csv[keep_columns]
     final_output_csv_name = f"{os.path.splitext(os.path.basename(csv_original))[0]}-{os.path.basename(transformation_directory)}.csv"
     final_output_csv_path = os.path.join(os.path.dirname(csv_original), final_output_csv_name)
     csv_final.to_csv(final_output_csv_path, index=False)
@@ -352,12 +355,12 @@ def plot_and_save_graph(selected_csv, x_column, y_column):
     image_file_path = selected_csv.replace('.csv', '_graph.png')
     plt.savefig(image_file_path)
 
-def main(merge, analyze, graph, csv_original, transformation_directory, output_directory, selected_csv, x_column, y_column):
+def main(merge, analyze, graph, csv_original, transformation_directory, output_directory, selected_csv, x_column, y_column, keep_column):
     log_dir_run = subprocess.run(f"sudo mkdir {log_path} > /dev/null 2>&1 && sudo chmod -R 777 {log_path}", shell=True)
     logging.basicConfig(filename= f'{log_path}all.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info("\033[92m****** status_analyzer main function start ******\033[0m")
     if analyze:
-        analyze_and_save_csv(csv_original, transformation_directory)
+        analyze_and_save_csv(csv_original, transformation_directory, keep_column)
     if merge:
         if not os.path.exists(output_directory):
             os.makedirs(output_directory) 
@@ -374,11 +377,11 @@ if __name__ == "__main__":
     parser.add_argument('-A', '--analyze', action='store_true', help='Analyze CSV files')
     parser.add_argument('-c', '--csv_org', help='Custom CSV file for analysis (required for -A)')
     parser.add_argument('-t', '--transformation_directory', help='Path to transformation directory (required for -A)')
+    parser.add_argument('-k', '--keep_column', action='store_true', help='keep column of orginal_CSV file')
     parser.add_argument('-G', '--graph', action='store_true', help='make graph of CSV file')
     parser.add_argument('-x', '--x_column', type=str, help='Name of the X column (required for -G)')
     parser.add_argument('-y', '--y_column', type=str, help='Name of the Y column (required for -G)')
     args = parser.parse_args()
-    
     # Check required arguments based on operation
     if args.merge and (args.output_directory is None or args.selected_csv is None):
         print("Error: Both -o (--input_directory) and -sc (--selected_csv) switches are required for merge operation -M")
@@ -389,9 +392,8 @@ if __name__ == "__main__":
     if args.graph and (args.x_column is None or args.y_column is None or args.selected_csv is None):
         print("Error: these switch -x (--x_column) and -y (--y_column) and sc (--selected_csv) are required for make graph operation -G")
         exit(1)
-
     # Set values to None if not provided
-    merge = args.merge ; analyze = args.analyze ; graph = args.graph
+    merge = args.merge ; analyze = args.analyze ; keep_column = args.keep_column ; graph = args.graph
     x_column = args.x_column ; y_column = args.y_column
     transformation_directory = args.transformation_directory.strip() if args.transformation_directory else None
     csv_original = args.csv_org.strip() if args.csv_org else None
@@ -407,4 +409,4 @@ if __name__ == "__main__":
             selected_csv = None
             print(f'\033[91mplease select correct csv file your file is wrong: {args.selected_csv}\033[0m')
             exit(1)
-    main(merge, analyze, graph, csv_original, transformation_directory, output_directory, selected_csv, x_column, y_column)
+    main(merge, analyze, graph, csv_original, transformation_directory, output_directory, selected_csv, x_column, y_column, keep_column)

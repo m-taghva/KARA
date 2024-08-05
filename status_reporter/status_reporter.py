@@ -134,7 +134,7 @@ def main(metric_file, path_dir, time_range, img=False):
             metric_files_config = [metric_file.get('path', '')]
             metric_operation_mapping[metric_file.get('path', '')] = metric_operation
 
-    output_csv_str = ["Host_alias"]  # name of the first column in csv
+    output_csv_str = ["Host_name"]  # name of the first column in csv
     csvi = 0
     # Loop through each combination of time range, host, IP, PORT, and execute the curl command
     for mc_server, config in data_loaded.get('influxdbs', {}).items():
